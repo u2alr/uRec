@@ -48,7 +48,7 @@ The results below are copied from those runs. Nothing is estimated.
 | T16 | Window capture (Notepad only, 754 × 512) | ✅ |
 | T21 | **Signed updates:** a throwaway P-256 key signs a checksum file; uRec's Windows CNG check accepts it and refuses a changed file, a changed signature and another key | ✅ |
 | T22 | **Constant quality vs VBR**, same mostly-still desktop, 720p30 x264, 8 s: VBR 6 Mbps 2.11 MB, constant quality (level 7) 0.66 MB, **69 % smaller**. SSIM between the two clips: 0.996 (visually near-identical). Fast-moving game footage saves less; that wasn't measured on CI | ✅ |
-| T17 | **A/V sync**: screen flashes white and a beep plays every 2 s; in the recording audio leads video by 6–55 ms (median 26–44 ms across runs, about one frame at 30 FPS; includes the test's own playback and GDI capture latency) | ✅ |
+| T17 | **A/V sync**: screen flashes white and a beep plays every 2 s; in the recording audio leads video by 6–55 ms (median 26–44 ms across runs, about one frame at 30 FPS; includes the test's own playback and GDI capture latency). One 0.3.0 run detected only 2 of 6 flash/beep pairs (offsets still −28 and −45 ms); a re-run of the same commit found 6 of 6, median −10 ms. Flash detection on the shared runner is occasionally flaky | ✅ |
 | T18 | Show in folder / Open folder open the right Explorer folder (path with spaces) | ✅ |
 | T19 | **4 simultaneous Instant Replay saves to the same name** (real FFmpeg): 4 separate complete clips (`… Replay.mp4`, `(2)`, `(3)`, `(4)`), each decodes without errors, no temp files or staging folders left; 1.9 s for all four | ✅ |
 | T20 | **150 s Instant Replay run:** FFmpeg memory 168.0 → 168.1 MB, host 2.0 → 2.0 MB, ring never above 19/19 files, a 20 s save at the end decodes cleanly | ✅ |
