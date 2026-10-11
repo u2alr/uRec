@@ -17,7 +17,7 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     app.refresh_devices(false);
     let p = app.p;
     egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
-        ui.set_max_width(760.0);
+        ui.set_max_width(ui.available_width().min(760.0));
         hero(app, ui, st);
         ui.add_space(26.0);
         replay_row(app, ui, st);
@@ -115,7 +115,15 @@ fn hero(app: &mut App, ui: &mut egui::Ui, st: &Status) {
 /// "Display 1 at 1920 × 1080, 60 FPS, using AMD AMF (H.264)"
 fn describe_capture(app: &App, st: &Status) -> String {
     if let Some(c) = &st.capture {
-        return format!("{} × {} at {} FPS, {} via {}", c.width, c.height, c.fps, c.encoder, c.method.label());
+        return format!(
+            "{} × {} at {} FPS, {} with {}, captured with {}",
+            c.width,
+            c.height,
+            c.fps,
+            codec_short(c.encoder.codec),
+            encoder_short(c.encoder.backend),
+            method_short(c.method)
+        );
     }
     let src = source_label(app);
     let (sw, sh) = match app.s.capture.kind.as_str() {
@@ -136,12 +144,12 @@ fn describe_capture(app: &App, st: &Status) -> String {
     let fps = if app.s.video.fps == 0 { "display refresh rate".into() } else { format!("{} FPS", app.s.video.fps) };
     let enc = if app.s.video.encoder == "auto" {
         st.best_encoder(app.s.codec())
-            .map(|e| e.backend.label().to_string())
+            .map(|e| encoder_short(e.backend).to_string())
             .unwrap_or_else(|| "the best available encoder".into())
     } else {
-        Backend::from_id(&app.s.video.encoder).map(|b| b.label().to_string()).unwrap_or_default()
+        Backend::from_id(&app.s.video.encoder).map(|b| encoder_short(b).to_string()).unwrap_or_default()
     };
-    format!("{src} at {size}, {fps}, using {enc}")
+    format!("{src} at {size}, {fps}, {} with {enc}", codec_short(app.s.codec()))
 }
 
 pub fn codec_short(c: urec_engine::video::Codec) -> &'static str {

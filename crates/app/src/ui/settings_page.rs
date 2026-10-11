@@ -48,7 +48,7 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, st: &Status) {
         ui.add_space(24.0);
         ui.vertical(|ui| {
             egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
-                ui.set_max_width(640.0);
+                ui.set_max_width(ui.available_width().min(640.0));
                 let before = app.s.clone();
                 match app.section {
                     Section::General => general(app, ui),
