@@ -1,4 +1,4 @@
-commit 16383af03f05fe05b9eddbff681d0841ade5d48a run 38170351573
+commit 30e8cbd6eaf0d4efc9cbacc069b4ed63b74fb4ed run 38179406111
     Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
       Loaded 1296 security advisories (from C:\Users\runneradmin\.cargo\advisory-db)
     Updating crates.io index
@@ -7,27 +7,28 @@ audit exit code: 0
 185 crates listed
 Inno Setup 0.0.0.0 at C:\Program Files (x86)\Inno Setup 6\ISCC.exe
 rustc: rustc 1.98.1 (48a229cea 2026-09-01)
-uRec-0.2.0-portable.zip  43.6 MB  sha256 1619E1F19095F6EDC79A05D941E9754E35EE3A573ED249CD351B583996E53411
-uRec-0.2.0-setup.exe  32.2 MB  sha256 4FA04F27ABEAFEA0A774B0CB005DA234E7BEBA4882434F355581204249D7AED6
+uRec-0.3.0-portable.zip  43.7 MB  sha256 99392EB73875A9F765CD9D95A61F5A714317291719CA4AAC5D2EB04D3A7E2E24
+uRec-0.3.0-setup.exe  32.3 MB  sha256 C9B2573171AABD2D65BB0AB01CDEB3DE015143EC5FA3BEBDDD21CFEA1EA57713
 SHA256SUMS.txt:
-1619e1f19095f6edc79a05d941e9754e35ee3a573ed249cd351b583996e53411  uRec-0.2.0-portable.zip
-4fa04f27abeafea0a774b0cb005da234e7beba4882434f355581204249d7aed6  uRec-0.2.0-setup.exe
-installer: uRec-0.2.0-setup.exe 32.2 MB
-I01 PASS Silent per-user install succeeds without admin prompt :: exit=0 in 6.6 s
+99392eb73875a9f765cd9d95a61f5a714317291719ca4aac5d2eb04d3a7e2e24  uRec-0.3.0-portable.zip
+c9b2573171aabd2d65bb0ab01cdeb3de015143ec5fa3bebddd21cfea1ea57713  uRec-0.3.0-setup.exe
+update key: none yet (checksum-only updates)
+installer: uRec-0.3.0-setup.exe 32.3 MB
+I01 PASS Silent per-user install succeeds without admin prompt :: exit=0 in 5.1 s
 I02 PASS Program files installed (uRec.exe, ffmpeg.exe, notices) :: C:\Users\runneradmin\AppData\Local\Programs\uRec
-installed footprint: 116.7 MB
+installed footprint: 116.8 MB
 I03 PASS Start Menu shortcut created :: C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\uRec.lnk
 I04 PASS Optional desktop shortcut created when chosen :: C:\Users\runneradmin\Desktop\uRec.lnk
 I05 PASS Registered in Apps & features with name and icon :: name=uRec icon=C:\Users\runneradmin\AppData\Local\Programs\uRec\uRec.exe
 I06 PASS Does not start with Windows unless chosen :: run entry: 
-I07 PASS Installed app launches and stays running :: pid=2200
+I07 PASS Installed app launches and stays running :: pid=7700
 I08 PASS Idle with Instant Replay off: no capture or encoder process :: ffmpeg processes=0
-idle 10 s window: cpu=0% workingset=58 MB private=278.7 MB
-idle 10 s window: cpu=0.04% workingset=58 MB private=278.7 MB
-idle 10 s window: cpu=0% workingset=57.9 MB private=278.7 MB
-idle average over 30 s (after 15 s settle): cpu=0.01% workingset=57.9 MB private=278.7 MB
-I09 PASS Idle CPU close to zero (< 1% of the machine) :: cpu=0.01%
-replay on (15 s buffer, x264 on this 2-vCPU VM): uRec cpu=0.02% ws=57.1 MB; ffmpeg cpu=3.91% ws=63.6 MB; buffer=12 files 1.6 MB
+idle 10 s window: cpu=0% workingset=58 MB private=278.5 MB
+idle 10 s window: cpu=0% workingset=58 MB private=278.5 MB
+idle 10 s window: cpu=0% workingset=57.9 MB private=278.5 MB
+idle average over 30 s (after 15 s settle): cpu=0% workingset=57.9 MB private=278.5 MB
+I09 PASS Idle CPU close to zero (< 1% of the machine) :: cpu=0%
+replay on (15 s buffer, x264 on this 2-vCPU VM): uRec cpu=0% ws=57.4 MB; ffmpeg cpu=4.8% ws=63.7 MB; buffer=12 files 1.6 MB
 I10 PASS Instant Replay runs from the installed app with a bounded buffer :: segments=12 (limit 12 for 15 s) size=1.6 MB
 I11 PASS Killing the app also ends its FFmpeg (job object) :: ffmpeg left=0
 I12 PASS Silent uninstall succeeds :: exit=0
@@ -39,15 +40,15 @@ I16 PASS Temporary data (replay buffer, thumbnails, logs) removed ::
 
 Id  Check                                                            Result Detail
 --  -----                                                            ------ ------
-I01 Silent per-user install succeeds without admin prompt            PASS   exit=0 in 6.6 s
+I01 Silent per-user install succeeds without admin prompt            PASS   exit=0 in 5.1 s
 I02 Program files installed (uRec.exe, ffmpeg.exe, notices)          PASS   C:\Users\runneradmin\AppData\Local\Programs\uRec
 I03 Start Menu shortcut created                                      PASS   C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\uRec.lnk
 I04 Optional desktop shortcut created when chosen                    PASS   C:\Users\runneradmin\Desktop\uRec.lnk
 I05 Registered in Apps & features with name and icon                 PASS   name=uRec icon=C:\Users\runneradmin\AppData\Local\Programs\uRec\uRec.exe
 I06 Does not start with Windows unless chosen                        PASS   run entry: 
-I07 Installed app launches and stays running                         PASS   pid=2200
+I07 Installed app launches and stays running                         PASS   pid=7700
 I08 Idle with Instant Replay off: no capture or encoder process      PASS   ffmpeg processes=0
-I09 Idle CPU close to zero (< 1% of the machine)                     PASS   cpu=0.01%
+I09 Idle CPU close to zero (< 1% of the machine)                     PASS   cpu=0%
 I10 Instant Replay runs from the installed app with a bounded buffer PASS   segments=12 (limit 12 for 15 s) size=1.6 MB
 I11 Killing the app also ends its FFmpeg (job object)                PASS   ffmpeg left=0
 I12 Silent uninstall succeeds                                        PASS   exit=0
@@ -57,29 +58,29 @@ I15 Settings are kept (preserved by default)                         PASS   C:\U
 I16 Temporary data (replay buffer, thumbnails, logs) removed         PASS   
 
 
-install passed=16 failed=0 installer_mb=32.2 installed_mb=116.7
-U01 PASS Current build reports up to date :: 2026-10-11 20:06:40 update: cli check -> UpToDate | one check: cpu=0.03 s wall=0.4 s
-U02 PASS Older version downloads and verifies the update :: 2026-10-11 20:06:42 update: cli check -> Ready { version: "0.2.0" } | pending=0.2.0 uRec-0.2.0-setup.exe 4FA04F27ABEAFEA0A774B0CB005DA234E7BEBA4882434F355581204249D7AED6 | check+download+verify: cpu=0.25 s wall=2.2 s
-U03 PASS Downloaded installer matches the published SHA-256 :: uRec-0.2.0-setup.exe 4FA04F27ABEAFEA0A774B0CB005DA234E7BEBA4882434F355581204249D7AED6
-U04 PASS Corrupted download is rejected and deleted :: 2026-10-11 20:06:43 update: cli check -> Failed("The download didn't match its published checksum and was deleted.") | files left=0
+install passed=16 failed=0 installer_mb=32.3 installed_mb=116.8
+U01 PASS Current build reports up to date :: 2026-10-11 22:17:04 update: cli check -> UpToDate | one check: cpu=0.03 s wall=0.4 s
+U02 PASS Older version downloads and verifies the update :: 2026-10-11 22:17:06 update: cli check -> Ready { version: "0.3.0" } | pending=0.3.0 uRec-0.3.0-setup.exe C9B2573171AABD2D65BB0AB01CDEB3DE015143EC5FA3BEBDDD21CFEA1EA57713 | check+download+verify: cpu=0.17 s wall=1.7 s
+U03 PASS Downloaded installer matches the published SHA-256 :: uRec-0.3.0-setup.exe C9B2573171AABD2D65BB0AB01CDEB3DE015143EC5FA3BEBDDD21CFEA1EA57713
+U04 PASS Corrupted download is rejected and deleted :: 2026-10-11 22:17:07 update: cli check -> Failed("The download didn't match its published checksum and was deleted.") | files left=0
 U05 PASS Pending update installs silently on startup :: first exited=True installer log lines=101
-U06 PASS uRec relaunches after updating :: pid=2688 after 4.4 s; exe rewritten=True
+U06 PASS uRec relaunches after updating :: pid=7148 after 4.3 s; exe rewritten=True
 --- uRec log (update lines) ---
-2026-10-11 20:06:40 update: cli check -> UpToDate
-2026-10-11 20:06:42 update: 0.2.0 downloaded and verified
-2026-10-11 20:06:42 update: cli check -> Ready { version: "0.2.0" }
-2026-10-11 20:06:43 update: checksum mismatch for uRec-0.2.0-setup.exe: got 3D13F219040AAA8CE95FF47843ACA98097CE37B737B1E44D2B569F00CF092D6D, expected 4FA04F27ABEAFEA0A774B0CB005DA234E7BEBA4882434F355581204249D7AED6
-2026-10-11 20:06:43 update: cli check -> Failed("The download didn't match its published checksum and was deleted.")
-2026-10-11 20:06:44 update: 0.2.0 downloaded and verified
-2026-10-11 20:06:44 update: cli check -> Ready { version: "0.2.0" }
-2026-10-11 20:06:44 update: installing 0.2.0 (/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /update=1 /CURRENTUSER /relaunch=1 /LOG=C:\Users\runneradmin\AppData\Local\uRec\updates\install.log)
+2026-10-11 22:17:04 update: cli check -> UpToDate
+2026-10-11 22:17:06 update: 0.3.0 downloaded and verified
+2026-10-11 22:17:06 update: cli check -> Ready { version: "0.3.0" }
+2026-10-11 22:17:07 update: checksum mismatch for uRec-0.3.0-setup.exe: got C6B47421C508AF0409DA3EAEC5EEA3E58835DE5A16720D6C7722430CC190F026, expected C9B2573171AABD2D65BB0AB01CDEB3DE015143EC5FA3BEBDDD21CFEA1EA57713
+2026-10-11 22:17:07 update: cli check -> Failed("The download didn't match its published checksum and was deleted.")
+2026-10-11 22:17:08 update: 0.3.0 downloaded and verified
+2026-10-11 22:17:08 update: cli check -> Ready { version: "0.3.0" }
+2026-10-11 22:17:08 update: installing 0.3.0 (/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /update=1 /CURRENTUSER /relaunch=1 /LOG=C:\Users\runneradmin\AppData\Local\uRec\updates\install.log)
 --- installer log (tail) ---
-2026-10-11 20:06:48.096   Installation process succeeded.
-2026-10-11 20:06:48.098   -- Run entry --
-2026-10-11 20:06:48.098   Run as: Original user
-2026-10-11 20:06:48.098   Type: Exec
-2026-10-11 20:06:48.098   Filename: C:\Users\runneradmin\AppData\Local\Programs\uRec\uRec.exe
-2026-10-11 20:06:48.102   Need to restart Windows? No
-2026-10-11 20:06:48.104   Deinitializing Setup.
-2026-10-11 20:06:48.111   Log closed.
+2026-10-11 22:17:11.387   Installation process succeeded.
+2026-10-11 22:17:11.389   -- Run entry --
+2026-10-11 22:17:11.389   Run as: Original user
+2026-10-11 22:17:11.389   Type: Exec
+2026-10-11 22:17:11.389   Filename: C:\Users\runneradmin\AppData\Local\Programs\uRec\uRec.exe
+2026-10-11 22:17:11.393   Need to restart Windows? No
+2026-10-11 22:17:11.394   Deinitializing Setup.
+2026-10-11 22:17:11.400   Log closed.
 update passed=6 failed=0
