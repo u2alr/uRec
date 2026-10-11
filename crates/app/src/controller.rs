@@ -59,7 +59,6 @@ pub struct TestReport {
     pub stage: String,
     pub checks: Vec<TestCheck>,
     pub file: Option<PathBuf>,
-    pub action: Option<NoticeAction>,
 }
 
 impl TestReport {
@@ -83,7 +82,6 @@ pub enum Level {
     Error,
 }
 
-#[derive(Clone, Debug)]
 /// Something a notice offers to do. Handled by the UI (it owns the settings being edited).
 #[derive(Clone, Debug, PartialEq)]
 pub enum NoticeAction {
@@ -91,11 +89,13 @@ pub enum NoticeAction {
     UseCpuEncoder { retry_replay: bool },
 }
 
+#[derive(Clone, Debug)]
 pub struct Notice {
     pub level: Level,
     pub text: String,
     pub at: Instant,
     pub file: Option<PathBuf>,
+    pub action: Option<NoticeAction>,
 }
 
 #[derive(Clone, Debug)]
