@@ -1,7 +1,7 @@
 === System
 Microsoft Windows Server 2025 Datacenter 10.0.26100 build 26100
 GPU: Microsoft Hyper-V Video | 1024 x 768 x 4294967296 colors
-CPU: AMD EPYC 9V74 80-Core Processor                 cores=2
+CPU: AMD EPYC 7763 64-Core Processor                 cores=2
 Session=2 Interactive=True
 Audio endpoints:
 rust: rustc 1.98.1 (48a229cea 2026-09-01) | cargo 1.98.1 (797e8a9bc 2026-08-05)
@@ -16,31 +16,31 @@ filters:
    .. ddagrab           |->V       Grab Windows Desktop images using Desktop Duplication API
    .. gfxcapture        |->V       Capture graphics/screen content as a video source
 === Encoders (10-frame test encode)
-h264_nvenc   exit=-1 [h264_nvenc @ 0000020a148ae600] Cannot load nvcuda.dll
-h264_amf     exit=-1313558101 [AMF @ 000002852193a480] DLL amfrt64.dll failed to open
-h264_qsv     exit=-1313558101 [h264_qsv @ 00000277fa8f0fc0] Error creating a MFX session: -9.
+h264_nvenc   exit=-1 [h264_nvenc @ 000001fc7fda6fc0] Cannot load nvcuda.dll
+h264_amf     exit=-1313558101 [AMF @ 000002cdb9f18b00] DLL amfrt64.dll failed to open
+h264_qsv     exit=-1313558101 [h264_qsv @ 0000024c7a7472c0] Error creating a MFX session: -9.
 h264_mf      exit=0 
 libx264      exit=0 
-libopenh264  exit=-1129203192 [vost#0:0 @ 000001f3d8ce1200] Unknown encoder 'libopenh264'
-hevc_nvenc   exit=-1 [hevc_nvenc @ 00000192f4f60fc0] Cannot load nvcuda.dll
-hevc_amf     exit=-1313558101 [AMF @ 000001c0f729a4c0] DLL amfrt64.dll failed to open
-hevc_qsv     exit=-1313558101 [hevc_qsv @ 000002119e361bc0] Error creating a MFX session: -9.
-av1_nvenc    exit=-1 [av1_nvenc @ 0000014cb430c380] Cannot load nvcuda.dll
-av1_amf      exit=-1313558101 [AMF @ 0000022a16249c40] DLL amfrt64.dll failed to open
-av1_qsv      exit=-1313558101 [av1_qsv @ 000001c7baa33380] Error creating a MFX session: -9.
-libsvtav1    exit=-1129203192 [vost#0:0 @ 0000022f4888e040] Unknown encoder 'libsvtav1'
+libopenh264  exit=-1129203192 [vost#0:0 @ 000002c6bef56f00] Unknown encoder 'libopenh264'
+hevc_nvenc   exit=-1 [hevc_nvenc @ 000001c88d2f7040] Cannot load nvcuda.dll
+hevc_amf     exit=-1313558101 [AMF @ 000002ac922a9340] DLL amfrt64.dll failed to open
+hevc_qsv     exit=-1313558101 [hevc_qsv @ 000001a745f872c0] Error creating a MFX session: -9.
+av1_nvenc    exit=-1 [av1_nvenc @ 000002602c027040] Cannot load nvcuda.dll
+av1_amf      exit=-1313558101 [AMF @ 00000180e274d840] DLL amfrt64.dll failed to open
+av1_qsv      exit=-1313558101 [av1_qsv @ 000001e4ab1c72c0] Error creating a MFX session: -9.
+libsvtav1    exit=-1129203192 [vost#0:0 @ 0000020344f26480] Unknown encoder 'libsvtav1'
 === Capture (3 s each)
 gfxcapture  exit=-1313558101 -> no file
-    [Parsed_gfxcapture_0 @ 00000204d4280380] Failed to create D3D11VA device.
-    [Parsed_gfxcapture_0 @ 00000204d4280380] Failed to configure output pad on Parsed_gfxcapture_0
-    [in#0 @ 00000204d4214480] Error opening input: Unknown error occurred
+    [Parsed_gfxcapture_0 @ 00000168c87efbc0] Failed to create D3D11VA device.
+    [Parsed_gfxcapture_0 @ 00000168c87efbc0] Failed to configure output pad on Parsed_gfxcapture_0
+    [in#0 @ 00000168c87849c0] Error opening input: Unknown error occurred
 ddagrab     exit=-1313558101 -> no file
-    [Parsed_ddagrab_0 @ 00000207b4b3e700] Failed to create D3D11VA device.
-    [Parsed_ddagrab_0 @ 00000207b4b3e700] Failed to configure output pad on Parsed_ddagrab_0
-    [in#0 @ 00000207b4ad5500] Error opening input: Unknown error occurred
-gdigrab     exit=0 -> 1024,768,86
-    [in#0/gdigrab @ 000001688d604ac0] Stream #0: not enough frames to estimate rate; consider increasing probesize
+    [Parsed_ddagrab_0 @ 00000211d4c406c0] Failed to create D3D11VA device.
+    [Parsed_ddagrab_0 @ 00000211d4c406c0] Failed to configure output pad on Parsed_ddagrab_0
+    [in#0 @ 00000211d4bd4980] Error opening input: Unknown error occurred
+gdigrab     exit=0 -> 1024,768,83
+    [in#0/gdigrab @ 000001b483a84a80] Stream #0: not enough frames to estimate rate; consider increasing probesize
 === WASAPI loopback via dshow list (informational)
-  [in#0 @ 000001d46816afc0] Could not enumerate video devices (or none found).
-  [in#0 @ 000001d46816afc0] Could not enumerate audio only devices (or none found).
+  [in#0 @ 000001a47b62b400] Could not enumerate video devices (or none found).
+  [in#0 @ 000001a47b62b400] Could not enumerate audio only devices (or none found).
   Error opening input file dummy.
