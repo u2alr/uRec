@@ -218,6 +218,7 @@ struct Worker {
     ring: Option<RingRecording>,
     recording: Option<Recording>,
     hotkeys: urec_win::Hotkeys,
+    overlay: urec_win::Overlay,
     lag_since: Option<Instant>,
     lag_warned: bool,
     last_disk_check: Instant,
@@ -249,6 +250,7 @@ impl Worker {
             ring: None,
             recording: None,
             hotkeys,
+            overlay: urec_win::Overlay::new(),
             lag_since: None,
             lag_warned: false,
             last_disk_check: Instant::now() - Duration::from_secs(60),
@@ -400,7 +402,10 @@ impl Worker {
             Command::ToggleReplay => self.set_replay(!self.s.replay.enabled),
             Command::SaveReplay => self.save_replay(),
             Command::ToggleMicMute => self.toggle_mute(),
-            Command::ToggleOverlay => self.update(|s| s.overlay_visible = !s.overlay_visible),
+            Command::ToggleOverlay => {
+                self.update(|s| s.overlay_visible = !s.overlay_visible);
+                self.update_overlay();
+            }
             Command::Apply(new) => self.apply(*new),
             Command::Reprobe => {
                 if !self.ctl.snapshot().busy() {
@@ -979,6 +984,37 @@ impl Worker {
             self.last_disk_check = Instant::now();
             self.check_disk();
         }
+        self.update_overlay();
+    }
+
+    fn update_overlay(&self) {
+        let st = self.ctl.snapshot();
+        let replay_on = st.replay == ReplayState::On;
+        let visible = self.s.appearance.overlay && st.overlay_visible && (self.recording.is_some() || replay_on);
+        let mut o =
+            urec_win::OverlayState { visible, corner: self.s.appearance.overlay_corner.clone(), ..Default::default() };
+        if visible {
+            if let Some(m) = urec_win::monitors().into_iter().find(|m| m.primary) {
+                o.monitor = (m.bounds.x, m.bounds.y, m.bounds.width, m.bounds.height);
+            }
+            if let Some(r) = &self.recording {
+                let s = r.started.elapsed().as_secs();
+                o.dot = (229, 72, 77);
+                o.text = format!("{}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60);
+            } else {
+                o.dot = (217, 164, 65);
+                o.text = "Replay on".into();
+            }
+            let mut extra = Vec::new();
+            if self.s.audio.mic && st.mic_muted {
+                extra.push("Mic off".to_string());
+            }
+            if st.stats.drop_frames > 0 {
+                extra.push(format!("{} dropped", st.stats.drop_frames));
+            }
+            o.extra = extra.join(", ");
+        }
+        self.overlay.set(o);
     }
 
     fn on_crash(&mut self, log_tail: &str) {

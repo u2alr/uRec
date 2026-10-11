@@ -12,6 +12,8 @@ mod display;
 #[cfg(windows)]
 mod hotkeys;
 #[cfg(windows)]
+mod overlay;
+#[cfg(windows)]
 mod sys;
 
 #[cfg(not(windows))]
@@ -23,6 +25,8 @@ pub use audio::{audio_inputs, audio_outputs, AudioFeed};
 pub use display::{foreground_window, monitors, windows};
 #[cfg(windows)]
 pub use hotkeys::Hotkeys;
+#[cfg(windows)]
+pub use overlay::Overlay;
 #[cfg(windows)]
 pub use sys::*;
 
@@ -144,6 +148,35 @@ pub enum SourceState {
     Failed {
         reason: String,
     },
+}
+
+/// What the recording overlay shows.
+#[derive(Clone, Debug, PartialEq)]
+pub struct OverlayState {
+    pub visible: bool,
+    /// Dot colour (r, g, b).
+    pub dot: (u8, u8, u8),
+    /// Main text, e.g. "0:12:34" or "Replay on".
+    pub text: String,
+    /// Small text on the right, e.g. "Mic off" (empty for none).
+    pub extra: String,
+    /// "top_right" | "top_left" | "bottom_right" | "bottom_left"
+    pub corner: String,
+    /// Monitor rectangle to place it on (x, y, w, h).
+    pub monitor: (i32, i32, u32, u32),
+}
+
+impl Default for OverlayState {
+    fn default() -> Self {
+        OverlayState {
+            visible: false,
+            dot: (229, 72, 77),
+            text: String::new(),
+            extra: String::new(),
+            corner: "top_right".into(),
+            monitor: (0, 0, 1920, 1080),
+        }
+    }
 }
 
 #[cfg(test)]

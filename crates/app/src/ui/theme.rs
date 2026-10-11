@@ -92,7 +92,7 @@ pub fn semibold(size: f32) -> FontId {
 
 pub fn apply(ctx: &egui::Context, p: &Palette, scale: f32) {
     ctx.set_pixels_per_point(ctx.native_pixels_per_point().unwrap_or(1.0) * scale);
-    let mut style = (*ctx.style()).clone();
+    let mut style = (*ctx.global_style()).clone();
     style.text_styles = [
         (TextStyle::Small, FontId::proportional(12.0)),
         (TextStyle::Body, FontId::proportional(14.0)),
@@ -158,7 +158,8 @@ pub fn apply(ctx: &egui::Context, p: &Palette, scale: f32) {
     v.widgets.noninteractive.bg_stroke = Stroke::new(1.0, p.hairline);
     style.visuals = v;
     style.animation_time = 0.12;
-    ctx.set_style(style);
+    // Same style for egui's dark and light slots: the app picks the palette itself.
+    ctx.all_styles_mut(|s| *s = style.clone());
 }
 
 // ------------------------------------------------------------------ widgets

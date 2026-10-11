@@ -1,6 +1,6 @@
 //! Home: the record control, what will be recorded, Instant Replay, audio and recent clips.
 
-use super::theme::{self, Palette};
+use super::theme;
 use super::{App, Page, Section};
 use crate::controller::{format_secs, Command, ReplayState, Status};
 use crate::library::format_duration;

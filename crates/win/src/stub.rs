@@ -102,3 +102,13 @@ pub fn claim_single_instance(_name: &str) -> bool {
 pub fn pick_folder(_title: &str, _start: Option<&Path>) -> Option<std::path::PathBuf> {
     None
 }
+
+#[derive(Default)]
+pub struct Overlay;
+
+impl Overlay {
+    pub fn new() -> Self {
+        Overlay
+    }
+    pub fn set(&self, _st: crate::OverlayState) {}
+}

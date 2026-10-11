@@ -17,7 +17,6 @@ use theme::Palette;
 use urec_win::{AudioDevice, MonitorInfo, WindowInfo};
 
 pub const WINDOW_TITLE: &str = "uRec";
-pub const OVERLAY_TITLE: &str = "uRec overlay";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Page {
@@ -88,7 +87,6 @@ pub struct App {
     applied_theme: Option<(bool, u32)>,
     pub startup_message: Option<String>,
     exit_requested: bool,
-    overlay_excluded: bool,
 }
 
 impl App {
@@ -129,7 +127,6 @@ impl App {
             applied_theme: None,
             startup_message,
             exit_requested: false,
-            overlay_excluded: false,
         };
         app.refresh_devices(true);
         app
@@ -234,7 +231,7 @@ impl App {
         }
     }
 
-    fn tally(&self, ctx: &egui::Context, st: &Status) {
+    fn tally(&self, ui: &mut egui::Ui, st: &Status) {
         let color = if st.recording.is_some() || st.finishing {
             Some(self.p.rec)
         } else if st.replay == ReplayState::On {
@@ -242,21 +239,23 @@ impl App {
         } else {
             None
         };
-        egui::TopBottomPanel::top("tally")
-            .exact_height(3.0)
+        egui::Panel::top("tally")
+            .exact_size(3.0)
+            .resizable(false)
             .frame(egui::Frame::new().fill(color.unwrap_or(self.p.bg)))
             .show_separator_line(false)
-            .show(ctx, |_| {});
+            .show(ui, |_| {});
     }
 
-    fn nav(&mut self, ctx: &egui::Context, st: &Status) {
+    fn nav(&mut self, ui: &mut egui::Ui, st: &Status) {
         let p = self.p;
-        egui::SidePanel::left("nav")
-            .exact_width(184.0)
+        let ctx = ui.ctx().clone();
+        egui::Panel::left("nav")
+            .exact_size(184.0)
             .resizable(false)
             .show_separator_line(false)
             .frame(egui::Frame::new().fill(p.bg).inner_margin(egui::Margin { left: 16, right: 8, top: 18, bottom: 16 }))
-            .show(ctx, |ui| {
+            .show(ui, |ui| {
                 ui.label(RichText::new("uRec").font(theme::semibold(18.0)).color(p.text));
                 ui.add_space(22.0);
                 for (page, label) in [(Page::Home, "Home"), (Page::Library, "Library"), (Page::Settings, "Settings")] {
@@ -372,107 +371,19 @@ impl App {
             ctx.request_repaint_after(Duration::from_secs(1));
         }
     }
-
-    /// Small always-on-top status window, excluded from captures.
-    fn overlay(&mut self, ctx: &egui::Context, st: &Status) {
-        let show =
-            self.s.appearance.overlay && st.overlay_visible && (st.recording.is_some() || st.replay == ReplayState::On);
-        if !show {
-            self.overlay_excluded = false;
-            return;
-        }
-        let size = Vec2::new(176.0, 34.0);
-        let screen = self.monitors.iter().find(|m| m.primary).map(|m| m.bounds);
-        let ppp = ctx.pixels_per_point();
-        let pos = screen
-            .map(|b| {
-                let (w, h) = (b.width as f32 / ppp, b.height as f32 / ppp);
-                let (x0, y0) = (b.x as f32 / ppp, b.y as f32 / ppp);
-                match self.s.appearance.overlay_corner.as_str() {
-                    "top_left" => egui::pos2(x0 + 16.0, y0 + 16.0),
-                    "bottom_left" => egui::pos2(x0 + 16.0, y0 + h - size.y - 56.0),
-                    "bottom_right" => egui::pos2(x0 + w - size.x - 16.0, y0 + h - size.y - 56.0),
-                    _ => egui::pos2(x0 + w - size.x - 16.0, y0 + 16.0),
-                }
-            })
-            .unwrap_or(egui::pos2(16.0, 16.0));
-        let p = self.p;
-        let st2 = st.clone();
-        ctx.show_viewport_immediate(
-            egui::ViewportId::from_hash_of("overlay"),
-            egui::ViewportBuilder::default()
-                .with_title(OVERLAY_TITLE)
-                .with_inner_size(size)
-                .with_position(pos)
-                .with_decorations(false)
-                .with_resizable(false)
-                .with_transparent(true)
-                .with_taskbar(false)
-                .with_window_level(egui::WindowLevel::AlwaysOnTop)
-                .with_mouse_passthrough(true)
-                .with_active(false),
-            |ctx, _class| {
-                egui::CentralPanel::default().frame(egui::Frame::new().fill(Color32::TRANSPARENT)).show(ctx, |ui| {
-                    let rect = ui.max_rect();
-                    ui.painter().rect_filled(
-                        rect,
-                        CornerRadius::same(8),
-                        Color32::from_rgba_unmultiplied(20, 20, 22, 215),
-                    );
-                    let (dot, text) = if let Some(rec) = &st2.recording {
-                        let s = rec.started.elapsed().as_secs();
-                        (p.rec, format!("{}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60))
-                    } else {
-                        (p.replay, "Replay on".to_string())
-                    };
-                    let c = rect.left_center() + Vec2::new(14.0, 0.0);
-                    ui.painter().circle_filled(c, 5.0, dot);
-                    ui.painter().text(
-                        c + Vec2::new(12.0, 0.0),
-                        egui::Align2::LEFT_CENTER,
-                        text,
-                        theme::semibold(14.0),
-                        Color32::from_rgb(0xEC, 0xEA, 0xE6),
-                    );
-                    let mut right = Vec::new();
-                    if st2.mic_muted {
-                        right.push("Mic off".to_string());
-                    }
-                    if st2.lagging || st2.stats.drop_frames > 0 {
-                        right.push(format!("{} dropped", st2.stats.drop_frames));
-                    }
-                    if !right.is_empty() {
-                        ui.painter().text(
-                            rect.right_center() - Vec2::new(10.0, 0.0),
-                            egui::Align2::RIGHT_CENTER,
-                            right.join(", "),
-                            egui::FontId::proportional(11.5),
-                            Color32::from_rgb(0xD9, 0xA4, 0x41),
-                        );
-                    }
-                });
-            },
-        );
-        if !self.overlay_excluded {
-            if let Some(h) = urec_win::find_window(OVERLAY_TITLE) {
-                // Keep the overlay out of the recording (Windows 10 2004+).
-                urec_win::exclude_from_capture(h);
-                self.overlay_excluded = true;
-            }
-        }
-    }
 }
 
 impl eframe::App for App {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-        self.apply_theme(ctx);
+    fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        let ctx = ui.ctx().clone();
+        self.apply_theme(&ctx);
         let st = self.ctl.snapshot();
-        self.handle_close(ctx, &st);
+        self.handle_close(&ctx, &st);
         if let Some(msg) = self.startup_message.take() {
             self.push_notice(Level::Warning, msg);
         }
-        self.tally(ctx, &st);
-        self.nav(ctx, &st);
+        self.tally(ui, &st);
+        self.nav(ui, &st);
         let p = self.p;
         egui::CentralPanel::default()
             .frame(egui::Frame::new().fill(p.bg).inner_margin(egui::Margin {
@@ -481,20 +392,19 @@ impl eframe::App for App {
                 top: 22,
                 bottom: 18,
             }))
-            .show(ctx, |ui| match self.page {
+            .show(ui, |ui| match self.page {
                 Page::Home => home::show(self, ui, &st),
                 Page::Library => library_page::show(self, ui, &st),
                 Page::Settings => settings_page::show(self, ui, &st),
             });
-        self.notices(ctx, &st);
-        self.overlay(ctx, &st);
+        self.notices(&ctx, &st);
 
         // Idle: no repaints at all. Active: refresh the timer and meters.
+        let every = Duration::from_millis(if self.s.general.performance_mode { 1000 } else { 250 });
         if st.recording.is_some() || st.finishing || st.starting || st.probing || !st.ready {
-            let every = if self.s.general.performance_mode { 1000 } else { 250 };
-            ctx.request_repaint_after(Duration::from_millis(every));
+            ctx.request_repaint_after(every);
         } else if st.replay == ReplayState::On && self.page == Page::Home {
-            ctx.request_repaint_after(Duration::from_millis(if self.s.general.performance_mode { 1000 } else { 250 }));
+            ctx.request_repaint_after(every);
         }
         if self.exit_requested {
             ctx.send_viewport_cmd(egui::ViewportCommand::Close);
