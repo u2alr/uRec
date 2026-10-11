@@ -1,357 +1,27 @@
-commit 362f518788d9260093a6f2993e785572783c8994 run 38134629864
+commit 8c0b14df876bed42660986874ce82051dad904c2 run 38135289124
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
     Updating crates.io index
-     Locking 329 packages to latest compatible versions
-      Adding accesskit v0.24.1
-      Adding adler2 v2.0.1
-      Adding ahash v0.8.12
-      Adding allocator-api2 v0.2.21
-      Adding android-activity v0.6.1
-      Adding android-properties v0.2.2
-      Adding android_system_properties v0.1.6
-      Adding arboard v3.6.1
-      Adding arrayvec v0.7.8
-      Adding ash v0.38.0+1.3.281
-      Adding atomic-waker v1.1.2
-      Adding autocfg v1.5.1
-      Adding bit-set v0.10.0
-      Adding bit-vec v0.9.1
-      Adding bitflags v1.3.2
-      Adding bitflags v2.13.2
-      Adding block2 v0.5.1
-      Adding block2 v0.6.2
-      Adding bumpalo v3.20.3
-      Adding bytemuck v1.25.2
-      Adding bytemuck_derive v1.12.1
-      Adding byteorder-lite v0.1.0
-      Adding bytes v1.12.1
-      Adding calloop v0.13.0
-      Adding calloop v0.14.5
-      Adding calloop-wayland-source v0.4.1
-      Adding cc v1.7.0
-      Adding cfg-if v1.0.5
-      Adding cfg_aliases v0.2.2
-      Adding cgl v0.3.2
-      Adding clipboard-win v5.4.1
-      Adding codespan-reporting v0.13.1
-      Adding color v0.3.3
-      Adding combine v4.6.8
-      Adding concurrent-queue v2.5.0
-      Adding core-foundation v0.9.4
-      Adding core-foundation-sys v0.8.7
-      Adding core-graphics v0.23.2
-      Adding core-graphics-types v0.1.3
-      Adding crc32fast v1.5.2
-      Adding crossbeam-channel v0.5.17
-      Adding crossbeam-utils v0.8.23
-      Adding crunchy v0.2.4
-      Adding cursor-icon v1.2.0
-      Adding dispatch v0.2.0
-      Adding dispatch2 v0.3.1
-      Adding dlib v0.5.3
-      Adding document-features v0.2.12
-      Adding downcast-rs v1.2.1
-      Adding dpi v0.1.2
-      Adding ecolor v0.36.2
-      Adding eframe v0.36.2
-      Adding egui v0.36.2
-      Adding egui-wgpu v0.36.2
-      Adding egui-winit v0.36.2
-      Adding egui_glow v0.36.2
-      Adding either v1.19.0
-      Adding emath v0.36.2
-      Adding embed-resource v3.0.12
-      Adding epaint v0.36.2
-      Adding epaint_default_fonts v0.36.2
-      Adding equivalent v1.0.2
-      Adding errno v0.3.14
-      Adding error-code v3.4.0
-      Adding euclid v0.22.14
-      Adding fax v0.2.7
-      Adding fdeflate v0.3.7
-      Adding fearless_simd v0.4.1
-      Adding find-msvc-tools v0.1.14
-      Adding flate2 v1.1.10
-      Adding foldhash v0.2.0
-      Adding font-types v0.12.6
-      Adding foreign-types v0.5.0
-      Adding foreign-types-macros v0.2.4
-      Adding foreign-types-shared v0.3.1
-      Adding futures-core v0.3.34
-      Adding futures-task v0.3.34
-      Adding futures-util v0.3.34
-      Adding gethostname v1.1.0
-      Adding getrandom v0.4.3
-      Adding gl_generator v0.14.0
-      Adding glifo v0.2.0
-      Adding glow v0.17.0
-      Adding glutin v0.32.3
-      Adding glutin-winit v0.5.0
-      Adding glutin_egl_sys v0.7.1
-      Adding glutin_wgl_sys v0.6.1
-      Adding gpu-allocator v0.28.0
-      Adding guillotiere v0.7.0
-      Adding half v2.7.1
-      Adding harfrust v0.12.0
-      Adding hashbrown v0.16.1
-      Adding hashbrown v0.17.1
-      Adding hermit-abi v0.5.3
-      Adding image v0.25.10
-      Adding indexmap v2.14.2
-      Adding itertools v0.15.0
-      Adding itoa v1.0.18
-      Adding jni v0.22.4
-      Adding jni-macros v0.22.4
-      Adding jni-sys v0.3.1
-      Adding jni-sys v0.4.1
-      Adding jni-sys-macros v0.4.1
-      Adding jobserver v0.1.35
-      Adding js-sys v0.3.106
-      Adding keyboard-types v0.8.3
-      Adding khronos-egl v6.0.0
-      Adding khronos_api v3.1.0
-      Adding kurbo v0.13.1
-      Adding libc v0.2.190
-      Adding libloading v0.8.9
-      Adding libm v0.2.16
-      Adding libredox v0.1.25
-      Adding linebender_resource_handle v0.1.1
-      Adding linux-raw-sys v0.4.15
-      Adding linux-raw-sys v0.12.1
-      Adding litrs v1.0.0
-      Adding lock_api v0.4.14
-      Adding log v0.4.34
-      Adding memchr v2.8.3
-      Adding memmap2 v0.9.11
-      Adding miniz_oxide v0.8.9
-      Adding miniz_oxide v0.9.1
-      Adding moxcms v0.8.1
-      Adding muda v0.21.2
-      Adding naga v30.0.1
-      Adding naga-types v30.0.1
-      Adding ndk v0.9.0
-      Adding ndk-context v0.1.1
-      Adding ndk-sys v0.6.0+11769913
-      Adding nohash-hasher v0.2.0
-      Adding num-traits v0.2.19
-      Adding num_enum v0.7.6
-      Adding num_enum_derive v0.7.6
-      Adding objc-sys v0.3.5
-      Adding objc2 v0.5.3
-      Adding objc2 v0.6.5
-      Adding objc2-app-kit v0.2.2
-      Adding objc2-app-kit v0.3.2
-      Adding objc2-cloud-kit v0.2.2
-      Adding objc2-contacts v0.2.2
-      Adding objc2-core-data v0.2.2
-      Adding objc2-core-foundation v0.3.2
-      Adding objc2-core-graphics v0.3.2
-      Adding objc2-core-image v0.2.2
-      Adding objc2-core-location v0.2.2
-      Adding objc2-encode v4.1.0
-      Adding objc2-foundation v0.2.2
-      Adding objc2-foundation v0.3.2
-      Adding objc2-io-surface v0.3.2
-      Adding objc2-link-presentation v0.2.2
-      Adding objc2-metal v0.2.2
-      Adding objc2-metal v0.3.2
-      Adding objc2-quartz-core v0.2.2
-      Adding objc2-quartz-core v0.3.2
-      Adding objc2-symbols v0.2.2
-      Adding objc2-ui-kit v0.2.2
-      Adding objc2-ui-kit v0.3.2
-      Adding objc2-uniform-type-identifiers v0.2.2
-      Adding objc2-user-notifications v0.2.2
-      Adding once_cell v1.21.4
-      Adding orbclient v0.3.55
-      Adding ordered-float v5.5.0
-      Adding parking_lot v0.12.5
-      Adding parking_lot_core v0.9.12
-      Adding peniko v0.6.1
-      Adding percent-encoding v2.3.2
-      Adding pin-project v1.1.13
-      Adding pin-project-internal v1.1.13
-      Adding pin-project-lite v0.2.17
-      Adding pkg-config v0.3.34
-      Adding plain v0.2.3
-      Adding png v0.18.1
-      Adding polling v3.11.0
-      Adding pollster v1.0.1
-      Adding polycool v0.4.0
-      Adding portable-atomic v1.15.0
-      Adding portable-atomic-util v0.2.8
-      Adding presser v0.3.1
-      Adding proc-macro-crate v3.5.0
-      Adding proc-macro2 v1.0.107
-      Adding profiling v1.0.18
-      Adding pxfm v0.1.30
-      Adding quick-error v2.0.1
-      Adding quick-xml v0.41.0
-      Adding quote v1.0.47
-      Adding r-efi v6.0.0
-      Adding range-alloc v0.1.5
-      Adding raw-window-handle v0.6.2
-      Adding raw-window-metal v1.1.0
-      Adding read-fonts v0.41.0
-      Adding redox_syscall v0.4.1
-      Adding redox_syscall v0.5.18
-      Adding redox_syscall v0.9.4
-      Adding renderdoc-sys v1.1.0
-      Adding rustc-hash v1.1.0
-      Adding rustc-hash v2.1.3
-      Adding rustc_version v0.4.1
-      Adding rustix v0.38.44
-      Adding rustix v1.1.5
-      Adding rustversion v1.0.23
-      Adding same-file v1.0.6
-      Adding scoped-tls v1.0.1
-      Adding scopeguard v1.2.0
-      Adding self_cell v1.3.0
-      Adding semver v1.0.28
-      Adding serde v1.0.229
-      Adding serde_core v1.0.229
-      Adding serde_derive v1.0.229
-      Adding serde_json v1.0.152
-      Adding serde_spanned v1.1.2
-      Adding shlex v2.0.1
-      Adding simd-adler32 v0.3.10
-      Adding simd_cesu8 v1.2.0
-      Adding simdutf8 v0.1.5
-      Adding skrifa v0.44.0
-      Adding slab v0.4.12
-      Adding slotmap v1.1.1
-      Adding smallvec v1.16.3
-      Adding smithay-client-toolkit v0.20.0
-      Adding smithay-clipboard v0.7.3
-      Adding smol_str v0.2.2
-      Adding spirv v0.4.0+sdk-1.4.341.0
-      Adding static_assertions v1.1.0
-      Adding syn v2.0.119
-      Adding syn v3.0.7
-      Adding termcolor v1.4.1
-      Adding thiserror v1.0.69
-      Adding thiserror v2.0.21
-      Adding thiserror-impl v1.0.69
-      Adding thiserror-impl v2.0.21
-      Adding tiff v0.11.3
-      Adding tokio v1.53.2
-      Adding toml v1.1.8+spec-1.1.0
-      Adding toml_datetime v1.1.2+spec-1.1.0
-      Adding toml_edit v0.25.17+spec-1.1.0
-      Adding toml_parser v1.1.5+spec-1.1.0
-      Adding toml_writer v1.1.3+spec-1.1.0
-      Adding tracing v0.1.44
-      Adding tracing-core v0.1.36
-      Adding tray-icon v0.26.1
-      Adding type-map v0.5.1
-      Adding unicode-general-category v1.1.0
-      Adding unicode-ident v1.0.26
-      Adding unicode-segmentation v1.13.3
-      Adding unicode-width v0.2.2
-      Adding uuid v1.28.0
-      Adding vello_common v0.1.0
-      Adding vello_cpu v0.1.0
-      Adding version_check v0.9.5
-      Adding vswhom v0.1.0
-      Adding vswhom-sys v0.1.3
-      Adding walkdir v2.5.0
-      Adding wasm-bindgen v0.2.129
-      Adding wasm-bindgen-futures v0.4.79
-      Adding wasm-bindgen-macro v0.2.129
-      Adding wasm-bindgen-macro-support v0.2.129
-      Adding wasm-bindgen-shared v0.2.129
-      Adding wayland-backend v0.3.17
-      Adding wayland-client v0.31.15
-      Adding wayland-csd-frame v0.3.0
-      Adding wayland-cursor v0.31.14
-      Adding wayland-protocols v0.32.13
-      Adding wayland-protocols-experimental v20250721.0.1
-      Adding wayland-protocols-misc v0.3.12
-      Adding wayland-protocols-wlr v0.3.12
-      Adding wayland-scanner v0.31.11
-      Adding wayland-sys v0.31.11
-      Adding web-sys v0.3.106
-      Adding web-time v1.1.0
-      Adding weezl v0.1.12
-      Adding wgpu v30.0.1
-      Adding wgpu-core v30.0.1
-      Adding wgpu-core-deps-apple v30.0.1
-      Adding wgpu-core-deps-emscripten v30.0.1
-      Adding wgpu-core-deps-wasm v30.0.1
-      Adding wgpu-core-deps-windows-linux-android v30.0.1
-      Adding wgpu-hal v30.0.1
-      Adding wgpu-naga-bridge v30.0.1
-      Adding wgpu-types v30.0.1
-      Adding winapi-util v0.1.11
-      Adding windows v0.62.2
-      Adding windows-collections v0.3.2
-      Adding windows-core v0.62.2
-      Adding windows-future v0.3.2
-      Adding windows-implement v0.60.2
-      Adding windows-interface v0.59.3
-      Adding windows-link v0.2.1
-      Adding windows-numerics v0.3.1
-      Adding windows-result v0.4.1
-      Adding windows-strings v0.5.1
-      Adding windows-sys v0.52.0
-      Adding windows-sys v0.59.0
-      Adding windows-sys v0.60.2
-      Adding windows-sys v0.61.2
-      Adding windows-targets v0.52.6
-      Adding windows-targets v0.53.5
-      Adding windows-threading v0.2.1
-      Adding windows_aarch64_gnullvm v0.52.6
-      Adding windows_aarch64_gnullvm v0.53.1
-      Adding windows_aarch64_msvc v0.52.6
-      Adding windows_aarch64_msvc v0.53.1
-      Adding windows_i686_gnu v0.52.6
-      Adding windows_i686_gnu v0.53.1
-      Adding windows_i686_gnullvm v0.52.6
-      Adding windows_i686_gnullvm v0.53.1
-      Adding windows_i686_msvc v0.52.6
-      Adding windows_i686_msvc v0.53.1
-      Adding windows_x86_64_gnu v0.52.6
-      Adding windows_x86_64_gnu v0.53.1
-      Adding windows_x86_64_gnullvm v0.52.6
-      Adding windows_x86_64_gnullvm v0.53.1
-      Adding windows_x86_64_msvc v0.52.6
-      Adding windows_x86_64_msvc v0.53.1
-      Adding winit v0.30.13
-      Adding winnow v1.0.4
-      Adding winreg v0.56.0
-      Adding x11rb v0.13.2
-      Adding x11rb-protocol v0.13.2
-      Adding xcursor v0.3.11
-      Adding xkbcommon-dl v0.4.2
-      Adding xkeysym v0.2.1
-      Adding xml-rs v0.8.29
-      Adding zerocopy v0.8.62
-      Adding zerocopy-derive v0.8.62
-      Adding zlib-rs v0.6.8
-      Adding zmij v1.0.23
-      Adding zune-core v0.5.3
-      Adding zune-jpeg v0.5.15
     Checking urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
     Checking urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
     Checking urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 42.32s
+    Finished `release` profile [optimized] target(s) in 23.88s
 ## test
    Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
    Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 19.12s
+    Finished `release` profile [optimized] target(s) in 31.66s
      Running unittests src\main.rs (target\release\deps\uRec-e1b38ff3f8d3a978.exe)
 
 running 6 tests
 test library::tests::durations ... ok
 test settings::tests::partial_and_out_of_range_values ... ok
-test settings::tests::video_conversion_roundtrip ... ok
 test settings::tests::corrupt_file_is_quarantined ... ok
 test settings::tests::roundtrip_and_defaults ... ok
+test settings::tests::video_conversion_roundtrip ... ok
 test library::tests::scans_nested_and_skips_partials ... ok
 
 test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
@@ -365,10 +35,10 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
      Running unittests src\lib.rs (target\release\deps\urec_engine-7b56bc09cc9d8a35.exe)
 
 running 21 tests
-test encoder::tests::names_and_candidates ... ok
-test hotkey::tests::finds_conflicts ... ok
 test encoder::tests::failure_messages ... ok
+test encoder::tests::names_and_candidates ... ok
 test encoder::tests::args_have_rate_and_keyframes ... ok
+test hotkey::tests::finds_conflicts ... ok
 test hotkey::tests::roundtrip ... ok
 test naming::tests::sanitizes ... ok
 test naming::tests::stamps ... ok
@@ -376,9 +46,9 @@ test pipeline::tests::audio_and_replay_output ... ok
 test pipeline::tests::gpu_scaling_stays_on_gpu ... ok
 test pipeline::tests::region_crops ... ok
 test pipeline::tests::system_path_downloads_once ... ok
+test naming::tests::unique_names ... ok
 test pipeline::tests::zero_copy_native_has_no_filters ... ok
 test process::tests::parses_progress_blocks ... ok
-test naming::tests::unique_names ... ok
 test replay::tests::parses_and_selects ... ok
 test replay::tests::ring_math ... ok
 test video::tests::bitrate_scales ... ok
@@ -387,7 +57,7 @@ test video::tests::output_size_never_upscales ... ok
 test video::tests::presets_respect_machine ... ok
 test video::tests::validate_catches_limits ... ok
 
-test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
 
      Running unittests src\lib.rs (target\release\deps\urec_win-70e46994bfbc3a84.exe)
 
@@ -413,26 +83,26 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
    Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
-    Finished `release` profile [optimized] target(s) in 49.42s
+    Finished `release` profile [optimized] target(s) in 1m 26s
 Screen: 1024x768
 === Probe
   ffmpeg=ffmpeg version 9.0.2-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
-  encoder=h264_nvenc   ok=false ms=41    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=h264_amf     ok=false ms=41    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=h264_qsv     ok=false ms=62    arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=h264_mf      ok=false ms=102   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
-  encoder=libx264      ok=true ms=41    arg_error=false reason=
-  encoder=h264_mf      ok=true ms=123   arg_error=false reason=
+  encoder=h264_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
+  encoder=h264_amf     ok=false ms=43    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=h264_qsv     ok=false ms=103   arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=h264_mf      ok=false ms=104   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
+  encoder=libx264      ok=true ms=63    arg_error=false reason=
+  encoder=h264_mf      ok=true ms=144   arg_error=false reason=
   encoder=hevc_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=hevc_amf     ok=false ms=41    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=hevc_qsv     ok=false ms=62    arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=hevc_mf      ok=false ms=41    arg_error=false reason=Windows has no hardware encoder for H.265 (HEVC) on this PC.
-  encoder=libx265      ok=true ms=62    arg_error=false reason=
-  encoder=hevc_mf      ok=false ms=42    arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
+  encoder=hevc_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=hevc_qsv     ok=false ms=104   arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=hevc_mf      ok=false ms=63    arg_error=false reason=Windows has no hardware encoder for H.265 (HEVC) on this PC.
+  encoder=libx265      ok=true ms=104   arg_error=false reason=
+  encoder=hevc_mf      ok=false ms=62    arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
   encoder=av1_nvenc    ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=av1_amf      ok=false ms=41    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=av1_qsv      ok=false ms=62    arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=av1_mf       ok=false ms=41    arg_error=false reason=Windows has no hardware encoder for AV1 on this PC.
+  encoder=av1_amf      ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=av1_qsv      ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=av1_mf       ok=false ms=63    arg_error=false reason=Windows has no hardware encoder for AV1 on this PC.
   best_h264=CPU (x264/x265) (H.264 (AVC))
   best_hevc=CPU (x264/x265) (H.265 (HEVC))
   best_av1=none
@@ -442,52 +112,54 @@ T01 PASS Encoder probe: every generated argument set is accepted by FFmpeg :: be
 === Invalid settings are rejected
 T09 PASS Oversized H.264 resolution is refused with a clear message :: error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
 === Instant replay
-T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1764ms ring_files=9/9 
+T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1773ms ring_files=9/9 
 === Repeated start/stop
-T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.13s, 3.1s, 3.17s, 3.63s, 3.13s leftover=0
+T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.13s, 3.1s, 3.17s, 3.13s, 3.13s leftover=0
 === Devices
   windows_build=Some(26100) wgc=true
   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
-  window: 'C:\ProgramData\GitHub\HostedComputeAgent\hosted-compute-agent' exe=WindowsTerminal app=WindowsTerminal Rect { x: 51, y: 52, width: 1030, height: 628 }
-  window: 'System Properties' exe=SystemPropertiesPerformance app=SystemPropertiesPerformance Rect { x: 318, y: 319, width: 406, height: 185 }
+  window: 'C:\ProgramData\GitHub\HostedComputeAgent\hosted-compute-agent' exe=WindowsTerminal app=WindowsTerminal Rect { x: 25, y: 26, width: 1030, height: 628 }
   audio_out: Speakers (VB-Audio Virtual Cable) default=true
   audio_in: CABLE Output (VB-Audio Virtual Cable) default=true
-  disk_free=233 GB of 236 GB
+  disk_free=155 GB of 161 GB
 T12 PASS Monitor enumeration finds the primary screen at its real size :: monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
   audio outputs=1 inputs=1
 === Audio
 T13 PASS Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone :: state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.3 dB dur=7.33s
 T14 PASS Separate tracks: one per working source (mic present: False) :: tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
-T15 PASS Microphone: recorded only if it really initialized; recording works either way :: mic=Failed { reason: "Access is denied." } tracks=0
+T15 PASS Microphone: recorded only if it really initialized; recording works either way :: mic=Failed { reason: "The device didn't respond." } tracks=0
+=== Audio/video sync
+T17 FAIL Audio/video sync: flash + beep every 2 s, audio offset within 100 ms :: pairs=0 offsets_ms=[] median= ms (positive = audio later)
 === Window capture
-T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=126 output=D:\a\_temp\urec-it\T16.mp4
+T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=101 output=D:\a\_temp\urec-it\T16.mp4
 === Summary
 
 Id  Test                                                                              Result Detail
 --  ----                                                                              ------ ------
 T01 Encoder probe: every generated argument set is accepted by FFmpeg                 PASS   best h264: 
-T02 GDI capture, x264, 720p30                                                         PASS   libx264 via gdi/System -> 960x720@30 6.2s 1.52MB audio=0 | 151 drop=0 dup=1 speed=0.88 startup=1158ms stop=177ms
-T03 GDI capture, Media Foundation (CPU), native 30fps, audio                          PASS   h264_mf via gdi/System -> 1024x768@30 6.04s 0.91MB audio=1 | 152 drop=2 dup=3 speed=1.03 startup=655ms stop=152ms
-T04 GDI capture, x264, native 60fps                                                   PASS   libx264 via gdi/System -> 1024x768@60 5.68s 1.7MB audio=0 | 291 drop=4 dup=83 speed=0.93 startup=605ms stop=203ms
-T05 Automatic capture fallback (WGC -> DDA -> GDI)                                    PASS   libx264 via gdi/System -> 1024x768@30 5.17s 1.22MB audio=0 | 120 drop=2 dup=4 speed=0.85 startup=1314ms stop=151ms
-T06 MKV container                                                                     PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.22MB audio=0 | 120 drop=4 dup=6 speed=0.85 startup=1160ms stop=153ms
-T07 HEVC via x265, 720p30                                                             PASS   libx265 via gdi/System -> 960x720@30 5.23s 0.82MB audio=0 | 117 drop=0 dup=1 speed=0.83 startup=1171ms stop=231ms
-T08 Custom 800x600 output (letterboxed)                                               PASS   libx264 via gdi/System -> 800x600@24 5.21s 0.89MB audio=0 | 92 drop=0 dup=0 speed=0.81 startup=1158ms stop=202ms
+T02 GDI capture, x264, 720p30                                                         PASS   libx264 via gdi/System -> 960x720@30 6.2s 1.52MB audio=0 | 151 drop=0 dup=0 speed=0.88 startup=1161ms stop=203ms
+T03 GDI capture, Media Foundation (CPU), native 30fps, audio                          PASS   h264_mf via gdi/System -> 1024x768@30 6.04s 0.9MB audio=1 | 152 drop=5 dup=6 speed=1.03 startup=657ms stop=202ms
+T04 GDI capture, x264, native 60fps                                                   PASS   libx264 via gdi/System -> 1024x768@60 5.67s 1.72MB audio=0 | 289 drop=3 dup=109 speed=0.93 startup=607ms stop=208ms
+T05 Automatic capture fallback (WGC -> DDA -> GDI)                                    PASS   libx264 via gdi/System -> 1024x768@30 5.23s 1.22MB audio=0 | 122 drop=1 dup=2 speed=0.86 startup=1367ms stop=177ms
+T06 MKV container                                                                     PASS   libx264 via gdi/System -> 1024x768@30 5.17s 1.21MB audio=0 | 120 drop=1 dup=2 speed=0.85 startup=1160ms stop=168ms
+T07 HEVC via x265, 720p30                                                             PASS   libx265 via gdi/System -> 960x720@30 5.17s 0.86MB audio=0 | 116 drop=0 dup=0 speed=0.82 startup=1160ms stop=232ms
+T08 Custom 800x600 output (letterboxed)                                               PASS   libx264 via gdi/System -> 800x600@24 5.17s 0.89MB audio=0 | 92 drop=0 dup=0 speed=0.81 startup=1211ms stop=127ms
 T09 Oversized H.264 resolution is refused with a clear message                        PASS   error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
-T10 Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) PASS   clip=10.28s audio=1 save=1764ms ring_files=9/9 
-T11 5 start/stop cycles, no leftover ffmpeg processes                                 PASS   durations 3.13s, 3.1s, 3.17s, 3.63s, 3.13s leftover=0
+T10 Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) PASS   clip=10.28s audio=1 save=1773ms ring_files=9/9 
+T11 5 start/stop cycles, no leftover ffmpeg processes                                 PASS   durations 3.13s, 3.1s, 3.17s, 3.13s, 3.13s leftover=0
 T12 Monitor enumeration finds the primary screen at its real size                     PASS   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0)
                                                                                              dda=true
 T13 Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone                PASS   state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.3 dB
                                                                                              dur=7.33s
 T14 Separate tracks: one per working source (mic present: False)                      PASS   tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
-T15 Microphone: recorded only if it really initialized; recording works either way    PASS   mic=Failed { reason: "Access is denied." } tracks=0
-T16 Window capture (Notepad) records just that window                                 PASS   754x512 via gdi stop_ms=126 output=D:\a\_temp\urec-it\T16.mp4
+T15 Microphone: recorded only if it really initialized; recording works either way    PASS   mic=Failed { reason: "The device didn't respond." } tracks=0
+T17 Audio/video sync: flash + beep every 2 s, audio offset within 100 ms              FAIL   pairs=0 offsets_ms=[] median= ms (positive = audio later)
+T16 Window capture (Notepad) records just that window                                 PASS   754x512 via gdi stop_ms=101 output=D:\a\_temp\urec-it\T16.mp4
 
 
-passed=16 failed=0
+passed=16 failed=1
 sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 11.16.21.mp4 size=617231
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 11.28.01.mp4 size=622484
 light home alive=True
 light library alive=True
 light settings:general alive=True
