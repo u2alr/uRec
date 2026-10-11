@@ -98,6 +98,11 @@ pub fn ease_in_out(t: f32) -> f32 {
     }
 }
 
+/// Pill size during the collapse (progress 0..1): holds while the message fades, then shrinks.
+fn collapse_expand(p: f32) -> f32 {
+    1.0 - ease_in_out(((p - 0.35) / 0.65).max(0.0))
+}
+
 fn progress(since: Instant, now: Instant, ms: u64) -> f32 {
     if ms == 0 {
         return 1.0;
@@ -162,7 +167,7 @@ impl Indicator {
             Phase::Idle => self.open(kind, now, 0.0),
             Phase::Collapsing { start } => {
                 // Grow back from wherever the collapse got to.
-                let current = 1.0 - ease_in_out(progress(start, now, self.ms(COLLAPSE_MS)));
+                let current = collapse_expand(progress(start, now, self.ms(COLLAPSE_MS)));
                 if kind != self.kind {
                     self.morph = Some((self.kind, now));
                 }
@@ -254,8 +259,9 @@ impl Indicator {
             Phase::Holding { .. } => Look::Pill(frame(1.0, reveal)),
             Phase::Collapsing { start } => {
                 let p = progress(start, now, self.ms(COLLAPSE_MS));
-                // Message fades out during the first half, then the pill settles into the dot.
-                Look::Pill(frame(1.0 - ease_in_out(p), reveal.min(1.0 - (p * 2.0).min(1.0))))
+                // The message fades out first (so it's never clipped), then the pill shrinks.
+                let content = reveal.min((1.0 - p / 0.4).max(0.0));
+                Look::Pill(frame(collapse_expand(p), content))
             }
         }
     }
@@ -372,12 +378,14 @@ pub fn render(
     let (l0, l1) = (left + r, right - r);
     let accent = frame.kind.accent();
     let fill_dark = (24u8, 24u8, 27u8);
+    // The status colour gives way to the dark body early, so mid-animation frames stay clean.
+    let fe = ease_out((e / 0.45).min(1.0));
     let fill = (
-        mix(dot_color.0 as f32, fill_dark.0 as f32, e) as u8,
-        mix(dot_color.1 as f32, fill_dark.1 as f32, e) as u8,
-        mix(dot_color.2 as f32, fill_dark.2 as f32, e) as u8,
+        mix(dot_color.0 as f32, fill_dark.0 as f32, fe) as u8,
+        mix(dot_color.1 as f32, fill_dark.1 as f32, fe) as u8,
+        mix(dot_color.2 as f32, fill_dark.2 as f32, fe) as u8,
     );
-    let fill_a = mix(1.0, 0.88, e);
+    let fill_a = mix(1.0, 0.88, fe);
     let icon_r = mix(0.0, m.icon / 2.0, frame.content);
     let stroke = (m.icon * 0.11).max(1.2);
     let k = m.icon / 18.0;
