@@ -4,7 +4,8 @@ Every push to `main` runs these on a real Windows machine (GitHub Actions `windo
 
 - formatting, clippy (warnings are errors) and unit tests
 - real screen-capture integration tests (`ci/integration.ps1`)
-- the UI smoke test (`ci/ui-screenshots.ps1`)
+- the UI smoke test (`ci/ui-screenshots.ps1`), including the first-run setup and its real test recording
+- the Instant Replay indicator and notification tests (`ci/indicator-test.ps1`), which film the real overlay
 - on release, the installer test (`ci/install-test.ps1`) and `cargo audit`, then the automatic update test (`ci/update-test.ps1`) against the release that was just published
 
 The results below are copied from those runs. Nothing is estimated.
@@ -18,13 +19,13 @@ The results below are copied from those runs. Nothing is estimated.
 
 | Crate | Tests | Covers |
 |---|---|---|
-| `urec-engine` | 22 | Output sizing (never upscales, even sizes, aspect), validation limits, presets per machine, bitrate scaling, storage maths, encoder names and arguments, failure explanations, FFmpeg command lines (GPU/system paths, scaling, QSV mapping, regions, GDI, audio pipes, replay ring), progress parsing, replay CSV parsing and selection, ring sizing, file-name sanitizing and timestamps, unique names, hotkey parsing, formatting and conflicts, SHA-256 (standard test vectors incl. one million 'a') |
-| `urec` (app) | 10 | Settings round-trip, corrupt-file quarantine, partial/out-of-range values, conversions, library scan, `ffmpeg -i` metadata parsing, duration format, update version comparison (no downgrades or pre-releases), checksum-file parsing, release JSON parsing (only `github.com/u2alr/uRec` download URLs accepted) |
-| `urec-win` | 3 | App names from window titles/executables, overlay dot is round and symmetric, HTTPS-only URL handling |
+| `urec-engine` | 32 | Output sizing (never upscales, even sizes, aspect), validation limits, presets per machine, bitrate scaling, storage maths, encoder names and arguments, failure explanations, FFmpeg command lines (GPU/system paths, scaling, QSV mapping, regions, GDI, audio pipes, replay ring), progress parsing, replay CSV parsing and selection, ring sizing, file-name sanitizing and timestamps, unique names, hotkey parsing, formatting and conflicts, SHA-256 (standard test vectors incl. one million 'a'). **Replay saving:** 8 threads placing clips under the same name all get separate files and none replaces another; segments recycled at the front are dropped but a missing middle segment is an error; cleanup removes only uRec's temporary names; temp names are unique. **MP4 check:** complete, truncated, unfinished (no `moov`), garbage, empty and fragmented files. **Decode report** parsing (streams, frames, decoder errors). |
+| `urec` (app) | 13 | Settings round-trip, corrupt-file quarantine, partial/out-of-range values, v1 → v2 migration (existing users skip setup, choices kept, unknown values reset), UTF-8 byte-order mark accepted, conversions, library scan, `ffmpeg -i` metadata parsing, duration format, update version comparison (no downgrades or pre-releases), checksum-file parsing, release JSON parsing (only `github.com/u2alr/uRec` download URLs accepted), library diagnosis of unreadable/damaged/still-writing files, temp clips hidden from the library |
+| `urec-win` | 16 | App names, overlay dot round and symmetric, HTTPS-only URLs. **Indicator timeline:** success (180 ms open, 2 s hold, 180 ms close, then idle with nothing running), failure (2.5 s hold), repeated successes extend instead of duplicating, a newer failure replaces a success and a success waiting behind a failure is shown only afterwards, a result during the close regrows without a jump, the "saving" pulse stops on a result or after 90 s, reduced motion has no in-between states. **Indicator drawing:** closed pill is exactly the dot, the dot position is stable, the pill grows away from the screen edge, check and cross differ in shape (not only colour). **Notification links:** round trip with spaces and accents, malformed links refused, only existing videos inside the recordings folder, XML escaping. |
 
 ## Integration tests on Windows (automated, real capture)
 
-`ci/integration.ps1` drives `urec-cli`, which uses the same engine and Windows layer as the app. Every output file is checked with ffprobe and fully decoded. Latest run: **17 passed, 0 failed.**
+`ci/integration.ps1` drives `urec-cli`, which uses the same engine and Windows layer as the app. Every output file is checked with ffprobe and fully decoded. Latest run: **20 passed, 0 failed.**
 
 | # | Test | Result |
 |---|---|---|
@@ -45,6 +46,9 @@ The results below are copied from those runs. Nothing is estimated.
 | T15 | Microphone blocked by Windows privacy: recording continues, mic honestly reported as not recording, no fake track | ✅ |
 | T16 | Window capture (Notepad only, 754 × 512) | ✅ |
 | T17 | **A/V sync**: screen flashes white and a beep plays every 2 s; in the recording audio leads video by 6–55 ms (median 26–44 ms across runs, about one frame at 30 FPS; includes the test's own playback and GDI capture latency) | ✅ |
+| T18 | Show in folder / Open folder open the right Explorer folder (path with spaces) | ✅ |
+| T19 | **4 simultaneous Instant Replay saves to the same name** (real FFmpeg): 4 separate complete clips (`… Replay.mp4`, `(2)`, `(3)`, `(4)`), each decodes without errors, no temp files or staging folders left; 1.9 s for all four | ✅ |
+| T20 | **150 s Instant Replay run:** FFmpeg memory 168.0 → 168.1 MB, host 2.0 → 2.0 MB, ring never above 19/19 files, a 20 s save at the end decodes cleanly | ✅ |
 
 ## App tests (automated)
 
@@ -53,6 +57,29 @@ The results below are copied from those runs. Nothing is estimated.
 | App starts, renders every page in light and dark theme, stays running | ✅ |
 | **Global hotkey end to end:** real Alt+F9 keypress → recording starts (red tally, timer) → Alt+F9 → file saved to `Videos\uRec\Desktop\…mp4` | ✅ |
 | Crash diagnosis: a startup crash in the overlay was found with a crash dump + `cdb` on CI and fixed | ✅ |
+| **First-run setup:** all four steps render; the real 5-second test recording (started automatically on CI) reported: capture and encoder start ✅ (x264 via GDI, 960 × 720 at 30 FPS), game and desktop sound ✅ (VB-Audio cable), microphone – (off), ran 5 s ✅ (159 frames), file finalized ✅ (468 KB, crash-safe MP4), plays back ✅ (181 frames decoded, no errors), audio tracks ✅ (1 of 1) | ✅ |
+
+## Instant Replay indicator and notifications (automated, real overlay)
+
+`ci/indicator-test.ps1` films the corner of the screen at ~47 frames per second while the real overlay runs. Normally the overlay is excluded from capture; `UREC_OVERLAY_CAPTURABLE=1` turns that off for the test only. Latest run: **13 passed, 0 failed.**
+
+| # | Check | Result |
+|---|---|---|
+| P01 | Success: the dot opens into "Instant Replay Saved" with a green check, holds, closes. Measured: visible 2327 ms (target ~2360), opening 142 ms, closing 111 ms after the message faded | ✅ |
+| P02 | Back to the plain dot afterwards, nothing left on screen | ✅ |
+| P03 | Failure: red cross and "Instant Replay Failed", visible 2800 ms (target ~2860) | ✅ |
+| P04 | While a save runs, the dot pulses (51 of 51 frames changed) and no message appears; the pill appears 67 ms after the result | ✅ |
+| P05 | Burst (success, failure 0.5 s later, success): the failure replaces the success, is shown for 2.4 s, then the later success appears | ✅ |
+| P06 | Reduced motion: message appears and disappears with no in-between frames | ✅ |
+| P07 | No CPU at rest: 0 ms CPU in 5 s after the animation; 47 ms in 3 s while pulsing | ✅ |
+| P08 | Top-left corner: the pill grows to the right, away from the screen edge | ✅ |
+| P09 | A Windows notification is accepted (it appears in the Action Center history) | ✅ |
+| P10 | **Real app, real Alt+F10:** clip written, then the success pill | ✅ |
+| P11 | **Real app, 4 rapid Alt+F10 presses:** 2 saves queued, 2 presses folded in, every clip complete, nothing overwritten | ✅ |
+| P12 | Overlay turned off: nothing is drawn on screen for a save | ✅ |
+| P13 | Overlay turned off: a Windows notification is shown instead | ✅ |
+
+In the real-app run (P10), the pill was measured as visible for about 1.95 s rather than 2.3 s. That run happens while x264 encodes Instant Replay on the same 2-vCPU machine, and the frames this test can capture under that load don't catch the first and last few frames of the animation. The standalone runs (P01, P03) are the timing reference.
 
 ## Installer tests (automated, every release)
 
@@ -107,6 +134,9 @@ These numbers are from a 2-vCPU VM **without a GPU**. There, the UI is software-
 | Recording start latency (CLI, GDI) | 0.6–1.4 s |
 | Stop/finalize latency | 0.1–0.25 s |
 | Instant Replay save (8 s clip) | ~1.8 s (includes waiting for the current 2 s segment to close) |
+| 4 simultaneous saves (T19) | 1.9 s for all four |
+| Memory over a 150 s Instant Replay run (T20) | FFmpeg 168.0 → 168.1 MB private; no growth |
+| Overlay at rest / while animating (P07) | 0 ms CPU per 5 s / 47 ms CPU per 3 s (~1.6 % of one core during the 2.4 s animation) |
 | Dropped frames, x264 720p30 on 2 vCPUs | 0–3 per 5 s; 60 FPS: up to 4 dropped. The app shows "Falling behind" when this happens |
 
 Performance fixes made because of these measurements:
@@ -125,7 +155,9 @@ GitHub's machine has no GPU and no microphone, so these are implemented but have
 - The zero-copy GPU frame path.
 - Game capture in real games (borderless, windowed and exclusive fullscreen).
 - A real microphone, device unplugging and reconnecting, Windows 10 (only build 26100 tested), multiple monitors and high-DPI scaling.
-- Overlay hidden from recordings.
+- Overlay hidden from recordings. CI only shows the opposite: with the exclusion turned off for the test, the overlay is captured.
+- The indicator at high-DPI scaling (125–200 %) and on a secondary monitor.
+- Notification buttons ("Open clip", "Show in folder") clicked by a person. The links and their checks are unit-tested, and the notification was accepted by Windows, but no click was automated.
 - Low disk space behaviour (warning and automatic stop).
 - 1080p60 and above on real hardware, high-refresh capture (120–240 FPS), long recordings (1 h+).
 
@@ -135,6 +167,10 @@ GitHub's machine has no GPU and no microphone, so these are implemented but have
 - Mouse-click visualization.
 - HDR capture and encoding (8-bit SDR only).
 - A code-signed installer (no certificate).
+- Push-to-talk (the microphone mute hotkey exists).
+- Automatic retention rules for old recordings. uRec never deletes recordings by itself.
+- Hiding the overlay automatically in fullscreen apps. The overlay is meant for games, so it stays; it can be turned off or toggled with a hotkey.
+- Signature verification of updates. Only SHA-256 checksums are checked until releases are signed (see SECURITY.md).
 
 ## Manual checklist for real PCs
 
@@ -143,8 +179,10 @@ Please run these on your PC and report results (Settings › Advanced shows whic
 1. Install, open uRec. Note which encoder Home says it will use.
 2. Record the desktop for 1 minute at the recommended preset with game sound playing. Play the file: is the audio in sync?
 3. Record a game in borderless fullscreen with Alt+F9 while the game has focus.
-4. Turn Instant Replay on, play for a few minutes, press Alt+F10. Check the clip.
-5. Record a microphone with a separate track; check both tracks in an editor.
-6. While recording, check Task Manager: CPU and GPU usage of `uRec.exe` and `ffmpeg.exe`, and whether frames are dropped (Home shows the count).
-7. Try 1440p/4K, 120+ FPS and HEVC/AV1 if your GPU supports them.
-8. Uninstall and check that recordings remain.
+4. Turn Instant Replay on, play for a few minutes, press Alt+F10. Watch the overlay show "Instant Replay Saved", then check the clip. Press Alt+F10 several times quickly: you should get at most two new clips, none broken.
+5. Turn the overlay off (Settings › Appearance), press Alt+F10 and click **Open clip** on the Windows notification.
+6. Run the first-run setup again (Settings › Advanced) and do the test recording.
+7. Record a microphone with a separate track; check both tracks in an editor.
+8. While recording, check Task Manager: CPU and GPU usage of `uRec.exe` and `ffmpeg.exe`, and whether frames are dropped (Home shows the count).
+9. Try 1440p/4K, 120+ FPS and HEVC/AV1 if your GPU supports them.
+10. Uninstall and check that recordings remain.
