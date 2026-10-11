@@ -203,6 +203,26 @@ $m = Get-MediaInfo $out
 $np | Stop-Process -Force -ErrorAction SilentlyContinue
 Add-Result "T16" "Window capture (Notepad) records just that window" ($r.Code -eq 0 -and $m -and $m.Width -lt $screen.Width -and -not $m.DecodeErrors) "$($m.Width)x$($m.Height) via $($r.Kv['method']) $(($r.Out | Select-Object -Last 2) -join ' ')"
 
+"=== Show in folder / Open folder"
+function Get-ExplorerFolders {
+    $shell = New-Object -ComObject Shell.Application
+    @($shell.Windows() | ForEach-Object { try { [Uri]::UnescapeDataString(([Uri]$_.LocationURL).LocalPath) } catch {} })
+}
+Get-Process explorer -ErrorAction SilentlyContinue | Out-Null
+$target = Join-Path $work "Folder With Spaces"
+New-Item -ItemType Directory -Force $target | Out-Null
+$file = Join-Path $target "My Clip 2026-10-11 10.00.00.mp4"
+Copy-Item (Join-Path $work "T02.mp4") $file
+& $Cli reveal $file | Out-Null
+Start-Sleep -Seconds 4
+$open1 = Get-ExplorerFolders
+& $Cli reveal (Join-Path $work "ring") | Out-Null
+Start-Sleep -Seconds 4
+$open2 = Get-ExplorerFolders
+$ok1 = $open1 -contains $target
+$ok2 = $open2 -contains (Join-Path $work "ring")
+Add-Result "T18" "Show in folder (path with spaces) and Open folder open the right Explorer folder" ($ok1 -and $ok2) ("explorer windows: " + (($open2 | Select-Object -Unique) -join " | "))
+
 "=== Summary"
 $results | Format-Table -AutoSize -Wrap | Out-String -Width 250
 $failed = @($results | Where-Object Result -eq "FAIL").Count

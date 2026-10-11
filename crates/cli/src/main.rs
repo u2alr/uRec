@@ -83,6 +83,12 @@ fn main() -> ExitCode {
     if args.cmd == "devices" {
         return cmd_devices();
     }
+    if args.cmd == "reveal" {
+        // Same call the app's "Show in folder" / "Open folder" buttons make.
+        let Some(p) = std::env::args().nth(2) else { return ExitCode::from(2) };
+        urec_win::reveal_in_explorer(std::path::Path::new(&p));
+        return ExitCode::SUCCESS;
+    }
     let Some(ffmpeg) = locate_ffmpeg() else {
         eprintln!("ffmpeg not found (set UREC_FFMPEG or put ffmpeg next to urec-cli)");
         return ExitCode::from(2);
