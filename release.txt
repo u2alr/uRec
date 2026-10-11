@@ -1,38 +1,23 @@
-commit 8c0b14df876bed42660986874ce82051dad904c2 run 38135314628
+commit 339c5d92a95ce9c11d5d5bcc51eb1e121daa69ab run 38136007864
 185 crates listed
-uRec-0.1.0-portable.zip  81.5 MB  sha256 DF9A4158B143DCA706A9D5CD930835BD74363E9A1577762C35AC85E3063F23A6
-uRec-0.1.0-setup.exe  58.3 MB  sha256 14BD6CDF4E3B3E72AFFD3872EB20741CED3B95C3BDA93A7E958D41D46B9CA77B
-installer: uRec-0.1.0-setup.exe 58.3 MB
-I01 PASS Silent per-user install succeeds without admin prompt :: exit=0 in 13.2 s
-I02 PASS Program files installed (uRec.exe, ffmpeg.exe, ffprobe.exe, notices) :: C:\Users\runneradmin\AppData\Local\Programs\uRec
-installed footprint: 216.8 MB
+uRec-0.1.0-portable.zip  43.5 MB  sha256 5EC13306935661C616FE2A5BBDC4EC0BB88CCA32A34FD9B43D920E64710454EB
+uRec-0.1.0-setup.exe  32.1 MB  sha256 B22F7C648CCF9FE864E321824156797CB46897E39BB66E37A9B17A531FF1F80B
+installer: uRec-0.1.0-setup.exe 32.1 MB
+I01 PASS Silent per-user install succeeds without admin prompt :: exit=0 in 6.5 s
+I02 PASS Program files installed (uRec.exe, ffmpeg.exe, notices) :: C:\Users\runneradmin\AppData\Local\Programs\uRec
+installed footprint: 116.5 MB
 I03 PASS Start Menu shortcut created :: C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\uRec.lnk
 I04 PASS Optional desktop shortcut created when chosen :: C:\Users\runneradmin\Desktop\uRec.lnk
 I05 PASS Registered in Apps & features with name and icon :: name=uRec icon=C:\Users\runneradmin\AppData\Local\Programs\uRec\uRec.exe
 I06 PASS Does not start with Windows unless chosen :: run entry: 
-I07 PASS Installed app launches and stays running :: pid=2980
+I07 PASS Installed app launches and stays running :: pid=5328
 I08 PASS Idle with Instant Replay off: no capture or encoder process :: ffmpeg processes=0
-Measure-Object: D:\a\uRec\uRec\ci\install-test.ps1:13
-Line |
-  13 |      $t0 = ($p | Measure-Object TotalProcessorTime -Sum).Sum
-     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     | Input object "00:00:09.9687500" is not numeric.
-
-idle (30 s window, after 15 s settle): cpu=2.02% workingset=57.4 MB private=277.9 MB
-I09 FAIL Idle CPU close to zero (< 1% of the machine) :: cpu=2.02%
-Measure-Object: D:\a\uRec\uRec\ci\install-test.ps1:13
-Line |
-  13 |      $t0 = ($p | Measure-Object TotalProcessorTime -Sum).Sum
-     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     | Input object "00:01:03.8125000" is not numeric.
-
-Measure-Object: D:\a\uRec\uRec\ci\install-test.ps1:13
-Line |
-  13 |      $t0 = ($p | Measure-Object TotalProcessorTime -Sum).Sum
-     |                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-     | Input object "00:00:11.0625000" is not numeric.
-
-replay on (15 s, CPU x264 on this VM): app cpu=60.88% ws=57.2 MB; ffmpeg ws=63 MB; buffer=12 files 1.4 MB
+idle 10 s window: cpu=0% workingset=58.1 MB private=278.4 MB
+idle 10 s window: cpu=0% workingset=58.1 MB private=278.4 MB
+idle 10 s window: cpu=0% workingset=58 MB private=278.4 MB
+idle average over 30 s (after 15 s settle): cpu=0% workingset=58 MB private=278.4 MB
+I09 PASS Idle CPU close to zero (< 1% of the machine) :: cpu=0%
+replay on (15 s buffer, x264 on this 2-vCPU VM): uRec cpu=66.86% ws=58.3 MB; ffmpeg cpu=6.41% ws=67.9 MB; buffer=12 files 1.4 MB
 I10 PASS Instant Replay runs from the installed app with a bounded buffer :: segments=12 (limit 12 for 15 s) size=1.4 MB
 I11 PASS Killing the app also ends its FFmpeg (job object) :: ffmpeg left=0
 I12 PASS Silent uninstall succeeds :: exit=0
@@ -42,24 +27,24 @@ I15 PASS Settings are kept (preserved by default) :: C:\Users\runneradmin\AppDat
 I16 PASS Temporary data (replay buffer, thumbnails, logs) removed :: 
 === Summary
 
-Id  Check                                                                Result Detail
---  -----                                                                ------ ------
-I01 Silent per-user install succeeds without admin prompt                PASS   exit=0 in 13.2 s
-I02 Program files installed (uRec.exe, ffmpeg.exe, ffprobe.exe, notices) PASS   C:\Users\runneradmin\AppData\Local\Programs\uRec
-I03 Start Menu shortcut created                                          PASS   C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\uRec.lnk
-I04 Optional desktop shortcut created when chosen                        PASS   C:\Users\runneradmin\Desktop\uRec.lnk
-I05 Registered in Apps & features with name and icon                     PASS   name=uRec icon=C:\Users\runneradmin\AppData\Local\Programs\uRec\uRec.exe
-I06 Does not start with Windows unless chosen                            PASS   run entry: 
-I07 Installed app launches and stays running                             PASS   pid=2980
-I08 Idle with Instant Replay off: no capture or encoder process          PASS   ffmpeg processes=0
-I09 Idle CPU close to zero (< 1% of the machine)                         FAIL   cpu=2.02%
-I10 Instant Replay runs from the installed app with a bounded buffer     PASS   segments=12 (limit 12 for 15 s) size=1.4 MB
-I11 Killing the app also ends its FFmpeg (job object)                    PASS   ffmpeg left=0
-I12 Silent uninstall succeeds                                            PASS   exit=0
-I13 Program files, shortcuts and Apps entry removed                      PASS   exe=False start=False desk=False
-I14 Recordings are kept                                                  PASS   C:\Users\runneradmin\Videos\uRec
-I15 Settings are kept (preserved by default)                             PASS   C:\Users\runneradmin\AppData\Roaming\uRec\settings.json
-I16 Temporary data (replay buffer, thumbnails, logs) removed             PASS   
+Id  Check                                                            Result Detail
+--  -----                                                            ------ ------
+I01 Silent per-user install succeeds without admin prompt            PASS   exit=0 in 6.5 s
+I02 Program files installed (uRec.exe, ffmpeg.exe, notices)          PASS   C:\Users\runneradmin\AppData\Local\Programs\uRec
+I03 Start Menu shortcut created                                      PASS   C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\uRec.lnk
+I04 Optional desktop shortcut created when chosen                    PASS   C:\Users\runneradmin\Desktop\uRec.lnk
+I05 Registered in Apps & features with name and icon                 PASS   name=uRec icon=C:\Users\runneradmin\AppData\Local\Programs\uRec\uRec.exe
+I06 Does not start with Windows unless chosen                        PASS   run entry: 
+I07 Installed app launches and stays running                         PASS   pid=5328
+I08 Idle with Instant Replay off: no capture or encoder process      PASS   ffmpeg processes=0
+I09 Idle CPU close to zero (< 1% of the machine)                     PASS   cpu=0%
+I10 Instant Replay runs from the installed app with a bounded buffer PASS   segments=12 (limit 12 for 15 s) size=1.4 MB
+I11 Killing the app also ends its FFmpeg (job object)                PASS   ffmpeg left=0
+I12 Silent uninstall succeeds                                        PASS   exit=0
+I13 Program files, shortcuts and Apps entry removed                  PASS   exe=False start=False desk=False
+I14 Recordings are kept                                              PASS   C:\Users\runneradmin\Videos\uRec
+I15 Settings are kept (preserved by default)                         PASS   C:\Users\runneradmin\AppData\Roaming\uRec\settings.json
+I16 Temporary data (replay buffer, thumbnails, logs) removed         PASS   
 
 
-install passed=15 failed=1 installer_mb=58.3 installed_mb=216.8
+install passed=16 failed=0 installer_mb=32.1 installed_mb=116.5
