@@ -1243,8 +1243,9 @@ impl Worker {
         let cap = self.ctl.snapshot().capture;
         if let Some(c) = &cap {
             let detail = format!(
-                "{} via {}, {}×{} at {} FPS{}",
-                c.encoder,
+                "{}, {} via {}, {}×{} at {} FPS{}",
+                c.encoder.backend.label(),
+                c.encoder.codec,
                 c.method.label(),
                 c.width,
                 c.height,

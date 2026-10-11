@@ -82,7 +82,8 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     ui.painter().rect_filled(done, CornerRadius::same(1), p.text);
     ui.add_space(16.0);
 
-    let footer_h = 52.0;
+    // Room for the footer: spacing, hairline and a button row.
+    let footer_h = 76.0;
     let body_h = (ui.available_height() - footer_h).max(120.0);
     egui::ScrollArea::vertical().max_height(body_h).auto_shrink([false, false]).show(ui, |ui| {
         ui.set_max_width((ui.available_width() - 16.0).min(720.0));
