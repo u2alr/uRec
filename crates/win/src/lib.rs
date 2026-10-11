@@ -15,6 +15,7 @@ mod hotkeys;
 mod http;
 #[cfg(windows)]
 mod overlay;
+pub mod pill;
 #[cfg(windows)]
 mod sys;
 

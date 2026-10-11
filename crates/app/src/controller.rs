@@ -550,7 +550,8 @@ impl Worker {
                 }
             }
             Command::Shutdown => {}
-            Command::ReplaySaveStarted(_) => {
+            Command::ReplaySaveStarted(id) => {
+                log(&format!("replay save #{id} started"));
                 let n = self.saver.pending();
                 self.update(|s| s.replay_saving = n);
                 self.save_feedback(SaveFeedback::Saving);
@@ -1114,7 +1115,7 @@ impl Worker {
     /// Visual feedback for replay saves: the overlay pill, or a Windows notification when the
     /// overlay is turned off. The in-app notice is always added separately.
     fn save_feedback(&mut self, fb: SaveFeedback) {
-        let _ = fb;
+        log(&format!("save feedback: {fb:?}"));
     }
 
     // -------------------------------------------------------------- periodic work
