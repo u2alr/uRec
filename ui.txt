@@ -11,24 +11,17 @@
    Compiling wgpu v30.0.1
    Compiling egui-wgpu v0.36.2
    Compiling eframe v0.36.2
-error[E0308]: mismatched types
-    --> crates\app\src\controller.rs:1315:39
+error[E0596]: cannot borrow `l.session` as mutable, as it is behind a `&` reference
+    --> crates\app\src\controller.rs:1253:52
      |
-1305 |         let finalized = match (&result, urec_engine::mp4check::check(&out)) {
-     |                               --------------------------------------------- this expression has type `(&Result<Option<PathBuf>, String>, Result<Mp4Info, String>)`
-...
-1315 |             (Err(e), _) | (Ok(_), Err(e)) => {
-     |                  -                    ^ expected `&String`, found `String`
-     |                  |
-     |                  first introduced with type `&std::string::String` here
-     |
-     = note: in the same arm, a binding must have the same type in all alternatives
-     = note: the full name for the type has been written to 'D:\a\uRec\uRec\target\release\deps\uRec.long-type-10176694292415463010.txt'
-     = note: consider using `--verbose` to print the full type name to the console
-help: consider adding `ref`
-     |
-1315 |             (Err(e), _) | (Ok(_), Err(ref e)) => {
-     |                                       +++
+1253 |             if !self.live.as_ref().is_some_and(|l| l.session.running()) {
+     |                                                    ^^^^^^^^^ `l` is a `&` reference, so it cannot be borrowed as mutable
 
-For more information about this error, try `rustc --explain E0308`.
-error: could not compile `urec` (bin "uRec") due to 1 previous error
+error[E0596]: cannot borrow `l.session` as mutable, as it is behind a `&` reference
+    --> crates\app\src\controller.rs:1258:59
+     |
+1258 |         let crashed = !self.live.as_ref().is_some_and(|l| l.session.running());
+     |                                                           ^^^^^^^^^ `l` is a `&` reference, so it cannot be borrowed as mutable
+
+For more information about this error, try `rustc --explain E0596`.
+error: could not compile `urec` (bin "uRec") due to 2 previous errors
