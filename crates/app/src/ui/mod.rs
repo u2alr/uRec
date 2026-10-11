@@ -3,6 +3,7 @@
 mod home;
 mod library_page;
 mod settings_page;
+mod setup_page;
 pub mod theme;
 
 use crate::controller::{Command, Controller, Level, ReplayState, Status};
@@ -23,6 +24,8 @@ pub enum Page {
     Home,
     Library,
     Settings,
+    /// First-run setup (full window, no navigation).
+    Setup,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -91,6 +94,7 @@ pub struct App {
     restart_requested: bool,
     pub updater: crate::update::Updater,
     first_frame_logged: bool,
+    pub setup_step: usize,
 }
 
 impl App {
@@ -140,8 +144,12 @@ impl App {
             restart_requested: false,
             updater,
             first_frame_logged: false,
+            setup_step: 0,
         };
         app.refresh_devices(true);
+        if !app.s.setup_done {
+            app.page = Page::Setup;
+        }
         app
     }
 
@@ -149,6 +157,7 @@ impl App {
     pub fn open_page(&mut self, spec: &str) {
         let (page, section) = spec.split_once(':').unwrap_or((spec, ""));
         self.page = match page {
+            "setup" => Page::Setup,
             "library" => Page::Library,
             "settings" => Page::Settings,
             _ => Page::Home,
@@ -429,6 +438,20 @@ impl eframe::App for App {
         let tally = egui::Rect::from_min_size(full.min, Vec2::new(full.width(), 3.0));
         self.tally(ui, tally, &st);
         let body = egui::Rect::from_min_max(egui::pos2(full.min.x, full.min.y + 3.0), full.max);
+        if self.page == Page::Setup {
+            let area = egui::Rect::from_min_max(
+                egui::pos2(body.min.x + 36.0, body.min.y + 26.0),
+                body.max - Vec2::new(36.0, 20.0),
+            );
+            ui.scope_builder(egui::UiBuilder::new().max_rect(area).id_salt("setup"), |ui| {
+                setup_page::show(self, ui, &st)
+            });
+            self.notices(&ctx, &st);
+            if self.exit_requested {
+                ctx.send_viewport_cmd(egui::ViewportCommand::Close);
+            }
+            return;
+        }
         let nav_w = 184.0;
         let nav = egui::Rect::from_min_size(body.min, Vec2::new(nav_w, body.height()));
         let content = egui::Rect::from_min_max(
@@ -440,6 +463,7 @@ impl eframe::App for App {
             Page::Home => home::show(self, ui, &st),
             Page::Library => library_page::show(self, ui, &st),
             Page::Settings => settings_page::show(self, ui, &st),
+            Page::Setup => {}
         });
         self.notices(&ctx, &st);
 

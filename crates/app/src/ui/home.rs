@@ -301,7 +301,7 @@ fn welcome(app: &mut App, ui: &mut egui::Ui, st: &Status) {
 
 pub fn preset_name(id: &str) -> &'static str {
     match id {
-        "low" => "Low-end PC",
+        "low" => "Low resource usage",
         "balanced" => "Balanced",
         "high" => "High quality",
         "very_high" => "Very high quality",

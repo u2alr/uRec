@@ -46,7 +46,7 @@ Hotkeys work while a game has focus. Change them in **Settings › Hotkeys**.
 
 - **Recording:** a whole display, one window, or part of a display. The capture method can be automatic, Windows Graphics Capture, Desktop Duplication or GDI. You can choose whether to record the cursor.
 - **Video:**
-  - Presets: Low-end PC, Balanced, High quality, Very high quality, Custom, plus one-click recommended settings.
+  - Presets: Low resource usage, Balanced, High quality, Very high quality, Custom, plus one-click recommended settings.
   - Resolution: native, 4K, 1440p, 1080p, 900p, 720p or custom.
   - Frame rate: 24 to 240 FPS, match the display, or custom.
   - Encoding: bitrate, codec (H.264, HEVC, AV1 when your hardware supports it), encoder, CBR/VBR and encoder preset.
@@ -59,7 +59,7 @@ Hotkeys work while a game has focus. Change them in **Settings › Hotkeys**.
 | Problem | What to do |
 |---|---|
 | The recording is black | Use borderless or windowed fullscreen in the game. Some exclusive-fullscreen games and protected video (DRM streaming apps) can't be captured. Try another capture method in Settings › Recording. |
-| "Falling behind: frames dropped" | The PC can't encode fast enough. Choose the Low-end preset, a lower resolution or frame rate, or a hardware encoder if one is listed. |
+| "Falling behind: frames dropped" | The PC can't encode fast enough. Choose the Low resource usage preset, a lower resolution or frame rate, or a hardware encoder if one is listed. |
 | A hotkey doesn't work | Another app may already use it; Settings › Hotkeys says so. Choose a different combination. |
 | The microphone isn't recorded | Windows may block it: Settings › Privacy & security › Microphone › Let desktop apps access your microphone. |
 | No game sound | Check Settings › Audio › Output device matches where you hear the game. |

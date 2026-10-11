@@ -10,7 +10,7 @@ use urec_engine::encoder::Backend;
 use urec_engine::pipeline::Container;
 use urec_engine::video::{Codec, EncoderEffort, FrameRate, RateControl, Resolution, VideoSettings};
 
-pub const SETTINGS_VERSION: u32 = 1;
+pub const SETTINGS_VERSION: u32 = 2;
 pub const APP_NAME: &str = "uRec";
 
 pub fn data_dir() -> PathBuf {
@@ -34,6 +34,8 @@ pub fn default_output_dir() -> PathBuf {
 pub struct Settings {
     pub version: u32,
     pub first_run_done: bool,
+    /// The first-run setup was finished or skipped.
+    pub setup_done: bool,
     pub general: General,
     pub capture: Capture,
     pub video: Video,
@@ -163,6 +165,7 @@ impl Default for Settings {
         Settings {
             version: SETTINGS_VERSION,
             first_run_done: false,
+            setup_done: false,
             general: General::default(),
             capture: Capture::default(),
             video: Video::default(),
@@ -497,10 +500,13 @@ impl Settings {
 /// Upgrade older settings files. Version 0 = files written before versioning existed.
 fn migrate(mut v: serde_json::Value) -> serde_json::Value {
     let version = v.get("version").and_then(|x| x.as_u64()).unwrap_or(0);
-    if version < 1 {
-        if let Some(obj) = v.as_object_mut() {
-            obj.insert("version".into(), SETTINGS_VERSION.into());
+    if let Some(obj) = v.as_object_mut() {
+        if version < 2 {
+            // v2 added the setup wizard. People who already used uRec don't need it.
+            let used = obj.get("first_run_done").and_then(|x| x.as_bool()).unwrap_or(false);
+            obj.entry("setup_done").or_insert(used.into());
         }
+        obj.insert("version".into(), SETTINGS_VERSION.into());
     }
     v
 }
@@ -571,5 +577,29 @@ mod tests {
         v.codec = Codec::Av1;
         s.set_video(&v);
         assert_eq!(s.video_settings(), v);
+    }
+
+    #[test]
+    fn migrates_v1_to_v2_without_nagging_existing_users() {
+        let p = tmp("v1");
+        std::fs::write(&p, r#"{"version":1,"first_run_done":true,"appearance":{"overlay":false}}"#).unwrap();
+        let (s, _) = Settings::load_from(&p);
+        assert!(s.setup_done, "existing users skip the new setup");
+        assert!(!s.appearance.overlay, "their choices are kept");
+        assert_eq!(s.appearance.motion, "system", "new fields get defaults");
+        assert_eq!(s.version, SETTINGS_VERSION);
+        let p2 = tmp("v1new");
+        std::fs::write(&p2, r#"{"version":1,"first_run_done":false}"#).unwrap();
+        assert!(!Settings::load_from(&p2).0.setup_done);
+        let p3 = tmp("v2");
+        std::fs::write(
+            &p3,
+            r#"{"version":2,"first_run_done":true,"setup_done":false,"appearance":{"motion":"wobbly"}}"#,
+        )
+        .unwrap();
+        let (s3, _) = Settings::load_from(&p3);
+        assert!(!s3.setup_done, "v2 files are taken as they are");
+        assert_eq!(s3.appearance.motion, "system", "unknown values are reset");
+        assert!(!Settings::default().setup_done);
     }
 }

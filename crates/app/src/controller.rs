@@ -35,10 +35,34 @@ pub enum Command {
     /// New settings from the UI. The controller restarts Instant Replay if needed.
     Apply(Box<Settings>),
     Reprobe,
+    /// First-run setup: record 5 seconds with the current settings and check the result.
+    TestRecording,
     Shutdown,
     /// From the save worker: a queued replay save has started / finished.
     ReplaySaveStarted(u64),
     ReplaySaveFinished(u64, Result<SavedClip, String>),
+}
+
+/// One line of the setup test recording's report. `ok: None` = not tested (e.g. turned off).
+#[derive(Clone, Debug, PartialEq)]
+pub struct TestCheck {
+    pub name: &'static str,
+    pub ok: Option<bool>,
+    pub detail: String,
+}
+
+#[derive(Clone, Debug, Default, PartialEq)]
+pub struct TestReport {
+    pub running: bool,
+    pub stage: String,
+    pub checks: Vec<TestCheck>,
+    pub file: Option<PathBuf>,
+}
+
+impl TestReport {
+    pub fn passed(&self) -> bool {
+        !self.running && !self.checks.is_empty() && self.checks.iter().all(|c| c.ok != Some(false))
+    }
 }
 
 /// Outcome of one Instant Replay save, for the UI and the overlay.
@@ -116,6 +140,7 @@ pub struct Status {
     /// Instant Replay saves queued or running (at most 2).
     pub replay_saving: usize,
     pub last_replay_save: Option<ReplaySaveEvent>,
+    pub test: Option<TestReport>,
 }
 
 impl Status {
@@ -544,6 +569,7 @@ impl Worker {
                 self.update_overlay();
             }
             Command::Apply(new) => self.apply(*new),
+            Command::TestRecording => self.test_recording(),
             Command::Reprobe => {
                 if !self.ctl.snapshot().busy() {
                     self.run_probe();
@@ -1156,6 +1182,187 @@ impl Worker {
         }
     }
 
+    // -------------------------------------------------------------- setup test
+
+    fn test_report(&self, f: impl FnOnce(&mut TestReport)) {
+        self.update(|s| f(s.test.get_or_insert_with(TestReport::default)));
+    }
+
+    /// Record 5 seconds through the real pipeline with the current settings, then check every
+    /// stage and report exactly what passed. Nothing is assumed: untested parts say so.
+    fn test_recording(&mut self) {
+        let check = |name: &'static str, ok: Option<bool>, detail: String| TestCheck { name, ok, detail };
+        self.update(|s| s.test = Some(TestReport { running: true, stage: "Starting…".into(), ..Default::default() }));
+        if self.recording.is_some() {
+            self.test_report(|t| {
+                t.running = false;
+                t.checks.push(check("Ready to test", Some(false), "Stop the current recording first.".into()));
+            });
+            return;
+        }
+        let Some(ff) = self.ffmpeg.clone() else {
+            self.test_report(|t| {
+                t.running = false;
+                t.checks.push(check("FFmpeg", Some(false), "FFmpeg is missing. Reinstall uRec.".into()));
+            });
+            return;
+        };
+        // Instant Replay uses the same capture; pause it for the test.
+        let replay_was_on = self.live.as_ref().is_some_and(|l| l.kind == LiveKind::Replay);
+        if replay_was_on {
+            self.saver.wait_idle(Duration::from_secs(30));
+            self.stop_live();
+        }
+        let dir = self.s.replay_dir();
+        let _ = std::fs::create_dir_all(&dir);
+        let out = dir.join("setup-test.mp4");
+        let _ = std::fs::remove_file(&out);
+        let output =
+            Output::File { path: out.to_string_lossy().into(), container: urec_engine::pipeline::Container::Mp4 };
+        self.test_report(|t| t.stage = "Recording 5 seconds…".into());
+        let started = self.launch(output, LiveKind::File);
+        let restore = |w: &mut Worker| {
+            if replay_was_on && w.s.replay.enabled {
+                w.start_replay();
+            }
+        };
+        if let Err(e) = started {
+            self.test_report(|t| {
+                t.running = false;
+                t.checks.push(check("Capture and encoder start", Some(false), e.clone()));
+            });
+            log(&format!("setup test: start failed: {e}"));
+            restore(self);
+            return;
+        }
+        let cap = self.ctl.snapshot().capture;
+        if let Some(c) = &cap {
+            let detail = format!(
+                "{} via {}, {}×{} at {} FPS{}",
+                c.encoder,
+                c.method.label(),
+                c.width,
+                c.height,
+                c.fps,
+                if c.gpu_path { ", frames stay on the graphics card" } else { "" }
+            );
+            self.test_report(|t| t.checks.push(check("Capture and encoder start", Some(true), detail)));
+        }
+        let t0 = Instant::now();
+        while t0.elapsed() < Duration::from_secs(5) {
+            if !self.live.as_ref().is_some_and(|l| l.session.running()) {
+                break;
+            }
+            std::thread::sleep(Duration::from_millis(200));
+        }
+        let crashed = !self.live.as_ref().is_some_and(|l| l.session.running());
+        let audio_states = self.live.as_ref().and_then(|l| l.audio.as_ref()).map(|f| f.states());
+        let stats = self.live.as_ref().map(|l| l.session.stats()).unwrap_or_default();
+        let audio_settings = self.s.audio_settings();
+        let mut expected_audio_tracks = 0usize;
+        let mut audio_checks = Vec::new();
+        for (name, wanted, state) in [
+            ("Game and desktop sound", audio_settings.system, audio_states.as_ref().map(|s| s.0.clone())),
+            ("Microphone", audio_settings.mic, audio_states.as_ref().map(|s| s.1.clone())),
+        ] {
+            let c = match (wanted, state) {
+                (false, _) => check(name, None, "Turned off in Settings › Audio.".into()),
+                (true, Some(SourceState::Active { device })) => {
+                    expected_audio_tracks += 1;
+                    check(name, Some(true), format!("Captured from {device}."))
+                }
+                (true, Some(SourceState::Failed { reason })) => {
+                    check(name, Some(false), explain_audio_failure(&reason))
+                }
+                (true, Some(SourceState::Lost { device })) => {
+                    check(name, Some(false), format!("{device} disappeared during the test."))
+                }
+                (true, _) => check(name, Some(false), "Didn't start.".into()),
+            };
+            audio_checks.push(c);
+        }
+        if audio_settings.layout == urec_win::TrackLayout::Mixed {
+            expected_audio_tracks = expected_audio_tracks.min(1);
+        }
+        self.test_report(|t| t.stage = "Finishing the file…".into());
+        let result = self.stop_live().unwrap_or(Ok(None));
+        self.test_report(|t| t.checks.extend(audio_checks));
+        if crashed {
+            self.test_report(|t| {
+                t.checks.push(check("Recording ran for 5 seconds", Some(false), "Capture stopped early.".into()))
+            });
+        } else {
+            let dropped =
+                if stats.drop_frames > 0 { format!(", {} frames dropped", stats.drop_frames) } else { String::new() };
+            self.test_report(|t| {
+                t.checks.push(check(
+                    "Recording ran for 5 seconds",
+                    Some(true),
+                    format!("{} frames encoded{dropped}", stats.frame),
+                ))
+            });
+        }
+        let finalized = match (&result, urec_engine::mp4check::check(&out)) {
+            (Ok(_), Ok(info)) => {
+                let d = format!(
+                    "{} written{}",
+                    video::format_bytes(info.bytes),
+                    if info.fragmented { ", crash-safe MP4" } else { "" }
+                );
+                self.test_report(|t| t.checks.push(check("File saved and finalized", Some(true), d)));
+                true
+            }
+            (Err(e), _) | (Ok(_), Err(e)) => {
+                let e = e.clone();
+                self.test_report(|t| t.checks.push(check("File saved and finalized", Some(false), e)));
+                false
+            }
+        };
+        if finalized {
+            self.test_report(|t| t.stage = "Playing it back…".into());
+            match urec_engine::verify::decode_file(&ff, &out) {
+                Ok(r) => {
+                    let video_ok = r.video_codec.is_some() && r.frames > 0 && r.errors.is_empty();
+                    let detail = if video_ok {
+                        format!(
+                            "{} frames of {} {}×{} decoded without errors ({:.1} s)",
+                            r.frames,
+                            r.video_codec.clone().unwrap_or_default(),
+                            r.width,
+                            r.height,
+                            r.duration
+                        )
+                    } else if !r.errors.is_empty() {
+                        format!("Decoding errors: {}", r.errors.join(" "))
+                    } else {
+                        "No video frames could be decoded.".into()
+                    };
+                    let audio_ok = r.audio_streams == expected_audio_tracks;
+                    let adetail =
+                        format!("{} audio track(s) in the file, {} expected", r.audio_streams, expected_audio_tracks);
+                    self.test_report(|t| {
+                        t.checks.push(check("Video plays back", Some(video_ok), detail));
+                        if expected_audio_tracks > 0 || r.audio_streams > 0 {
+                            t.checks.push(check("Audio tracks in the file", Some(audio_ok), adetail));
+                        }
+                    });
+                }
+                Err(e) => self.test_report(|t| t.checks.push(check("Video plays back", Some(false), e))),
+            }
+        }
+        let file = out.exists().then(|| out.clone());
+        self.test_report(|t| {
+            t.running = false;
+            t.stage = String::new();
+            t.file = file;
+        });
+        let rep = self.ctl.snapshot().test.unwrap_or_default();
+        for c in &rep.checks {
+            log(&format!("setup test: {} = {:?} ({})", c.name, c.ok, c.detail));
+        }
+        restore(self);
+    }
+
     // -------------------------------------------------------------- periodic work
 
     fn tick(&mut self) {
@@ -1272,7 +1479,7 @@ impl Worker {
         } else {
             self.notice(
                 Level::Warning,
-                "Recording is falling behind: frames are being dropped. Try a lower resolution, frame rate or the Low-end preset.",
+                "Recording is falling behind: frames are being dropped. Try a lower resolution, frame rate or the Low resource usage preset.",
                 None,
             );
         }

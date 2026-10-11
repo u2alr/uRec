@@ -123,7 +123,7 @@ impl Preset {
 
     pub fn label(&self) -> &'static str {
         match self {
-            Preset::LowEnd => "Low-end PC",
+            Preset::LowEnd => "Low resource usage",
             Preset::Balanced => "Balanced",
             Preset::High => "High quality",
             Preset::VeryHigh => "Very high quality",

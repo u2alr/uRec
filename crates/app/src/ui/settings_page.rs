@@ -289,7 +289,7 @@ fn recording(app: &mut App, ui: &mut egui::Ui, st: &Status) {
 
 // ------------------------------------------------------------------ Video
 
-fn caps(app: &App, st: &Status) -> Capabilities {
+pub(super) fn caps(app: &App, st: &Status) -> Capabilities {
     let m = app.monitors.iter().find(|m| m.primary);
     Capabilities {
         hardware_encoder: st.best_encoder(Codec::H264).is_some_and(|e| e.backend.is_hardware()),
@@ -302,7 +302,7 @@ fn caps(app: &App, st: &Status) -> Capabilities {
     }
 }
 
-fn recommended(caps: &Capabilities) -> Preset {
+pub(super) fn recommended(caps: &Capabilities) -> Preset {
     if caps.hardware_encoder {
         Preset::High
     } else if caps.logical_cpus >= 8 {
@@ -1011,6 +1011,12 @@ fn advanced(app: &mut App, ui: &mut egui::Ui, st: &Status) {
         },
     );
 
+    theme::row(ui, &p, "Setup", "Go through the first-run setup again, including the test recording.", |ui| {
+        if theme::quiet_button(ui, &p, "Run setup again").clicked() {
+            app.setup_step = 0;
+            app.page = super::Page::Setup;
+        }
+    });
     theme::group_title(ui, &p, "Encoders on this PC");
     if st.probing {
         ui.horizontal(|ui| {
@@ -1057,7 +1063,7 @@ fn advanced(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     theme::group_title(ui, &p, "Reset");
     if theme::quiet_button(ui, &p, "Reset all settings").clicked() {
         let keep_folder = app.s.storage.output_dir.clone();
-        app.s = Settings { first_run_done: true, ..Settings::default() };
+        app.s = Settings { first_run_done: true, setup_done: true, ..Settings::default() };
         app.s.storage.output_dir = keep_folder;
         let caps = caps(app, st);
         let rec = recommended(&caps);

@@ -14,6 +14,7 @@ pub mod process;
 pub mod replay;
 pub mod session;
 pub mod sha256;
+pub mod verify;
 pub mod video;
 
 pub use encoder::{Backend, Encoder};
