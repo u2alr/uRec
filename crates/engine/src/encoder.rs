@@ -236,6 +236,13 @@ pub fn explain_probe_failure(enc: &Encoder, stderr: &str) -> String {
     {
         return "The encoder is busy or out of sessions (another app may be using it).".into();
     }
+    if s.contains("could not find any mft") {
+        return format!(
+            "Windows has no {} encoder for {} on this PC.",
+            if enc.backend.is_hardware() { "hardware" } else { "built-in" },
+            enc.codec
+        );
+    }
     if s.contains("unknown encoder") {
         return "This encoder isn't included in the bundled FFmpeg.".into();
     }

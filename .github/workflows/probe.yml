@@ -3,7 +3,7 @@ name: Probe Windows capabilities
 on:
   workflow_dispatch:
   push:
-    paths: [".github/workflows/probe.yml", "ci/probe.ps1", "ci/ffmpeg-help.ps1"]
+    paths: [".github/workflows/probe.yml", "ci/probe.ps1", "ci/ffmpeg-help.ps1", "ci/crate-versions.ps1"]
 
 permissions:
   contents: write
@@ -32,3 +32,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: ./ci/publish-results.ps1 -Name ffmpeg-help -File help.txt
+      - name: Crate versions
+        if: always()
+        shell: pwsh
+        run: ./ci/crate-versions.ps1 *>&1 | Tee-Object -FilePath crates.txt
+      - name: Publish crate versions
+        if: always()
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./ci/publish-results.ps1 -Name crates -File crates.txt

@@ -118,7 +118,11 @@ fn cmd_probe(ffmpeg: &Path, args: &Args) -> ExitCode {
         }
     }
     for c in codecs {
-        println!("best_{:?}={}", c, probe::best(&results, c).map(|e| e.to_string()).unwrap_or("none".into()));
+        println!(
+            "best_{}={}",
+            format!("{c:?}").to_lowercase(),
+            probe::best(&results, c).map(|e| e.to_string()).unwrap_or("none".into())
+        );
     }
     if args.flag("check-args") && arg_errors > 0 {
         return ExitCode::from(1);
@@ -275,7 +279,8 @@ fn cmd_replay(ffmpeg: &Path, args: &Args) -> ExitCode {
     let files = std::fs::read_dir(&dir)
         .map(|d| d.flatten().filter(|e| e.file_name().to_string_lossy().ends_with(".ts")).count())
         .unwrap_or(0);
-    println!("ring_files={files} wrap={}", buffer.wrap());
+    println!("ring_files={files}");
+    println!("wrap={}", buffer.wrap());
     let t1 = Instant::now();
     let saved = buffer.save(ffmpeg, args.num("save-seconds", 10), &out, true);
     println!("save_ms={}", t1.elapsed().as_millis());

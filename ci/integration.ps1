@@ -74,7 +74,7 @@ $w720 = [int]([math]::Round($screen.Width * 720 / $screen.Height / 2) * 2)
 "=== Probe"
 $p = Invoke-Cli @("probe", "--codecs", "h264,hevc,av1", "--check-args")
 $p.Out | ForEach-Object { "  $_" }
-Add-Result "T01" "Encoder probe: every generated argument set is accepted by FFmpeg" ($p.Code -eq 0) ("best h264: " + $p.Kv['best_H264'])
+Add-Result "T01" "Encoder probe: every generated argument set is accepted by FFmpeg" ($p.Code -eq 0) ("best h264: " + $p.Kv['best_h264'])
 
 "=== Recordings"
 Test-Recording "T02" "GDI capture, x264, 720p30" @("--method", "gdi", "--encoder", "software", "--res", "720", "--fps", "30", "--seconds", "5") $w720 720 30 4.5 0 | Out-Null
