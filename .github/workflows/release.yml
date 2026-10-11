@@ -23,6 +23,12 @@ jobs:
           ./ci/get-ffmpeg.ps1 | Out-Null
           cargo build --release --locked -p urec -p urec-cli
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Dependency security audit
+        shell: pwsh
+        run: |
+          cargo install cargo-audit --locked --quiet
+          cargo audit *>&1 | Tee-Object -FilePath audit.txt
+          "audit exit code: $LASTEXITCODE" | Tee-Object -Append -FilePath audit.txt
       - name: Installer and portable zip
         shell: pwsh
         run: ./ci/build-installer.ps1 *>&1 | Tee-Object -FilePath package.txt
@@ -54,5 +60,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           "commit $env:GITHUB_SHA run $env:GITHUB_RUN_ID" | Out-File release.txt
-          foreach ($f in "package.txt", "install.txt") { if (Test-Path $f) { Get-Content $f | Out-File -Append release.txt } }
+          foreach ($f in "audit.txt", "package.txt", "install.txt") { if (Test-Path $f) { Get-Content $f | Out-File -Append release.txt } }
           ./ci/publish-results.ps1 -Name release -File release.txt

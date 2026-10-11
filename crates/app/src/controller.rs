@@ -279,6 +279,13 @@ impl Worker {
         self.ctl.repaint();
     }
 
+    /// Update the snapshot without waking the UI (it refreshes itself on its own schedule).
+    fn update_quiet(&self, f: impl FnOnce(&mut Status)) {
+        if let Ok(mut s) = self.ctl.status.lock() {
+            f(&mut s);
+        }
+    }
+
     fn notice(&self, level: Level, text: impl Into<String>, file: Option<PathBuf>) {
         let text = text.into();
         log(&format!("{level:?}: {text}"));
@@ -984,7 +991,7 @@ impl Worker {
             } else {
                 self.lag_since = None;
             }
-            self.update(|s| {
+            self.update_quiet(|s| {
                 s.stats = stats;
                 s.lagging = lagging;
                 // Peak meter with a gentle fall-off.
