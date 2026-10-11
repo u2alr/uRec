@@ -1,12 +1,20 @@
-commit f108aedfb8ee467137fca1e10bd23d24b72ad1a3 run 38173170087
+commit 8228d2f2cf1be545eef1b2d65c4b6cbab777401b run 38173314189
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
     Updating crates.io index
+    Checking windows v0.62.2
     Checking urec-engine v0.2.0 (D:\a\uRec\uRec\crates\engine)
    Compiling urec v0.2.0 (D:\a\uRec\uRec\crates\app)
+    Checking gpu-allocator v0.28.0
     Checking urec-win v0.2.0 (D:\a\uRec\uRec\crates\win)
+    Checking wgpu-hal v30.0.1
     Checking urec-cli v0.2.0 (D:\a\uRec\uRec\crates\cli)
+    Checking wgpu-core-deps-windows-linux-android v30.0.1
+    Checking wgpu-core v30.0.1
+    Checking wgpu v30.0.1
+    Checking egui-wgpu v0.36.2
+    Checking eframe v0.36.2
 error[E0119]: conflicting implementations of trait `std::clone::Clone` for type `controller::NoticeAction`
   --> crates\app\src\controller.rs:88:10
    |
@@ -94,15 +102,23 @@ error[E0609]: no field `action` on type `&controller::Notice`
 
 Some errors have detailed explanations: E0119, E0277, E0560, E0609.
 For more information about an error, try `rustc --explain E0119`.
-error: could not compile `urec` (bin "uRec") due to 8 previous errors
-warning: build failed, waiting for other jobs to finish...
 error: could not compile `urec` (bin "uRec" test) due to 8 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `urec` (bin "uRec") due to 8 previous errors
 ## clippy FAILED
 ## test
+   Compiling windows v0.62.2
    Compiling urec-engine v0.2.0 (D:\a\uRec\uRec\crates\engine)
    Compiling urec v0.2.0 (D:\a\uRec\uRec\crates\app)
+   Compiling gpu-allocator v0.28.0
    Compiling urec-win v0.2.0 (D:\a\uRec\uRec\crates\win)
+   Compiling wgpu-hal v30.0.1
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling wgpu-core v30.0.1
    Compiling urec-cli v0.2.0 (D:\a\uRec\uRec\crates\cli)
+   Compiling wgpu v30.0.1
+   Compiling egui-wgpu v0.36.2
+   Compiling eframe v0.36.2
 error[E0119]: conflicting implementations of trait `std::clone::Clone` for type `NoticeAction`
   --> crates\app\src\controller.rs:88:10
    |
@@ -191,12 +207,19 @@ error[E0609]: no field `action` on type `&Notice`
 Some errors have detailed explanations: E0119, E0277, E0560, E0609.
 For more information about an error, try `rustc --explain E0119`.
 error: could not compile `urec` (bin "uRec" test) due to 8 previous errors
-warning: build failed, waiting for other jobs to finish...
 ## test FAILED
 ## build
+   Compiling windows v0.62.2
    Compiling urec-engine v0.2.0 (D:\a\uRec\uRec\crates\engine)
+   Compiling gpu-allocator v0.28.0
    Compiling urec-win v0.2.0 (D:\a\uRec\uRec\crates\win)
+   Compiling wgpu-hal v30.0.1
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling wgpu-core v30.0.1
    Compiling urec-cli v0.2.0 (D:\a\uRec\uRec\crates\cli)
+   Compiling wgpu v30.0.1
+   Compiling egui-wgpu v0.36.2
+   Compiling eframe v0.36.2
    Compiling urec v0.2.0 (D:\a\uRec\uRec\crates\app)
 error[E0119]: conflicting implementations of trait `std::clone::Clone` for type `NoticeAction`
   --> crates\app\src\controller.rs:88:10
@@ -286,5 +309,4 @@ error[E0609]: no field `action` on type `&Notice`
 Some errors have detailed explanations: E0119, E0277, E0560, E0609.
 For more information about an error, try `rustc --explain E0119`.
 error: could not compile `urec` (bin "uRec") due to 8 previous errors
-warning: build failed, waiting for other jobs to finish...
 ## build FAILED
