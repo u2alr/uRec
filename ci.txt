@@ -1,4 +1,4 @@
-commit 37791d450f9cac998669426b5181b9a1e16df761 run 38135862332
+commit 339c5d92a95ce9c11d5d5bcc51eb1e121daa69ab run 38135982045
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -7,24 +7,25 @@ commit 37791d450f9cac998669426b5181b9a1e16df761 run 38135862332
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
     Checking urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
     Checking urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 40.50s
+    Finished `release` profile [optimized] target(s) in 34.33s
 ## test
    Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
    Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 24.20s
+    Finished `release` profile [optimized] target(s) in 25.05s
      Running unittests src\main.rs (target\release\deps\uRec-e1b38ff3f8d3a978.exe)
 
-running 6 tests
+running 7 tests
 test library::tests::durations ... ok
+test library::tests::parses_ffmpeg_info ... ok
 test settings::tests::partial_and_out_of_range_values ... ok
 test settings::tests::corrupt_file_is_quarantined ... ok
 test settings::tests::video_conversion_roundtrip ... ok
 test settings::tests::roundtrip_and_defaults ... ok
 test library::tests::scans_nested_and_skips_partials ... ok
 
-test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
 
      Running unittests src\main.rs (target\release\deps\urec_cli-feb4adf4a85da5b0.exe)
 
@@ -35,22 +36,22 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
      Running unittests src\lib.rs (target\release\deps\urec_engine-7b56bc09cc9d8a35.exe)
 
 running 21 tests
-test encoder::tests::args_have_rate_and_keyframes ... ok
-test hotkey::tests::finds_conflicts ... ok
-test encoder::tests::names_and_candidates ... ok
 test encoder::tests::failure_messages ... ok
+test encoder::tests::names_and_candidates ... ok
+test hotkey::tests::finds_conflicts ... ok
+test encoder::tests::args_have_rate_and_keyframes ... ok
 test hotkey::tests::roundtrip ... ok
 test naming::tests::sanitizes ... ok
 test naming::tests::stamps ... ok
 test pipeline::tests::audio_and_replay_output ... ok
 test pipeline::tests::gpu_scaling_stays_on_gpu ... ok
 test pipeline::tests::region_crops ... ok
+test naming::tests::unique_names ... ok
 test pipeline::tests::system_path_downloads_once ... ok
 test pipeline::tests::zero_copy_native_has_no_filters ... ok
 test process::tests::parses_progress_blocks ... ok
 test replay::tests::parses_and_selects ... ok
 test replay::tests::ring_math ... ok
-test naming::tests::unique_names ... ok
 test video::tests::bitrate_scales ... ok
 test video::tests::bytes_formatting ... ok
 test video::tests::output_size_never_upscales ... ok
@@ -83,25 +84,25 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
    Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 1m 04s
+    Finished `release` profile [optimized] target(s) in 1m 06s
 Screen: 1024x768
 === Probe
   ffmpeg=ffmpeg version 9.0.2-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
   encoder=h264_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=h264_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=h264_qsv     ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=h264_mf      ok=false ms=82    arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
+  encoder=h264_amf     ok=false ms=41    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=h264_qsv     ok=false ms=102   arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=h264_mf      ok=false ms=103   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
   encoder=libx264      ok=true ms=62    arg_error=false reason=
-  encoder=h264_mf      ok=true ms=123   arg_error=false reason=
+  encoder=h264_mf      ok=true ms=144   arg_error=false reason=
   encoder=hevc_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
   encoder=hevc_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
   encoder=hevc_qsv     ok=false ms=82    arg_error=false reason=No Intel Quick Sync hardware or driver found.
   encoder=hevc_mf      ok=false ms=63    arg_error=false reason=Windows has no hardware encoder for H.265 (HEVC) on this PC.
-  encoder=libx265      ok=true ms=104   arg_error=false reason=
+  encoder=libx265      ok=true ms=103   arg_error=false reason=
   encoder=hevc_mf      ok=false ms=62    arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
   encoder=av1_nvenc    ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
   encoder=av1_amf      ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=av1_qsv      ok=false ms=82    arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=av1_qsv      ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
   encoder=av1_mf       ok=false ms=62    arg_error=false reason=Windows has no hardware encoder for AV1 on this PC.
   best_h264=CPU (x264/x265) (H.264 (AVC))
   best_hevc=CPU (x264/x265) (H.265 (HEVC))
@@ -112,9 +113,9 @@ T01 PASS Encoder probe: every generated argument set is accepted by FFmpeg :: be
 === Invalid settings are rejected
 T09 PASS Oversized H.264 resolution is refused with a clear message :: error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
 === Instant replay
-T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1853ms ring_files=9/9 
+T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1829ms ring_files=9/9 
 === Repeated start/stop
-T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.13s, 3.13s, 3.1s, 3.1s, 3.13s leftover=0
+T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.17s, 3.13s, 3.13s, 3.17s, 3.13s leftover=0
 === Devices
   windows_build=Some(26100) wgc=true
   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
@@ -126,43 +127,43 @@ T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.13s, 3
 T12 PASS Monitor enumeration finds the primary screen at its real size :: monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
   audio outputs=1 inputs=1
 === Audio
-T13 PASS Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone :: state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.3 dB dur=7.33s
+T13 PASS Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone :: state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.3 dB dur=7.3s
 T14 PASS Separate tracks: one per working source (mic present: False) :: tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
 T15 PASS Microphone: recorded only if it really initialized; recording works either way :: mic=Failed { reason: "Access is denied." } tracks=0
 === Audio/video sync
-  video flash onsets: 1.033333, 3.033333, 5.033333, 7.033333, 9.033333, 11.033333
-  audio beep onsets:  1.022333, 2.998042, 4.992333, 7.014146, 9.007437, 11.016063, 12.354667
-T17 PASS Audio/video sync: flash + beep every 2 s, audio offset within 100 ms :: pairs=6 offsets_ms=[-11, -35, -41, -19, -26, -17] median=-19 ms (positive = audio later)
+  video flash onsets: 1.066667, 3.033333, 5.033333, 7.033333, 9.066667, 11.066667
+  audio beep onsets:  1.045021, 3.004854, 5.012354, 7.006896, 9.019625, 11.012, 12.184
+T17 PASS Audio/video sync: flash + beep every 2 s, audio offset within 100 ms :: pairs=6 offsets_ms=[-22, -28, -21, -26, -47, -55] median=-26 ms (positive = audio later)
 === Window capture
-T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=127 output=D:\a\_temp\urec-it\T16.mp4
+T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=126 output=D:\a\_temp\urec-it\T16.mp4
 === Summary
 
 Id  Test                                                                              Result Detail
 --  ----                                                                              ------ ------
 T01 Encoder probe: every generated argument set is accepted by FFmpeg                 PASS   best h264: 
-T02 GDI capture, x264, 720p30                                                         PASS   libx264 via gdi/System -> 960x720@30 6.23s 1.52MB audio=0 | 152 drop=2 dup=4 speed=0.88 startup=1214ms stop=178ms
-T03 GDI capture, Media Foundation (CPU), native 30fps, audio                          PASS   h264_mf via gdi/System -> 1024x768@30 6.04s 0.91MB audio=1 | 152 drop=1 dup=3 speed=1.03 startup=657ms stop=152ms
-T04 GDI capture, x264, native 60fps                                                   PASS   libx264 via gdi/System -> 1024x768@60 5.67s 1.7MB audio=0 | 289 drop=4 dup=76 speed=0.93 startup=607ms stop=191ms
-T05 Automatic capture fallback (WGC -> DDA -> GDI)                                    PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.22MB audio=0 | 121 drop=0 dup=0 speed=0.86 startup=1466ms stop=182ms
-T06 MKV container                                                                     PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.22MB audio=0 | 120 drop=0 dup=1 speed=0.85 startup=1209ms stop=128ms
-T07 HEVC via x265, 720p30                                                             PASS   libx265 via gdi/System -> 960x720@30 5.17s 0.81MB audio=0 | 116 drop=0 dup=0 speed=0.82 startup=1163ms stop=229ms
-T08 Custom 800x600 output (letterboxed)                                               PASS   libx264 via gdi/System -> 800x600@24 5.21s 0.89MB audio=0 | 93 drop=0 dup=0 speed=0.82 startup=1210ms stop=151ms
+T02 GDI capture, x264, 720p30                                                         PASS   libx264 via gdi/System -> 960x720@30 6.2s 1.52MB audio=0 | 152 drop=0 dup=2 speed=0.88 startup=1161ms stop=228ms
+T03 GDI capture, Media Foundation (CPU), native 30fps, audio                          PASS   h264_mf via gdi/System -> 1024x768@30 6.04s 0.91MB audio=1 | 150 drop=1 dup=3 speed=1.00 startup=656ms stop=152ms
+T04 GDI capture, x264, native 60fps                                                   PASS   libx264 via gdi/System -> 1024x768@60 5.68s 1.7MB audio=0 | 291 drop=5 dup=95 speed=0.94 startup=658ms stop=179ms
+T05 Automatic capture fallback (WGC -> DDA -> GDI)                                    PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.23MB audio=0 | 120 drop=2 dup=4 speed=0.85 startup=1316ms stop=230ms
+T06 MKV container                                                                     PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.23MB audio=0 | 120 drop=0 dup=0 speed=0.85 startup=1161ms stop=177ms
+T07 HEVC via x265, 720p30                                                             PASS   libx265 via gdi/System -> 960x720@30 5.23s 0.82MB audio=0 | 115 drop=1 dup=4 speed=0.81 startup=1160ms stop=325ms
+T08 Custom 800x600 output (letterboxed)                                               PASS   libx264 via gdi/System -> 800x600@24 5.21s 0.89MB audio=0 | 93 drop=0 dup=0 speed=0.82 startup=1211ms stop=177ms
 T09 Oversized H.264 resolution is refused with a clear message                        PASS   error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
-T10 Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) PASS   clip=10.28s audio=1 save=1853ms ring_files=9/9 
-T11 5 start/stop cycles, no leftover ffmpeg processes                                 PASS   durations 3.13s, 3.13s, 3.1s, 3.1s, 3.13s leftover=0
+T10 Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) PASS   clip=10.28s audio=1 save=1829ms ring_files=9/9 
+T11 5 start/stop cycles, no leftover ffmpeg processes                                 PASS   durations 3.17s, 3.13s, 3.13s, 3.17s, 3.13s leftover=0
 T12 Monitor enumeration finds the primary screen at its real size                     PASS   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0)
                                                                                              dda=true
 T13 Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone                PASS   state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.3 dB
-                                                                                             dur=7.33s
+                                                                                             dur=7.3s
 T14 Separate tracks: one per working source (mic present: False)                      PASS   tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
 T15 Microphone: recorded only if it really initialized; recording works either way    PASS   mic=Failed { reason: "Access is denied." } tracks=0
-T17 Audio/video sync: flash + beep every 2 s, audio offset within 100 ms              PASS   pairs=6 offsets_ms=[-11, -35, -41, -19, -26, -17] median=-19 ms (positive = audio later)
-T16 Window capture (Notepad) records just that window                                 PASS   754x512 via gdi stop_ms=127 output=D:\a\_temp\urec-it\T16.mp4
+T17 Audio/video sync: flash + beep every 2 s, audio offset within 100 ms              PASS   pairs=6 offsets_ms=[-22, -28, -21, -26, -47, -55] median=-26 ms (positive = audio later)
+T16 Window capture (Notepad) records just that window                                 PASS   754x512 via gdi stop_ms=126 output=D:\a\_temp\urec-it\T16.mp4
 
 
 passed=17 failed=0
 sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 11.36.56.mp4 size=663304
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 11.39.09.mp4 size=766955
 light home alive=True
 light library alive=True
 light settings:general alive=True
