@@ -1,0 +1,31 @@
+name: Dump dependency API
+on:
+  workflow_dispatch:
+  push:
+    paths: [".github/workflows/api-dump.yml"]
+permissions:
+  contents: write
+jobs:
+  dump:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: pwsh
+        run: |
+          cargo fetch
+          $reg = Get-ChildItem "$env:USERPROFILE\.cargo\registry\src" -Directory | Select-Object -First 1
+          New-Item -ItemType Directory api | Out-Null
+          foreach ($c in "egui-0.36.2", "eframe-0.36.2", "tray-icon-0.26.1", "egui-wgpu-0.36.2", "epaint-0.36.2", "muda-*") {
+            Get-ChildItem $reg.FullName -Directory -Filter $c | ForEach-Object {
+              $d = Join-Path api $_.Name
+              New-Item -ItemType Directory $d | Out-Null
+              Copy-Item (Join-Path $_.FullName "src") $d -Recurse
+              Copy-Item (Join-Path $_.FullName "CHANGELOG.md") $d -ErrorAction SilentlyContinue
+            }
+          }
+          Copy-Item Cargo.lock api/
+          "dumped" | Out-File api.txt
+      - shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./ci/publish-results.ps1 -Name api -File api.txt -Dir api
