@@ -8,7 +8,7 @@ pub mod theme;
 use crate::controller::{Command, Controller, Level, ReplayState, Status};
 use crate::library::{Library, THUMB_H, THUMB_W};
 use crate::settings::Settings;
-use eframe::egui::{self, Color32, CornerRadius, RichText, Sense, Stroke, Vec2};
+use eframe::egui::{self, CornerRadius, RichText, Sense, Stroke, Vec2};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;

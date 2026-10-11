@@ -162,14 +162,15 @@ fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
         ui.painter().rect_filled(rect, CornerRadius::same(8), p.panel);
     }
     let thumb = egui::Rect::from_min_size(rect.left_top() + Vec2::new(6.0, 6.0), Vec2::new(135.0, 76.0));
-    match item.thumb.as_ref().and_then(|t| app.thumb(ui.ctx(), t)) {
-        Some(tex) => ui.painter().image(
+    if let Some(tex) = item.thumb.as_ref().and_then(|t| app.thumb(ui.ctx(), t)) {
+        ui.painter().image(
             tex,
             thumb,
             egui::Rect::from_min_max(egui::pos2(0.0, 0.0), egui::pos2(1.0, 1.0)),
             Color32::WHITE,
-        ),
-        None => ui.painter().rect_filled(thumb, CornerRadius::same(4), p.raised),
+        );
+    } else {
+        ui.painter().rect_filled(thumb, CornerRadius::same(4), p.raised);
     }
     if let Some(m) = &item.meta {
         let badge = format_duration(m.duration);
