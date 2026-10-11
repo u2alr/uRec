@@ -49,6 +49,8 @@ if (-not $iscc) {
     $iscc = Get-ChildItem "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
 }
 if (-not $iscc) { throw "Inno Setup not found" }
+"Inno Setup $($iscc.VersionInfo.ProductVersion) at $($iscc.FullName)"
+"rustc: $(rustc --version)"
 & $iscc.FullName /Q "/DAppVersion=$Version" "/DSourceDir=..\$dist" installer\uRec.iss
 if ($LASTEXITCODE -ne 0) { throw "ISCC failed" }
 Get-ChildItem dist -File | ForEach-Object { "{0}  {1:N1} MB  sha256 {2}" -f $_.Name, ($_.Length / 1MB), (Get-FileHash $_.FullName).Hash }
