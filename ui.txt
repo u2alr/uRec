@@ -1,27 +1,23 @@
-    Updating crates.io index
-   Compiling windows v0.62.2
-   Compiling urec-engine v0.1.2 (D:\a\uRec\uRec\crates\engine)
-   Compiling urec v0.1.2 (D:\a\uRec\uRec\crates\app)
-   Compiling gpu-allocator v0.28.0
-   Compiling urec-win v0.1.2 (D:\a\uRec\uRec\crates\win)
-   Compiling wgpu-hal v30.0.1
-   Compiling wgpu-core-deps-windows-linux-android v30.0.1
-   Compiling wgpu-core v30.0.1
-   Compiling urec-cli v0.1.2 (D:\a\uRec\uRec\crates\cli)
-   Compiling wgpu v30.0.1
-   Compiling egui-wgpu v0.36.2
-   Compiling eframe v0.36.2
-error[E0596]: cannot borrow `l.session` as mutable, as it is behind a `&` reference
-    --> crates\app\src\controller.rs:1253:52
-     |
-1253 |             if !self.live.as_ref().is_some_and(|l| l.session.running()) {
-     |                                                    ^^^^^^^^^ `l` is a `&` reference, so it cannot be borrowed as mutable
-
-error[E0596]: cannot borrow `l.session` as mutable, as it is behind a `&` reference
-    --> crates\app\src\controller.rs:1258:59
-     |
-1258 |         let crashed = !self.live.as_ref().is_some_and(|l| l.session.running());
-     |                                                           ^^^^^^^^^ `l` is a `&` reference, so it cannot be borrowed as mutable
-
-For more information about this error, try `rustc --explain E0596`.
-error: could not compile `urec` (bin "uRec") due to 2 previous errors
+sample recording: True
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 18.18.47.mp4 size=677097
+setup test log: setup test: Capture and encoder start = Some(true) (CPU (x264/x265) (H.264 (AVC)) via GDI (compatibility), 960×720 at 30 FPS)
+setup test log: setup test: Game and desktop sound = Some(false) (The device wasn't found. It may be unplugged or disabled.)
+setup test log: setup test: Microphone = None (Turned off in Settings › Audio.)
+setup test log: setup test: Recording ran for 5 seconds = Some(true) (167 frames encoded, 9 frames dropped)
+setup test log: setup test: File saved and finalized = Some(true) (515 KB written, crash-safe MP4)
+setup test log: setup test: Video plays back = Some(true) (193 frames of h264 960×720 decoded without errors (6.4 s))
+light home alive=True
+light library alive=True
+light settings:general alive=True
+light settings:recording alive=True
+light settings:video alive=True
+light settings:audio alive=True
+light settings:instantreplay alive=True
+light settings:hotkeys alive=True
+light settings:storage alive=True
+light settings:appearance alive=True
+light settings:advanced alive=True
+dark home alive=True
+dark library alive=True
+dark settings:video alive=True
+dark settings:audio alive=True

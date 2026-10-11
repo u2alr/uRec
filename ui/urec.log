@@ -1,468 +1,592 @@
-2026-10-11 17:59:29 uRec 0.1.2 starting
-2026-10-11 202617-10-11 17:59::2959 :controller: creating hotkeys29
- startup: controller started
-2026-10-11 17:59:29 controller: creating overlay
-2026-10-11 17:59:29 controller: overlay ready
-2026-10-11 17:59:29 controller: init
-2026-10-11 17:59:29 startup: opening window
-2026-10-11 17:59:29 controller: hotkeys registered
-2026-10-11 17:59:29 startup: window created
-2026-10-11 17:59:29 startup: tray installed
-2026-10-11 17:59:29 startup: app ready
-2026-10-11 17:59:29 startup: first frame
-2026-10-11 17:59:31 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 17:59:31 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 17:59:31 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 17:59:31 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 17:59:31 probe libx264: ok=true 
-2026-10-11 17:59:31 probe h264_mf: ok=true 
-2026-10-11 17:59:31 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 17:59:31 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 17:59:31 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 17:59:31 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 17:59:31 probe libx265: ok=true 
-2026-10-11 17:59:31 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 17:59:31 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 17:59:31 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 17:59:31 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 17:59:31 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 17:59:31 controller: probe done
-2026-10-11 17:59:31 first run: preset LowEnd, hw=false
-2026-10-11 17:59:39 capture started: CPU (x264/x265) (H.264 (AVC)) via GDI (compatibility) (system memory), 960x720@30
-2026-10-11 17:59:39 Warning: Game & desktop sound isn't being recorded. The device wasn't found. It may be unplugged or disabled.
-2026-10-11 17:59:44 Success: Desktop recording saved (0:05).
-2026-10-11 17:59:52 uRec 0.1.2 starting
-2026-10-11 17:59:522026 -startup: controller started10
--11 17:59:52 controller: creating hotkeys
-2026-10-11 17:59:52 controller: creating overlay
-2026-10-11 17:59:52 controller: overlay ready
-2026-10-11 17:59:52 controller: init
-2026-10-11 17:59:52 startup: opening window
-2026-10-11 17:59:52 controller: hotkeys registered
-2026-10-11 17:59:52 startup: window created
-2026-10-11 17:59:52 startup: tray installed
-2026-10-11 17:59:52 startup: app ready
-2026-10-11 17:59:52 startup: first frame
-2026-10-11 17:59:55 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 17:59:55 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 17:59:55 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 17:59:55 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 17:59:55 probe libx264: ok=true 
-2026-10-11 17:59:55 probe h264_mf: ok=true 
-2026-10-11 17:59:55 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 17:59:55 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 17:59:55 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 17:59:55 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 17:59:55 probe libx265: ok=true 
-2026-10-11 17:59:55 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 17:59:55 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 17:59:55 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 17:59:55 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 17:59:55 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 17:59:55 controller: probe done
-2026-10-11 17:59:58 uRec 0.1.2 starting
-2026-10-11 17:59:58 startup: controller started
-2026-10-11 17:59:58 controller: creating hotkeys
-2026-10-11 17:59:58 controller: creating overlay
-2026-10-11 17:59:58 controller: overlay ready
-2026-10-11 17:59:58 controller: init
-2026-10-11 17:59:58 startup: opening window
-2026-10-11 17:59:58 controller: hotkeys registered
-2026-10-11 17:59:58 startup: window created
-2026-10-11 17:59:58 startup: tray installed
-2026-10-11 17:59:58 startup: app ready
-2026-10-11 17:59:58 startup: first frame
-2026-10-11 18:00:00 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:00 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:00 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:00 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:00 probe libx264: ok=true 
-2026-10-11 18:00:00 probe h264_mf: ok=true 
-2026-10-11 18:00:00 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:00 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:00 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:00 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:00 probe libx265: ok=true 
-2026-10-11 18:00:00 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:00 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:00 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:00 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:00 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:00 controller: probe done
-2026-10-11 18:00:04 uRec 0.1.2 starting
-2026-10-11 18:00:04 startup: controller started
-2026-10-11 18:00:04 controller: creating hotkeys
-2026-10-11 18:00:04 controller: creating overlay
-2026-10-11 18:00:04 controller: overlay ready
-2026-10-11 18:00:04 controller: init
-2026-10-11 18:00:04 startup: opening window
-2026-10-11 18:00:04 controller: hotkeys registered
-2026-10-11 18:00:04 startup: window created
-2026-10-11 18:00:04 startup: tray installed
-2026-10-11 18:00:04 startup: app ready
-2026-10-11 18:00:04 startup: first frame
-2026-10-11 18:00:06 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:06 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:06 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:06 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:06 probe libx264: ok=true 
-2026-10-11 18:00:06 probe h264_mf: ok=true 
-2026-10-11 18:00:06 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:06 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:06 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:06 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:06 probe libx265: ok=true 
-2026-10-11 18:00:06 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:06 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:06 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:06 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:06 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:06 controller: probe done
-2026-10-11 18:00:10 uRec 0.1.2 starting
-2026-10-11 18:00:10 startup: controller started
-2026-10-11 18:00:10 controller: creating hotkeys
-2026-10-11 18:00:10 controller: creating overlay
-2026-10-11 18:00:10 controller: overlay ready
-2026-10-11 18:00:10 controller: init
-2026-10-11 18:00:10 startup: opening window
-2026-10-11 18:00:10 controller: hotkeys registered
-2026-10-11 18:00:10 startup: window created
-2026-10-11 18:00:10 startup: tray installed
-2026-10-11 18:00:10 startup: app ready
-2026-10-11 18:00:10 startup: first frame
-2026-10-11 18:00:12 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:12 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:12 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:12 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:12 probe libx264: ok=true 
-2026-10-11 18:00:12 probe h264_mf: ok=true 
-2026-10-11 18:00:12 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:12 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:12 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:12 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:12 probe libx265: ok=true 
-2026-10-11 18:00:12 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:12 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:12 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:12 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:12 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:12 controller: probe done
-2026-10-11 18:00:16 uRec 0.1.2 starting
-2026-10-11 18:00:16 startup: controller started
-2026-10-11 18:00:16 controller: creating hotkeys
-2026-10-11 18:00:16 controller: creating overlay
-2026-10-11 18:00:16 controller: overlay ready
-2026-10-11 18:00:16 controller: init
-2026-10-11 18:00:16 startup: opening window
-2026-10-11 18:00:16 controller: hotkeys registered
-2026-10-11 18:00:16 startup: window created
-2026-10-11 18:00:16 startup: tray installed
-2026-10-11 18:00:16 startup: app ready
-2026-10-11 18:00:16 startup: first frame
-2026-10-11 18:00:18 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:18 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:18 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:18 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:18 probe libx264: ok=true 
-2026-10-11 18:00:18 probe h264_mf: ok=true 
-2026-10-11 18:00:18 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:18 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:18 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:18 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:18 probe libx265: ok=true 
-2026-10-11 18:00:18 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:18 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:18 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:18 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:18 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:18 controller: probe done
-2026-10-11 18:00:22 uRec 0.1.2 starting
-2026-10-11 18:00:22 startup: controller started
-2026-10-11 18:00:22 controller: creating hotkeys
-2026-10-11 18:00:22 controller: creating overlay
-2026-10-11 18:00:22 controller: overlay ready
-2026-10-11 18:00:22 controller: init
-2026-10-11 18:00:22 startup: opening window
-2026-10-11 18:00:22 controller: hotkeys registered
-2026-10-11 18:00:22 startup: window created
-2026-10-11 18:00:22 startup: tray installed
-2026-10-11 18:00:22 startup: app ready
-2026-10-11 18:00:22 startup: first frame
-2026-10-11 18:00:24 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:24 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:24 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:24 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:24 probe libx264: ok=true 
-2026-10-11 18:00:24 probe h264_mf: ok=true 
-2026-10-11 18:00:24 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:24 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:24 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:24 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:24 probe libx265: ok=true 
-2026-10-11 18:00:24 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:24 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:24 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:24 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:24 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:24 controller: probe done
-2026-10-11 18:00:28 uRec 0.1.2 starting
-2026-10-11 18:00:28 startup: controller started
-2026-10-11 18:00:28 controller: creating hotkeys
-2026-10-11 18:00:28 controller: creating overlay
-2026-10-11 18:00:28 controller: overlay ready
-2026-10-11 18:00:28 controller: init
-2026-10-11 18:00:28 startup: opening window
-2026-10-11 18:00:28 controller: hotkeys registered
-2026-10-11 18:00:28 startup: window created
-2026-10-11 18:00:28 startup: tray installed
-2026-10-11 18:00:28 startup: app ready
-2026-10-11 18:00:28 startup: first frame
-2026-10-11 18:00:30 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:30 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:30 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:30 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:30 probe libx264: ok=true 
-2026-10-11 18:00:30 probe h264_mf: ok=true 
-2026-10-11 18:00:30 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:30 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:30 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:30 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:30 probe libx265: ok=true 
-2026-10-11 18:00:30 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:30 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:30 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:30 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:30 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:30 controller: probe done
-2026-10-11 18:00:34 uRec 0.1.2 starting
-2026-10-11 18:00:34 startup: controller started
-2026-10-11 18:00:34 controller: creating hotkeys
-2026-10-11 18:00:34 controller: creating overlay
-2026-10-11 18:00:34 controller: overlay ready
-2026-10-11 18:00:34 controller: init
-2026-10-11 18:00:34 startup: opening window
-2026-10-11 18:00:34 controller: hotkeys registered
-2026-10-11 18:00:34 startup: window created
-2026-10-11 18:00:34 startup: tray installed
-2026-10-11 18:00:34 startup: app ready
-2026-10-11 18:00:34 startup: first frame
-2026-10-11 18:00:36 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:36 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:36 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:36 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:36 probe libx264: ok=true 
-2026-10-11 18:00:36 probe h264_mf: ok=true 
-2026-10-11 18:00:36 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:36 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:36 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:36 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:36 probe libx265: ok=true 
-2026-10-11 18:00:36 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:36 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:36 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:36 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:36 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:36 controller: probe done
-2026-10-11 18:00:40 uRec 0.1.2 starting
-2026-10-11 18:00:40 startup: controller started
-2026-10-11 18:00:40 controller: creating hotkeys
-2026-10-11 18:00:40 controller: creating overlay
-2026-10-11 18:00:40 controller: overlay ready
-2026-10-11 18:00:40 controller: init
-2026-10-11 18:00:40 startup: opening window
-2026-10-11 18:00:40 controller: hotkeys registered
-2026-10-11 18:00:41 startup: window created
-2026-10-11 18:00:41 startup: tray installed
-2026-10-11 18:00:41 startup: app ready
-2026-10-11 18:00:41 startup: first frame
-2026-10-11 18:00:42 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:42 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:42 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:42 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:42 probe libx264: ok=true 
-2026-10-11 18:00:42 probe h264_mf: ok=true 
-2026-10-11 18:00:42 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:42 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:42 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:42 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:42 probe libx265: ok=true 
-2026-10-11 18:00:42 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:42 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:42 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:42 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:42 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:42 controller: probe done
-2026-10-11 18:00:46 uRec 0.1.2 starting
-2026-10-11 18:00:46 startup: controller started
-2026-10-11 18:00:46 controller: creating hotkeys
-2026-10-11 18:00:46 controller: creating overlay
-2026-10-11 18:00:46 controller: overlay ready
-2026-10-11 18:00:46 controller: init
-2026-10-11 18:00:46 startup: opening window
-2026-10-11 18:00:47 controller: hotkeys registered
-2026-10-11 18:00:47 startup: window created
-2026-10-11 18:00:47 startup: tray installed
-2026-10-11 18:00:47 startup: app ready
-2026-10-11 18:00:47 startup: first frame
-2026-10-11 18:00:48 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:48 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:48 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:48 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:48 probe libx264: ok=true 
-2026-10-11 18:00:48 probe h264_mf: ok=true 
-2026-10-11 18:00:48 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:48 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:48 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:48 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:48 probe libx265: ok=true 
-2026-10-11 18:00:48 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:48 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:48 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:48 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:48 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:48 controller: probe done
-2026-10-11 18:00:53 uRec 0.1.2 starting
-2026-10-11 18:00:53 startup: controller started
-2026-10-11 18:00:53 controller: creating hotkeys
-2026-10-11 18:00:53 controller: creating overlay
-2026-10-11 18:00:53 controller: overlay ready
-2026-10-11 18:00:53 controller: init
-2026-10-11 18:00:53 startup: opening window
-2026-10-11 18:00:53 controller: hotkeys registered
-2026-10-11 18:00:53 startup: window created
-2026-10-11 18:00:53 startup: tray installed
-2026-10-11 18:00:53 startup: app ready
-2026-10-11 18:00:53 startup: first frame
-2026-10-11 18:00:55 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:55 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:55 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:55 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:00:55 probe libx264: ok=true 
-2026-10-11 18:00:55 probe h264_mf: ok=true 
-2026-10-11 18:00:55 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:55 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:55 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:55 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:55 probe libx265: ok=true 
-2026-10-11 18:00:55 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:00:55 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:00:55 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:00:55 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:00:55 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:00:55 controller: probe done
-2026-10-11 18:00:59 uRec 0.1.2 starting
-2026-10-11 18:00:59 startup: controller started
-2026-10-11 18:00:59 controller: creating hotkeys
-2026-10-11 18:00:59 controller: creating overlay
-2026-10-11 18:00:59 controller: overlay ready
-2026-10-11 18:00:59 controller: init
-2026-10-11 18:00:59 startup: opening window
-2026-10-11 18:00:59 controller: hotkeys registered
-2026-10-11 18:00:59 startup: window created
-2026-10-11 18:00:59 startup: tray installed
-2026-10-11 18:00:59 startup: app ready
-2026-10-11 18:00:59 startup: first frame
-2026-10-11 18:01:01 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:01 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:01 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:01 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:01:01 probe libx264: ok=true 
-2026-10-11 18:01:01 probe h264_mf: ok=true 
-2026-10-11 18:01:01 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:01 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:01 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:01 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:01:01 probe libx265: ok=true 
-2026-10-11 18:01:01 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:01:01 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:01 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:01 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:01 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:01:01 controller: probe done
-2026-10-11 18:01:05 uRec 0.1.2 starting
-2026-10-11 18:01:05 startup: controller started
-2026-10-11 18:01:05 controller: creating hotkeys
-2026-10-11 18:01:05 controller: creating overlay
-2026-10-11 18:01:05 controller: overlay ready
-2026-10-11 18:01:05 controller: init
-2026-10-11 18:01:05 startup: opening window
-2026-10-11 18:01:05 controller: hotkeys registered
-2026-10-11 18:01:05 startup: window created
-2026-10-11 18:01:05 startup: tray installed
-2026-10-11 18:01:05 startup: app ready
-2026-10-11 18:01:05 startup: first frame
-2026-10-11 18:01:06 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:06 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:06 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:06 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:01:06 probe libx264: ok=true 
-2026-10-11 18:01:06 probe h264_mf: ok=true 
-2026-10-11 18:01:06 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:06 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:06 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:06 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:01:06 probe libx265: ok=true 
-2026-10-11 18:01:06 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:01:06 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:06 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:06 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:06 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:01:06 controller: probe done
-2026-10-11 18:01:11 uRec 0.1.2 starting
-2026-10-11 18:01:112026 -startup: controller started10
--11 18:01:11 controller: creating hotkeys
-2026-10-11 18:01:11 controller: creating overlay
-2026-10-11 18:01:11 controller: overlay ready
-2026-10-11 18:01:11 controller: init
-2026-10-11 18:01:11 startup: opening window
-2026-10-11 18:01:11 controller: hotkeys registered
-2026-10-11 18:01:11 startup: window created
-2026-10-11 18:01:11 startup: tray installed
-2026-10-11 18:01:11 startup: app ready
-2026-10-11 18:01:11 startup: first frame
-2026-10-11 18:01:12 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:12 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:12 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:12 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:01:12 probe libx264: ok=true 
-2026-10-11 18:01:12 probe h264_mf: ok=true 
-2026-10-11 18:01:12 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:12 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:12 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:12 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:01:12 probe libx265: ok=true 
-2026-10-11 18:01:12 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:01:12 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:12 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:12 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:12 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:01:12 controller: probe done
-2026-10-11 18:01:17 uRec 0.1.2 starting
-2026-10-11 18:01:17 startup: controller started
-2026-10-11 18:01:17 controller: creating hotkeys
-2026-10-11 18:01:17 controller: creating overlay
-2026-10-11 18:01:17 controller: overlay ready
-2026-10-11 18:01:17 controller: init
-2026-10-11 18:01:17 startup: opening window
-2026-10-11 18:01:17 controller: hotkeys registered
-2026-10-11 18:01:17 startup: window created
-2026-10-11 18:01:17 startup: tray installed
-2026-10-11 18:01:17 startup: app ready
-2026-10-11 18:01:17 startup: first frame
-2026-10-11 18:01:18 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:18 probe h264_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:18 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:18 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
-2026-10-11 18:01:18 probe libx264: ok=true 
-2026-10-11 18:01:18 probe h264_mf: ok=true 
-2026-10-11 18:01:18 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:18 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:18 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:18 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:01:18 probe libx265: ok=true 
-2026-10-11 18:01:18 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
-2026-10-11 18:01:18 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
-2026-10-11 18:01:18 probe av1_amf: ok=false No AMD AMF hardware or driver found.
-2026-10-11 18:01:18 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
-2026-10-11 18:01:18 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
-2026-10-11 18:01:18 controller: probe done
+2026-10-11 18:18:38 uRec 0.1.2 starting
+2026-10-11 18:18:38 startup: controller started
+2026-10-11 18:18:38 controller: creating hotkeys
+2026-10-11 18:18:38 controller: creating overlay
+2026-10-11 18:18:38 controller: overlay ready
+2026-10-11 18:18:38 controller: init
+2026-10-11 18:18:38 startup: opening window
+2026-10-11 18:18:38 controller: hotkeys registered
+2026-10-11 18:18:38 startup: window created
+2026-10-11 18:18:38 startup: tray installed
+2026-10-11 18:18:38 startup: app ready
+2026-10-11 18:18:38 startup: first frame
+2026-10-11 18:18:41 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:18:41 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:18:41 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:18:41 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:18:41 probe libx264: ok=true 
+2026-10-11 18:18:41 probe h264_mf: ok=true 
+2026-10-11 18:18:41 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:18:41 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:18:41 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:18:41 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:18:41 probe libx265: ok=true 
+2026-10-11 18:18:41 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:18:41 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:18:41 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:18:41 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:18:41 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:18:41 controller: probe done
+2026-10-11 18:18:41 first run: preset LowEnd, hw=false
+2026-10-11 18:18:49 capture started: CPU (x264/x265) (H.264 (AVC)) via GDI (compatibility) (system memory), 960x720@30
+2026-10-11 18:18:49 Warning: Game & desktop sound isn't being recorded. The device wasn't found. It may be unplugged or disabled.
+2026-10-11 18:18:54 Success: Desktop recording saved (0:04).
+2026-10-11 18:19:01 uRec 0.1.2 starting
+2026-10-11 18:19:01 startup: controller started
+2026-10-11 18:19:01 controller: creating hotkeys
+2026-10-11 18:19:01 controller: creating overlay
+2026-10-11 18:19:01 controller: overlay ready
+2026-10-11 18:19:01 controller: init
+2026-10-11 18:19:01 startup: opening window
+2026-10-11 18:19:01 controller: hotkeys registered
+2026-10-11 18:19:01 startup: window created
+2026-10-11 18:19:01 startup: tray installed
+2026-10-11 18:19:01 startup: app ready
+2026-10-11 18:19:01 startup: first frame
+2026-10-11 18:19:04 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:04 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:04 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:04 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:19:04 probe libx264: ok=true 
+2026-10-11 18:19:04 probe h264_mf: ok=true 
+2026-10-11 18:19:04 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:04 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:04 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:04 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:04 probe libx265: ok=true 
+2026-10-11 18:19:04 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:04 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:04 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:04 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:04 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:19:04 controller: probe done
+2026-10-11 18:19:09 uRec 0.1.2 starting
+2026-10-11 18:19:09 startup: controller started
+2026-10-11 18:19:09 controller: creating hotkeys
+2026-10-11 18:19:09 controller: creating overlay
+2026-10-11 18:19:09 controller: overlay ready
+2026-10-11 18:19:09 controller: init
+2026-10-11 18:19:09 startup: opening window
+2026-10-11 18:19:09 controller: hotkeys registered
+2026-10-11 18:19:09 startup: window created
+2026-10-11 18:19:09 startup: tray installed
+2026-10-11 18:19:09 startup: app ready
+2026-10-11 18:19:09 startup: first frame
+2026-10-11 18:19:11 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:11 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:11 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:11 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:19:11 probe libx264: ok=true 
+2026-10-11 18:19:11 probe h264_mf: ok=true 
+2026-10-11 18:19:11 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:11 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:11 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:11 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:11 probe libx265: ok=true 
+2026-10-11 18:19:11 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:11 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:11 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:11 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:11 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:19:11 controller: probe done
+2026-10-11 18:19:17 uRec 0.1.2 starting
+2026-10-11 18:19:17 startup: controller started
+2026-10-11 18:19:17 controller: creating hotkeys
+2026-10-11 18:19:17 controller: creating overlay
+2026-10-11 18:19:17 controller: overlay ready
+2026-10-11 18:19:17 controller: init
+2026-10-11 18:19:17 startup: opening window
+2026-10-11 18:19:17 controller: hotkeys registered
+2026-10-11 18:19:17 startup: window created
+2026-10-11 18:19:17 startup: tray installed
+2026-10-11 18:19:17 startup: app ready
+2026-10-11 18:19:17 startup: first frame
+2026-10-11 18:19:19 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:19 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:19 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:19 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:19:19 probe libx264: ok=true 
+2026-10-11 18:19:19 probe h264_mf: ok=true 
+2026-10-11 18:19:19 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:19 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:19 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:19 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:19 probe libx265: ok=true 
+2026-10-11 18:19:19 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:19 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:19 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:19 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:19 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:19:19 controller: probe done
+2026-10-11 18:19:25 uRec 0.1.2 starting
+2026-10-11 18:19:25 startup: controller started
+2026-10-11 18:19:25 controller: creating hotkeys
+2026-10-11 18:19:25 controller: creating overlay
+2026-10-11 18:19:25 controller: overlay ready
+2026-10-11 18:19:25 controller: init
+2026-10-11 18:19:25 startup: opening window
+2026-10-11 18:19:25 controller: hotkeys registered
+2026-10-11 18:19:25 startup: window created
+2026-10-11 18:19:25 startup: tray installed
+2026-10-11 18:19:25 startup: app ready
+2026-10-11 18:19:25 startup: first frame
+2026-10-11 18:19:27 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:27 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:27 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:27 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:19:27 probe libx264: ok=true 
+2026-10-11 18:19:27 probe h264_mf: ok=true 
+2026-10-11 18:19:27 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:27 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:27 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:27 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:27 probe libx265: ok=true 
+2026-10-11 18:19:27 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:27 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:27 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:27 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:27 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:19:27 controller: probe done
+2026-10-11 18:19:28 capture started: CPU (x264/x265) (H.264 (AVC)) via GDI (compatibility) (system memory), 960x720@30
+2026-10-11 18:19:28 Warning: Game & desktop sound isn't being recorded. The device wasn't found. It may be unplugged or disabled.
+2026-10-11 18:19:34 setup test: Capture and encoder start = Some(true) (CPU (x264/x265) (H.264 (AVC)) via GDI (compatibility), 960×720 at 30 FPS)
+2026-10-11 18:19:34 setup test: Game and desktop sound = Some(false) (The device wasn't found. It may be unplugged or disabled.)
+2026-10-11 18:19:34 setup test: Microphone = None (Turned off in Settings › Audio.)
+2026-10-11 18:19:34 setup test: Recording ran for 5 seconds = Some(true) (167 frames encoded, 9 frames dropped)
+2026-10-11 18:19:34 setup test: File saved and finalized = Some(true) (515 KB written, crash-safe MP4)
+2026-10-11 18:19:34 setup test: Video plays back = Some(true) (193 frames of h264 960×720 decoded without errors (6.4 s))
+2026-10-11 18:19:56 uRec 0.1.2 starting
+2026-10-11 18:19:56 startup: controller started
+2026-10-11 18:19:56 controller: creating hotkeys
+2026-10-11 18:19:56 controller: creating overlay
+2026-10-11 18:19:56 controller: overlay ready
+2026-10-11 18:19:56 controller: init
+2026-10-11 18:19:56 startup: opening window
+2026-10-11 18:19:56 controller: hotkeys registered
+2026-10-11 18:19:57 startup: window created
+2026-10-11 18:19:57 startup: tray installed
+2026-10-11 18:19:57 startup: app ready
+2026-10-11 18:19:57 startup: first frame
+2026-10-11 18:19:59 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:59 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:59 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:59 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:19:59 probe libx264: ok=true 
+2026-10-11 18:19:59 probe h264_mf: ok=true 
+2026-10-11 18:19:59 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:59 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:59 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:59 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:59 probe libx265: ok=true 
+2026-10-11 18:19:59 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:19:59 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:19:59 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:19:59 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:19:59 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:19:59 controller: probe done
+2026-10-11 18:20:03 uRec 0.1.2 starting
+2026-10-11 18:20:03 startup: controller started
+2026-10-11 18:20:03 controller: creating hotkeys
+2026-10-11 18:20:03 controller: creating overlay
+2026-10-11 18:20:03 controller: overlay ready
+2026-10-11 18:20:03 controller: init
+2026-10-11 18:20:03 startup: opening window
+2026-10-11 18:20:03 controller: hotkeys registered
+2026-10-11 18:20:03 startup: window created
+2026-10-11 18:20:03 startup: tray installed
+2026-10-11 18:20:03 startup: app ready
+2026-10-11 18:20:03 startup: first frame
+2026-10-11 18:20:04 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:04 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:04 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:04 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:20:04 probe libx264: ok=true 
+2026-10-11 18:20:04 probe h264_mf: ok=true 
+2026-10-11 18:20:04 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:04 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:04 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:04 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:04 probe libx265: ok=true 
+2026-10-11 18:20:04 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:04 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:04 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:04 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:04 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:20:04 controller: probe done
+2026-10-11 18:20:09 uRec 0.1.2 starting
+2026-10-11 18:20:09 startup: controller started
+2026-10-11 18:20:09 controller: creating hotkeys
+2026-10-11 18:20:09 controller: creating overlay
+2026-10-11 18:20:09 controller: overlay ready
+2026-10-11 18:20:09 controller: init
+2026-10-11 18:20:09 startup: opening window
+2026-10-11 18:20:09 controller: hotkeys registered
+2026-10-11 18:20:09 startup: window created
+2026-10-11 18:20:09 startup: tray installed
+2026-10-11 18:20:09 startup: app ready
+2026-10-11 18:20:09 startup: first frame
+2026-10-11 18:20:10 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:10 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:10 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:10 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:20:10 probe libx264: ok=true 
+2026-10-11 18:20:10 probe h264_mf: ok=true 
+2026-10-11 18:20:10 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:10 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:10 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:10 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:10 probe libx265: ok=true 
+2026-10-11 18:20:10 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:10 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:10 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:10 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:10 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:20:10 controller: probe done
+2026-10-11 18:20:15 uRec 0.1.2 starting
+2026-10-11 18:20:15 startup: controller started
+2026-10-11 18:20:15 controller: creating hotkeys
+2026-10-11 18:20:15 controller: creating overlay
+2026-10-11 18:20:15 controller: overlay ready
+2026-10-11 18:20:15 controller: init
+2026-10-11 18:20:15 startup: opening window
+2026-10-11 18:20:15 controller: hotkeys registered
+2026-10-11 18:20:15 startup: window created
+2026-10-11 18:20:15 startup: tray installed
+2026-10-11 18:20:15 startup: app ready
+2026-10-11 18:20:15 startup: first frame
+2026-10-11 18:20:16 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:16 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:16 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:16 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:20:16 probe libx264: ok=true 
+2026-10-11 18:20:16 probe h264_mf: ok=true 
+2026-10-11 18:20:16 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:16 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:16 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:16 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:16 probe libx265: ok=true 
+2026-10-11 18:20:16 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:16 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:16 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:16 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:16 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:20:16 controller: probe done
+2026-10-11 18:20:21 uRec 0.1.2 starting
+2026-10-11 18:20:21 startup: controller started
+2026-10-11 18:20:21 controller: creating hotkeys
+2026-10-11 18:20:21 controller: creating overlay
+2026-10-11 18:20:21 controller: overlay ready
+2026-10-11 18:20:21 controller: init
+2026-10-11 18:20:21 startup: opening window
+2026-10-11 18:20:21 controller: hotkeys registered
+2026-10-11 18:20:21 startup: window created
+2026-10-11 18:20:21 startup: tray installed
+2026-10-11 18:20:21 startup: app ready
+2026-10-11 18:20:21 startup: first frame
+2026-10-11 18:20:22 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:22 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:22 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:22 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:20:22 probe libx264: ok=true 
+2026-10-11 18:20:22 probe h264_mf: ok=true 
+2026-10-11 18:20:22 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:22 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:22 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:22 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:22 probe libx265: ok=true 
+2026-10-11 18:20:22 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:22 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:22 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:22 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:22 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:20:22 controller: probe done
+2026-10-11 18:20:27 uRec 0.1.2 starting
+2026-10-11 18:20:27 startup: controller started
+2026-10-11 18:20:27 controller: creating hotkeys
+2026-10-11 18:20:27 controller: creating overlay
+2026-10-11 18:20:27 controller: overlay ready
+2026-10-11 18:20:27 controller: init
+2026-10-11 18:20:27 startup: opening window
+2026-10-11 18:20:27 controller: hotkeys registered
+2026-10-11 18:20:27 startup: window created
+2026-10-11 18:20:27 startup: tray installed
+2026-10-11 18:20:27 startup: app ready
+2026-10-11 18:20:27 startup: first frame
+2026-10-11 18:20:28 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:28 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:28 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:28 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:20:28 probe libx264: ok=true 
+2026-10-11 18:20:28 probe h264_mf: ok=true 
+2026-10-11 18:20:28 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:28 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:28 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:28 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:28 probe libx265: ok=true 
+2026-10-11 18:20:28 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:28 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:28 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:28 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:28 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:20:28 controller: probe done
+2026-10-11 18:20:33 uRec 0.1.2 starting
+2026-10-11 18:20:33 startup: controller started
+2026-10-11 18:20:33 controller: creating hotkeys
+2026-10-11 18:20:33 controller: creating overlay
+2026-10-11 18:20:33 controller: overlay ready
+2026-10-11 18:20:33 controller: init
+2026-10-11 18:20:33 startup: opening window
+2026-10-11 18:20:33 controller: hotkeys registered
+2026-10-11 18:20:33 startup: window created
+2026-10-11 18:20:33 startup: tray installed
+2026-10-11 18:20:33 startup: app ready
+2026-10-11 18:20:33 startup: first frame
+2026-10-11 18:20:34 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:34 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:34 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:34 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:20:34 probe libx264: ok=true 
+2026-10-11 18:20:34 probe h264_mf: ok=true 
+2026-10-11 18:20:34 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:34 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:34 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:34 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:34 probe libx265: ok=true 
+2026-10-11 18:20:34 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:34 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:34 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:34 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:34 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:20:34 controller: probe done
+2026-10-11 18:20:39 uRec 0.1.2 starting
+2026-10-11 18:20:39 startup: controller started
+2026-10-11 18:20:39 controller: creating hotkeys
+2026-10-11 18:20:39 controller: creating overlay
+2026-10-11 18:20:39 controller: overlay ready
+2026-10-11 18:20:39 controller: init
+2026-10-11 18:20:39 startup: opening window
+2026-10-11 18:20:39 controller: hotkeys registered
+2026-10-11 18:20:39 startup: window created
+2026-10-11 18:20:39 startup: tray installed
+2026-10-11 18:20:39 startup: app ready
+2026-10-11 18:20:39 startup: first frame
+2026-10-11 18:20:40 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:40 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:40 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:40 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:20:40 probe libx264: ok=true 
+2026-10-11 18:20:40 probe h264_mf: ok=true 
+2026-10-11 18:20:40 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:40 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:40 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:40 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:40 probe libx265: ok=true 
+2026-10-11 18:20:40 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:40 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:40 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:40 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:40 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:20:40 controller: probe done
+2026-10-11 18:20:45 uRec 0.1.2 starting
+2026-10-11 18:20:45 startup: controller started
+2026-10-11 18:20:45 controller: creating hotkeys
+2026-10-11 18:20:45 controller: creating overlay
+2026-10-11 18:20:45 controller: overlay ready
+2026-10-11 18:20:45 controller: init
+2026-10-11 18:20:45 startup: opening window
+2026-10-11 18:20:45 controller: hotkeys registered
+2026-10-11 18:20:45 startup: window created
+2026-10-11 18:20:45 startup: tray installed
+2026-10-11 18:20:45 startup: app ready
+2026-10-11 18:20:45 startup: first frame
+2026-10-11 18:20:46 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:46 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:46 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:46 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:20:46 probe libx264: ok=true 
+2026-10-11 18:20:46 probe h264_mf: ok=true 
+2026-10-11 18:20:46 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:46 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:46 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:46 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:46 probe libx265: ok=true 
+2026-10-11 18:20:46 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:46 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:46 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:46 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:46 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:20:46 controller: probe done
+2026-10-11 18:20:51 uRec 0.1.2 starting
+2026-10-11 18:20:51 startup: controller started
+2026-10-11 18:20:51 controller: creating hotkeys
+2026-10-11 18:20:51 controller: creating overlay
+2026-10-11 18:20:51 controller: overlay ready
+2026-10-11 18:20:51 controller: init
+2026-10-11 18:20:51 startup: opening window
+2026-10-11 18:20:51 controller: hotkeys registered
+2026-10-11 18:20:51 startup: window created
+2026-10-11 18:20:51 startup: tray installed
+2026-10-11 18:20:51 startup: app ready
+2026-10-11 18:20:51 startup: first frame
+2026-10-11 18:20:53 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:53 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:53 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:53 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:20:53 probe libx264: ok=true 
+2026-10-11 18:20:53 probe h264_mf: ok=true 
+2026-10-11 18:20:53 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:53 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:53 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:53 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:53 probe libx265: ok=true 
+2026-10-11 18:20:53 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:20:53 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:20:53 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:20:53 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:20:53 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:20:53 controller: probe done
+2026-10-11 18:20:57 uRec 0.1.2 starting
+2026-10-11 18:20:57 startup: controller started
+2026-10-11 18:20:57 controller: creating hotkeys
+2026-10-11 18:20:57 controller: creating overlay
+2026-10-11 18:20:57 controller: overlay ready
+2026-10-11 18:20:57 controller: init
+2026-10-11 18:20:57 startup: opening window
+2026-10-11 18:20:57 controller: hotkeys registered
+2026-10-11 18:20:57 startup: window created
+2026-10-11 18:20:57 startup: tray installed
+2026-10-11 18:20:57 startup: app ready
+2026-10-11 18:20:57 startup: first frame
+2026-10-11 18:21:00 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:00 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:00 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:00 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:21:00 probe libx264: ok=true 
+2026-10-11 18:21:00 probe h264_mf: ok=true 
+2026-10-11 18:21:00 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:00 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:00 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:00 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:00 probe libx265: ok=true 
+2026-10-11 18:21:00 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:00 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:00 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:00 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:00 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:21:00 controller: probe done
+2026-10-11 18:21:03 uRec 0.1.2 starting
+2026-10-11 18:21:03 startup: controller started
+2026-10-11 18:21:03 controller: creating hotkeys
+2026-10-11 18:21:03 controller: creating overlay
+2026-10-11 18:21:03 controller: overlay ready
+2026-10-11 18:21:03 controller: init
+2026-10-11 18:21:03 startup: opening window
+2026-10-11 18:21:03 controller: hotkeys registered
+2026-10-11 18:21:03 startup: window created
+2026-10-11 18:21:03 startup: tray installed
+2026-10-11 18:21:03 startup: app ready
+2026-10-11 18:21:03 startup: first frame
+2026-10-11 18:21:06 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:06 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:06 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:06 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:21:06 probe libx264: ok=true 
+2026-10-11 18:21:06 probe h264_mf: ok=true 
+2026-10-11 18:21:06 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:06 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:06 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:06 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:06 probe libx265: ok=true 
+2026-10-11 18:21:06 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:06 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:06 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:06 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:06 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:21:06 controller: probe done
+2026-10-11 18:21:09 uRec 0.1.2 starting
+2026-10-11 18:21:09 startup: controller started
+2026-10-11 18:21:09 controller: creating hotkeys
+2026-10-11 18:21:09 controller: creating overlay
+2026-10-11 18:21:09 controller: overlay ready
+2026-10-11 18:21:09 controller: init
+2026-10-11 18:21:09 startup: opening window
+2026-10-11 18:21:09 controller: hotkeys registered
+2026-10-11 18:21:09 startup: window created
+2026-10-11 18:21:09 startup: tray installed
+2026-10-11 18:21:09 startup: app ready
+2026-10-11 18:21:09 startup: first frame
+2026-10-11 18:21:11 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:11 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:11 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:11 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:21:11 probe libx264: ok=true 
+2026-10-11 18:21:11 probe h264_mf: ok=true 
+2026-10-11 18:21:11 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:11 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:11 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:11 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:11 probe libx265: ok=true 
+2026-10-11 18:21:11 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:11 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:11 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:11 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:11 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:21:11 controller: probe done
+2026-10-11 18:21:15 uRec 0.1.2 starting
+2026-10-11 18:21:15 startup: controller started
+2026-10-11 18:21:15 controller: creating hotkeys
+2026-10-11 18:21:15 controller: creating overlay
+2026-10-11 18:21:15 controller: overlay ready
+2026-10-11 18:21:15 controller: init
+2026-10-11 18:21:15 startup: opening window
+2026-10-11 18:21:15 controller: hotkeys registered
+2026-10-11 18:21:15 startup: window created
+2026-10-11 18:21:15 startup: tray installed
+2026-10-11 18:21:15 startup: app ready
+2026-10-11 18:21:15 startup: first frame
+2026-10-11 18:21:17 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:17 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:17 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:17 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:21:17 probe libx264: ok=true 
+2026-10-11 18:21:17 probe h264_mf: ok=true 
+2026-10-11 18:21:17 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:17 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:17 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:17 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:17 probe libx265: ok=true 
+2026-10-11 18:21:17 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:17 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:17 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:17 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:17 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:21:17 controller: probe done
+2026-10-11 18:21:21 uRec 0.1.2 starting
+2026-10-11 18:21:21 startup: controller started
+2026-10-11 18:21:21 controller: creating hotkeys
+2026-10-11 18:21:21 controller: creating overlay
+2026-10-11 18:21:21 controller: overlay ready
+2026-10-11 18:21:21 controller: init
+2026-10-11 18:21:21 startup: opening window
+2026-10-11 18:21:21 controller: hotkeys registered
+2026-10-11 18:21:21 startup: window created
+2026-10-11 18:21:21 startup: tray installed
+2026-10-11 18:21:21 startup: app ready
+2026-10-11 18:21:21 startup: first frame
+2026-10-11 18:21:23 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:23 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:23 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:23 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 18:21:23 probe libx264: ok=true 
+2026-10-11 18:21:23 probe h264_mf: ok=true 
+2026-10-11 18:21:23 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:23 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:23 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:23 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:23 probe libx265: ok=true 
+2026-10-11 18:21:23 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 18:21:23 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 18:21:23 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 18:21:23 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 18:21:23 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 18:21:23 controller: probe done
