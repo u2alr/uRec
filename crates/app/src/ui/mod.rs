@@ -87,6 +87,9 @@ pub struct App {
     applied_theme: Option<(bool, u32)>,
     pub startup_message: Option<String>,
     exit_requested: bool,
+    /// "Restart now" was pressed: install the waiting update and come back.
+    restart_requested: bool,
+    pub updater: crate::update::Updater,
     first_frame_logged: bool,
 }
 
@@ -107,6 +110,12 @@ impl App {
             Arc::new(move || ctx2.request_repaint()),
         );
         library.refresh(&s.output_dir());
+        let ctx3 = cc.egui_ctx.clone();
+        let updater = crate::update::Updater::start(
+            s.general.check_updates,
+            s.general.auto_update,
+            Arc::new(move || ctx3.request_repaint()),
+        );
         let custom_replay = s.replay.seconds.to_string();
         let mut app = App {
             ctl,
@@ -128,6 +137,8 @@ impl App {
             applied_theme: None,
             startup_message,
             exit_requested: false,
+            restart_requested: false,
+            updater,
             first_frame_logged: false,
         };
         app.refresh_devices(true);
@@ -170,6 +181,14 @@ impl App {
             self.push_notice(Level::Error, format!("Settings couldn't be saved: {e}"));
         }
         self.ctl.send(Command::Apply(Box::new(self.s.clone())));
+        self.updater.configure(self.s.general.check_updates, self.s.general.auto_update);
+    }
+
+    /// Quit, install the downloaded update and start again. Only offered while nothing is recording.
+    pub fn restart_to_update(&mut self) {
+        self.restart_requested = true;
+        self.exit_requested = true;
+        self.ctl.shutdown_and_wait(Duration::from_secs(60));
     }
 
     pub fn push_notice(&self, level: Level, text: String) {
@@ -304,6 +323,19 @@ impl App {
                                 .color(if low { p.warn } else { p.faint }),
                         );
                     }
+                    // A quiet pointer to Settings when an update is waiting.
+                    let update = match self.updater.state() {
+                        crate::update::State::Ready { version } => Some(format!("Update {version} ready")),
+                        crate::update::State::Available { version, .. } => Some(format!("Update {version} available")),
+                        _ => None,
+                    };
+                    if let Some(text) = update {
+                        ui.add_space(4.0);
+                        if theme::link_button(ui, &p, &text).clicked() {
+                            self.page = Page::Settings;
+                            self.section = Section::General;
+                        }
+                    }
                 });
             },
         );
@@ -430,5 +462,11 @@ impl eframe::App for App {
 
     fn on_exit(&mut self, _gl: Option<&eframe::glow::Context>) {
         self.ctl.shutdown_and_wait(Duration::from_secs(60));
+        if self.restart_requested {
+            // Explicitly asked for, so it doesn't depend on the automatic-update switch.
+            crate::update::apply_pending(crate::update::Relaunch::Normal);
+        } else {
+            crate::update::apply_on_quit(crate::update::Relaunch::No);
+        }
     }
 }

@@ -7,6 +7,7 @@ mod settings;
 #[cfg(windows)]
 mod tray;
 mod ui;
+mod update;
 
 use controller::Controller;
 use eframe::egui;
@@ -27,6 +28,10 @@ fn main() -> eframe::Result {
     }));
     let args: Vec<String> = std::env::args().collect();
     let minimized = args.iter().any(|a| a == "--minimized");
+    // Headless update check (used by the release pipeline's end-to-end test).
+    if args.iter().any(|a| a == "--update-check") {
+        std::process::exit(update::cli_check());
+    }
     // Only one uRec at a time: a second launch brings the first one forward.
     if !urec_win::claim_single_instance("Local\\uRec.SingleInstance") {
         urec_win::show_window_titled(ui::WINDOW_TITLE);
@@ -34,6 +39,13 @@ fn main() -> eframe::Result {
     }
     let (settings, message) = Settings::load();
     controller::log(&format!("uRec {} starting", env!("CARGO_PKG_VERSION")));
+    // A verified update was downloaded last time: install it now and come back.
+    if settings.general.auto_update && update::has_pending() {
+        let relaunch = if minimized { update::Relaunch::Minimized } else { update::Relaunch::Normal };
+        if update::apply_pending(relaunch) {
+            return Ok(());
+        }
+    }
     let ctl = Controller::start(settings.clone());
     controller::log("startup: controller started");
 

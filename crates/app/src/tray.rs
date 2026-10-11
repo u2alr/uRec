@@ -55,6 +55,7 @@ pub fn install(ctl: Controller) {
         } else if e.id == quit_id {
             // Finish any recording properly before leaving.
             c.shutdown_and_wait(Duration::from_secs(90));
+            crate::update::apply_on_quit(crate::update::Relaunch::No);
             std::process::exit(0);
         }
     }));

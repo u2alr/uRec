@@ -62,6 +62,9 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: 
 
 [Run]
 Filename: "{app}\{#AppExe}"; Description: "Open uRec"; Flags: nowait postinstall skipifsilent
+; Automatic updates (uRec runs this installer with /VERYSILENT /update=1 /relaunch=...).
+Filename: "{app}\{#AppExe}"; Flags: nowait runasoriginaluser; Check: Relaunch('1')
+Filename: "{app}\{#AppExe}"; Parameters: "--minimized"; Flags: nowait runasoriginaluser; Check: Relaunch('min')
 
 [UninstallRun]
 Filename: "{sys}\taskkill.exe"; Parameters: "/im {#AppExe} /t"; Flags: runhidden; RunOnceId: "CloseApp"
@@ -73,6 +76,28 @@ Type: filesandordirs; Name: "{localappdata}\uRec"
 [Code]
 var
   RemoveSettings: Boolean;
+
+function Relaunch(Mode: String): Boolean;
+begin
+  Result := ExpandConstant('{param:relaunch|0}') = Mode;
+end;
+
+function InitializeSetup(): Boolean;
+var
+  Waited: Integer;
+begin
+  // During an automatic update uRec has just been asked to quit; give it time to finish.
+  if ExpandConstant('{param:update|0}') = '1' then
+  begin
+    Waited := 0;
+    while CheckForMutexes('Local\uRec.SingleInstance') and (Waited < 30000) do
+    begin
+      Sleep(250);
+      Waited := Waited + 250;
+    end;
+  end;
+  Result := True;
+end;
 
 function InitializeUninstall(): Boolean;
 begin

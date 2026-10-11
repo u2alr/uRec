@@ -51,7 +51,7 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, st: &Status) {
                 ui.set_max_width((ui.available_width() - 16.0).min(640.0));
                 let before = app.s.clone();
                 match app.section {
-                    Section::General => general(app, ui),
+                    Section::General => general(app, ui, st),
                     Section::Recording => recording(app, ui, st),
                     Section::Video => video_page(app, ui, st),
                     Section::Audio => audio(app, ui),
@@ -85,7 +85,7 @@ fn opts(xs: &[(&str, &str)]) -> Vec<(String, String)> {
 
 // ------------------------------------------------------------------ General
 
-fn general(app: &mut App, ui: &mut egui::Ui) {
+fn general(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     let p = app.p;
     theme::page_title(ui, &p, "General", "");
     let mut startup = urec_win::startup_enabled("uRec");
@@ -122,6 +122,80 @@ fn general(app: &mut App, ui: &mut egui::Ui) {
             theme::switch(ui, &p, &mut s.auto_adjust);
         },
     );
+    updates(app, ui, st);
+}
+
+fn updates(app: &mut App, ui: &mut egui::Ui, st: &Status) {
+    use crate::update::State;
+    let p = app.p;
+    theme::group_title(ui, &p, "Updates");
+    let state = app.updater.state();
+    let installed = crate::update::is_installed();
+    let current = crate::update::current_version();
+    let (status, help) = match &state {
+        State::Idle => (format!("uRec {current}"), String::new()),
+        State::Checking => (format!("uRec {current}"), "Checking for updates…".into()),
+        State::UpToDate => (format!("uRec {current}"), "You have the latest version.".into()),
+        State::Available { version, .. } if !installed => (
+            format!("uRec {version} is available"),
+            "This is a portable copy, so it isn't updated automatically.".into(),
+        ),
+        State::Available { version, .. } => (format!("uRec {version} is available"), String::new()),
+        State::Downloading { version, percent } => (
+            format!("Downloading uRec {version}"),
+            percent.map(|x| format!("{x}%")).unwrap_or_else(|| "Starting…".into()),
+        ),
+        State::Ready { version } => (
+            format!("uRec {version} is ready to install"),
+            "It installs when you quit uRec, or the next time it starts.".into(),
+        ),
+        State::InstallFailed { version } => {
+            (format!("uRec {version} didn't install"), "Download the installer from GitHub to update by hand.".into())
+        }
+        State::Failed(e) => (format!("uRec {current}"), format!("Couldn't check: {e}")),
+    };
+    theme::row(ui, &p, &status, &help, |ui| match &state {
+        State::Ready { .. } => {
+            let busy = st.busy();
+            let r = ui.add_enabled_ui(!busy, |ui| theme::primary_button(ui, &p, "Restart now")).inner;
+            let r = r.on_disabled_hover_text("Stop recording and Instant Replay first.");
+            if r.clicked() {
+                app.restart_to_update();
+            }
+        }
+        State::Available { .. } | State::InstallFailed { .. } => {
+            let url = match &state {
+                State::Available { url, .. } => url.as_str(),
+                _ => crate::update::RELEASES_PAGE,
+            };
+            if theme::quiet_button(ui, &p, "Open download page").clicked() {
+                urec_win::open_url(url);
+            }
+        }
+        State::Checking | State::Downloading { .. } => {
+            ui.add(egui::Spinner::new().size(16.0).color(p.muted));
+        }
+        _ => {
+            if theme::quiet_button(ui, &p, "Check now").clicked() {
+                app.updater.check_now();
+            }
+        }
+    });
+    let s = &mut app.s.general;
+    theme::row(ui, &p, "Check for updates", "Asks GitHub once a day. Nothing else is sent.", |ui| {
+        theme::switch(ui, &p, &mut s.check_updates);
+    });
+    if installed {
+        theme::row(
+            ui,
+            &p,
+            "Install updates automatically",
+            "Downloads in the background, checks the file's SHA-256 and installs when you quit. Never during a recording.",
+            |ui| {
+                theme::switch(ui, &p, &mut s.auto_update);
+            },
+        );
+    }
 }
 
 // ------------------------------------------------------------------ Recording

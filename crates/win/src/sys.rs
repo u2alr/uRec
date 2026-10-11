@@ -248,6 +248,20 @@ pub fn open_file(path: &Path) {
     }
 }
 
+/// Open an https:// link in the default browser (nothing else is accepted).
+pub fn open_url(url: &str) {
+    use windows::Win32::UI::Shell::ShellExecuteW;
+    use windows::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
+    if !url.starts_with("https://") || url.contains(['"', ' ']) {
+        return;
+    }
+    let w = wide(url);
+    let verb = wide("open");
+    unsafe {
+        ShellExecuteW(None, PCWSTR(verb.as_ptr()), PCWSTR(w.as_ptr()), PCWSTR::null(), PCWSTR::null(), SW_SHOWNORMAL);
+    }
+}
+
 /// The user's Videos folder, wherever Windows or OneDrive put it.
 pub fn videos_dir() -> Option<std::path::PathBuf> {
     use windows::Win32::UI::Shell::{FOLDERID_Videos, SHGetKnownFolderPath, KF_FLAG_DEFAULT};

@@ -121,3 +121,16 @@ pub fn open_file(path: &Path) {
 pub fn videos_dir() -> Option<std::path::PathBuf> {
     None
 }
+
+pub fn https_get(_url: &str, _user_agent: &str, _headers: &[&str], _max_bytes: usize) -> Result<Vec<u8>, String> {
+    Err("HTTPS is only implemented on Windows".into())
+}
+pub fn https_download(
+    _url: &str,
+    _user_agent: &str,
+    _dest: &Path,
+    _progress: &mut dyn FnMut(u64, Option<u64>),
+) -> Result<u64, String> {
+    Err("HTTPS is only implemented on Windows".into())
+}
+pub fn open_url(_url: &str) {}

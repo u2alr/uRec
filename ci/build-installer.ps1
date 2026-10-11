@@ -54,3 +54,9 @@ if (-not $iscc) { throw "Inno Setup not found" }
 & $iscc.FullName /Q "/DAppVersion=$Version" "/DSourceDir=..\$dist" installer\uRec.iss
 if ($LASTEXITCODE -ne 0) { throw "ISCC failed" }
 Get-ChildItem dist -File | ForEach-Object { "{0}  {1:N1} MB  sha256 {2}" -f $_.Name, ($_.Length / 1MB), (Get-FileHash $_.FullName).Hash }
+
+# Checksums for the release page and for uRec's automatic updater (sha256sum format).
+$sums = Get-ChildItem dist -File | Where-Object { $_.Name -match '-(setup\.exe|portable\.zip)$' } | Sort-Object Name |
+    ForEach-Object { "{0}  {1}" -f (Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower(), $_.Name }
+[IO.File]::WriteAllText("$PWD\dist\SHA256SUMS.txt", (($sums -join "`n") + "`n"))
+"SHA256SUMS.txt:"; Get-Content dist\SHA256SUMS.txt

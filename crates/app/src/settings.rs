@@ -54,6 +54,10 @@ pub struct General {
     pub performance_mode: bool,
     /// Lower Instant Replay quality automatically if encoding can't keep up (always announced).
     pub auto_adjust: bool,
+    /// Ask GitHub once a day whether a newer uRec exists.
+    pub check_updates: bool,
+    /// Download verified updates in the background and install them when uRec quits or restarts.
+    pub auto_update: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -177,6 +181,8 @@ impl Default for General {
             sound_on_save: true,
             performance_mode: false,
             auto_adjust: false,
+            check_updates: true,
+            auto_update: true,
         }
     }
 }

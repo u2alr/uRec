@@ -12,6 +12,8 @@ mod display;
 #[cfg(windows)]
 mod hotkeys;
 #[cfg(windows)]
+mod http;
+#[cfg(windows)]
 mod overlay;
 #[cfg(windows)]
 mod sys;
@@ -25,6 +27,8 @@ pub use audio::{audio_inputs, audio_outputs, AudioFeed};
 pub use display::{foreground_window, monitors, windows};
 #[cfg(windows)]
 pub use hotkeys::Hotkeys;
+#[cfg(windows)]
+pub use http::{https_download, https_get};
 #[cfg(windows)]
 pub use overlay::Overlay;
 #[cfg(windows)]

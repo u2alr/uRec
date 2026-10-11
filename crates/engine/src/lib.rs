@@ -12,6 +12,7 @@ pub mod probe;
 pub mod process;
 pub mod replay;
 pub mod session;
+pub mod sha256;
 pub mod video;
 
 pub use encoder::{Backend, Encoder};
