@@ -1,60 +1,17 @@
-   Compiling egui v0.36.2
-   Compiling wgpu-core-deps-windows-linux-android v30.0.1
-   Compiling serde_spanned v1.1.2
-   Compiling toml_datetime v1.1.2+spec-1.1.0
-   Compiling glutin v0.32.3
-   Compiling wgpu v30.0.1
-   Compiling error-code v3.4.0
-   Compiling byteorder-lite v0.1.0
-   Compiling toml_writer v1.1.3+spec-1.1.0
-   Compiling semver v1.0.28
-   Compiling rustc_version v0.4.1
-   Compiling toml v1.1.8+spec-1.1.0
-   Compiling image v0.25.10
-   Compiling winreg v0.56.0
-   Compiling clipboard-win v5.4.1
-   Compiling windows-sys v0.60.2
-   Compiling vswhom v0.1.0
-   Compiling glutin-winit v0.5.0
-   Compiling web-time v1.1.0
-   Compiling zmij v1.0.23
-   Compiling muda v0.21.2
-   Compiling rustc-hash v2.1.3
-   Compiling type-map v0.5.1
-   Compiling crossbeam-channel v0.5.17
-   Compiling embed-resource v3.0.12
-   Compiling arboard v3.6.1
-   Compiling keyboard-types v0.8.3
-   Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
-   Compiling tray-icon v0.26.1
-   Compiling serde_json v1.0.152
-   Compiling serde v1.0.229
-   Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
-   Compiling egui-winit v0.36.2
-   Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
-   Compiling egui-wgpu v0.36.2
-   Compiling egui_glow v0.36.2
-   Compiling serde_derive v1.0.229
-   Compiling itoa v1.0.18
-   Compiling pollster v1.0.1
-   Compiling memchr v2.8.3
-   Compiling eframe v0.36.2
-   Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-error[E0061]: this method takes 3 arguments but 2 arguments were supplied
-   --> crates\app\src\ui\mod.rs:393:14
-    |
-393 |         self.tally(ui, &st);
-    |              ^^^^^     --- argument #2 of type `eframe::egui::Rect` is missing
-    |
-note: method defined here
-   --> crates\app\src\ui\mod.rs:244:8
-    |
-244 |     fn tally(&self, ui: &egui::Ui, rect: egui::Rect, st: &Status) {
-    |        ^^^^^                       ----------------
-help: provide the argument
-    |
-393 |         self.tally(ui, /* eframe::egui::Rect */, &st);
-    |                        +++++++++++++++++++++++++
-
-For more information about this error, try `rustc --explain E0061`.
-error: could not compile `urec` (bin "uRec") due to 1 previous error
+sample recording: True
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 11.08.32.mp4 size=732957
+light home alive=True
+light library alive=True
+light settings:general alive=True
+light settings:recording alive=True
+light settings:video alive=True
+light settings:audio alive=True
+light settings:instantreplay alive=True
+light settings:hotkeys alive=True
+light settings:storage alive=True
+light settings:appearance alive=True
+light settings:advanced alive=True
+dark home alive=True
+dark library alive=True
+dark settings:video alive=True
+dark settings:audio alive=True
