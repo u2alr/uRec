@@ -203,7 +203,8 @@ pub fn row(ui: &mut Ui, p: &Palette, label: &str, help: &str, control: impl FnOn
     ui.add_space(6.0);
     ui.horizontal(|ui| {
         let avail = ui.available_width();
-        let left = (avail * 0.52).clamp(200.0, 380.0);
+        // The label column never reaches into the control column (controls are up to ~270 px).
+        let left = (avail * 0.52).clamp(200.0, 380.0).min(avail - 290.0).max(150.0);
         ui.allocate_ui_with_layout(Vec2::new(left, 0.0), Layout::top_down(Align::Min), |ui| {
             ui.set_width(left);
             ui.label(RichText::new(label).color(p.text));
