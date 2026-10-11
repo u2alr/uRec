@@ -44,8 +44,9 @@ public static class Cap {
         int g = 0, r = 0;
         for (int i = 0; i < a.Length; i += 4) {
             int B = a[i], G = a[i + 1], R = a[i + 2];
-            if (G > 150 && R < 110 && B < 140) g++;
-            if (R > 190 && G < 110 && B < 110) r++;
+            // Icon colours: green (74,222,128) and red (248,113,113), thin strokes.
+            if (G > 170 && R < 140 && B < 170 && G - R > 70) g++;
+            if (R > 200 && G < 150 && B < 150 && R - G > 70) r++;
         }
         return new[] { g, r };
     }
@@ -110,7 +111,7 @@ $r = Film { Start-Process $Cli -ArgumentList "overlay", "--events", "saved@600",
 $s = Summarize $r.Frames 500
 $evT = 600
 if ($s) {
-    $ok = $s.Visible -ge 2150 -and $s.Visible -le 2700 -and ($s.FullFrom - $s.Start) -le 320 -and $s.MaxWidth -gt 120 -and $s.Green -gt 20
+    $ok = $s.Visible -ge 2150 -and $s.Visible -le 2700 -and ($s.FullFrom - $s.Start) -le 320 -and $s.MaxWidth -gt 120 -and $s.Green -gt 6
     Add-Result "P01" "Success pill: expands, shows the green check message, holds ~2 s, collapses (total ~2.4 s)" $ok "visible=$($s.Visible)ms (spec 2360) expand=$($s.FullFrom - $s.Start)ms full=$($s.FullTo - $s.FullFrom)ms collapse=$($s.End - $s.FullTo)ms width=$($s.MaxWidth)px green_px=$($s.Green) capture=$($s.Fps)fps"
     Save-Sheet $r.Frames "indicator-success" @(300, ($s.Start + 40), ($s.Start + 90), ($s.Start + 180), ($s.Start + 400), ($s.FullTo + 60), ($s.FullTo + 120), ($s.End + 200))
 } else { Add-Result "P01" "Success pill appears" $false "no change in the corner" }
@@ -122,7 +123,7 @@ $r.Job | Wait-Process -Timeout 10 -ErrorAction SilentlyContinue
 $r = Film { Start-Process $Cli -ArgumentList "overlay", "--events", "failed@600", "--hold", "4" -PassThru -WindowStyle Hidden } 5600
 $s = Summarize $r.Frames 500
 if ($s) {
-    Add-Result "P03" "Failure pill: red cross + 'Instant Replay Failed', held ~2.5 s" ($s.Visible -ge 2650 -and $s.Visible -le 3200 -and $s.Red -gt 20) "visible=$($s.Visible)ms (spec 2860) red_px=$($s.Red) green_px=$($s.Green)"
+    Add-Result "P03" "Failure pill: red cross + 'Instant Replay Failed', held ~2.5 s" ($s.Visible -ge 2650 -and $s.Visible -le 3200 -and $s.Red -gt 6) "visible=$($s.Visible)ms (spec 2860) red_px=$($s.Red) green_px=$($s.Green)"
     Save-Sheet $r.Frames "indicator-failure" @(300, ($s.Start + 400), ($s.End - 60))
 } else { Add-Result "P03" "Failure pill appears" $false "no change" }
 $r.Job | Wait-Process -Timeout 10 -ErrorAction SilentlyContinue
@@ -138,8 +139,8 @@ $r.Job | Wait-Process -Timeout 10 -ErrorAction SilentlyContinue
 
 # P05: rapid results: success, then failure 500 ms later, then success - failure must not be hidden.
 $r = Film { Start-Process $Cli -ArgumentList "overlay", "--events", "saved@400,failed@900,saved@1200", "--hold", "6" -PassThru -WindowStyle Hidden } 7600
-$redAt = @($r.Frames | Where-Object { $_.Acc[1] -gt 20 } | ForEach-Object { $_.T })
-$greenAfter = @($r.Frames | Where-Object { $_.Acc[0] -gt 20 -and $redAt.Count -and $_.T -gt $redAt[-1] } | ForEach-Object { $_.T })
+$redAt = @($r.Frames | Where-Object { $_.Acc[1] -gt 6 } | ForEach-Object { $_.T })
+$greenAfter = @($r.Frames | Where-Object { $_.Acc[0] -gt 6 -and $redAt.Count -and $_.T -gt $redAt[-1] } | ForEach-Object { $_.T })
 $redSpan = if ($redAt.Count) { $redAt[-1] - $redAt[0] } else { 0 }
 Add-Result "P05" "Burst: a failure replaces a showing success, is shown in full, then the later success follows" ($redSpan -ge 2200 -and $greenAfter.Count -gt 0) "red shown ${redSpan}ms from $($redAt[0])ms; green after it from $($greenAfter[0])ms"
 Save-Sheet $r.Frames "indicator-burst" @(300, 700, 1300, 2500, ($redAt[-1] + 400))
@@ -203,7 +204,7 @@ $r = Film { $wsh.SendKeys("%{F10}") } 9000
 $s = Summarize $r.Frames 0
 $afterFiles = @(Get-ChildItem $videos -Recurse -Filter "*Replay*.mp4" -ErrorAction SilentlyContinue)
 $newest = $afterFiles | Sort-Object LastWriteTime | Select-Object -Last 1
-Add-Result "P10" "Real save (Alt+F10): clip written, then the success pill (only after saving)" ($afterFiles.Count -gt $before -and $s -and $s.Green -gt 20) "clips $before -> $($afterFiles.Count) ($($newest.Name), $([math]::Round($newest.Length / 1MB, 1)) MB); pill from $($s.Start)ms for $($s.Visible)ms"
+Add-Result "P10" "Real save (Alt+F10): clip written, then the success pill (only after saving)" ($afterFiles.Count -gt $before -and $s -and $s.Green -gt 6) "clips $before -> $($afterFiles.Count) ($($newest.Name), $([math]::Round($newest.Length / 1MB, 1)) MB); pill from $($s.Start)ms for $($s.Visible)ms"
 if ($s) { Save-Sheet $r.Frames "indicator-app-save" @(100, ($s.Start - 300), ($s.Start + 400)) }
 # Rapid presses in the real app.
 $before = $afterFiles.Count

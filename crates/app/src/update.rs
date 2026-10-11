@@ -255,13 +255,11 @@ struct Release {
 /// signature, on top of the SHA-256 check.
 const UPDATE_KEY: &str = include_str!("../assets/update-key.pub");
 
+/// (public key, SHA-256, signature) -> valid?
+pub type VerifyFn<'a> = &'a dyn Fn(&[u8; 64], &[u8; 32], &[u8; 64]) -> bool;
+
 /// Check `SHA256SUMS.txt` against its signature. `verify` does the curve maths (Windows CNG).
-pub fn check_signature(
-    key_hex: &str,
-    sums: &[u8],
-    sig_hex: Option<&str>,
-    verify: &dyn Fn(&[u8; 64], &[u8; 32], &[u8; 64]) -> bool,
-) -> Result<(), String> {
+pub fn check_signature(key_hex: &str, sums: &[u8], sig_hex: Option<&str>, verify: VerifyFn) -> Result<(), String> {
     let key_hex = key_hex.trim();
     if key_hex.is_empty() {
         return Ok(()); // no signing key yet: checksum-only
