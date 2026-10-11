@@ -32,9 +32,9 @@ error[E0560]: struct `Notice` has no field named `action`
     = note: all struct fields are already assigned
 
 error[E0560]: struct `Notice` has no field named `action`
-    --> crates\app\src\controller.rs:1171:21
+    --> crates\app\src\controller.rs:1176:21
      |
-1171 |                     action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
+1176 |                     action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
      |                     ^^^^^^ `Notice` does not have this field
      |
      = note: all struct fields are already assigned
