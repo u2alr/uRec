@@ -301,7 +301,8 @@ impl Settings {
             Ok(t) => t,
             Err(_) => return (Settings::default(), None),
         };
-        match serde_json::from_str::<serde_json::Value>(&text) {
+        // Editors like older Notepad (and PowerShell 5's Out-File) add a UTF-8 byte-order mark.
+        match serde_json::from_str::<serde_json::Value>(text.trim_start_matches('\u{feff}')) {
             Ok(value) => {
                 let migrated = migrate(value);
                 match serde_json::from_value::<Settings>(migrated) {
@@ -611,5 +612,15 @@ mod tests {
         assert!(!s3.setup_done, "v2 files are taken as they are");
         assert_eq!(s3.appearance.motion, "system", "unknown values are reset");
         assert!(!Settings::default().setup_done);
+    }
+
+    #[test]
+    fn accepts_a_byte_order_mark() {
+        let p = tmp("bom");
+        std::fs::write(&p, "\u{feff}{\"replay\":{\"enabled\":true,\"seconds\":15}}").unwrap();
+        let (s, msg) = Settings::load_from(&p);
+        assert!(s.replay.enabled && s.replay.seconds == 15, "not reset to defaults");
+        assert!(msg.is_none());
+        assert!(p.exists(), "not quarantined");
     }
 }

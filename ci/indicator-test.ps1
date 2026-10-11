@@ -11,9 +11,17 @@ Add-Type -AssemblyName System.Drawing, System.Windows.Forms
 Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @"
 using System; using System.Drawing; using System.Drawing.Imaging; using System.Collections.Generic;
 public static class Cap {
+    [System.Runtime.InteropServices.DllImport("gdi32.dll")] static extern bool BitBlt(IntPtr hdc, int x, int y, int w, int h, IntPtr src, int sx, int sy, int rop);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] static extern IntPtr GetDC(IntPtr hwnd);
+    [System.Runtime.InteropServices.DllImport("user32.dll")] static extern int ReleaseDC(IntPtr hwnd, IntPtr dc);
     public static byte[] Grab(int x, int y, int w, int h) {
         using (var bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb)) {
-            using (var g = Graphics.FromImage(bmp)) g.CopyFromScreen(x, y, 0, 0, new Size(w, h), CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
+            using (var g = Graphics.FromImage(bmp)) {
+                // SRCCOPY | CAPTUREBLT: include layered windows. (CopyFromScreen rejects the combined flag.)
+                IntPtr dst = g.GetHdc(); IntPtr src = GetDC(IntPtr.Zero);
+                BitBlt(dst, 0, 0, w, h, src, x, y, 0x00CC0020 | 0x40000000);
+                ReleaseDC(IntPtr.Zero, src); g.ReleaseHdc(dst);
+            }
             var d = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             var px = new byte[w * h * 4];
             System.Runtime.InteropServices.Marshal.Copy(d.Scan0, px, 0, px.Length);
@@ -182,7 +190,7 @@ function Set-AppSettings([bool]$overlay) {
     $s.replay.enabled = $true; $s.replay.seconds = 15; $s.appearance.overlay = $overlay
     $s.first_run_done = $true
     if ($s.PSObject.Properties.Name -contains "setup_done") { $s.setup_done = $true }
-    $s | ConvertTo-Json -Depth 8 | Out-File -Encoding utf8 $settingsPath
+    [IO.File]::WriteAllText($settingsPath, ($s | ConvertTo-Json -Depth 8))
 }
 if (-not (Test-Path $settingsPath)) { $p = Start-Process $Exe -PassThru; Start-Sleep 8; Stop-Process -Id $p.Id -Force; Start-Sleep 2 }
 Set-AppSettings $true
