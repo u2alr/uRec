@@ -111,6 +111,58 @@ Start-Sleep -Seconds 1
 $left = @(Get-Process ffmpeg -ErrorAction SilentlyContinue).Count
 Add-Result "T11" "5 start/stop cycles, no leftover ffmpeg processes" ($cycleOk -and $left -eq 0) ("durations " + ($cycleDetail -join ", ") + " leftover=$left")
 
+"=== Devices"
+$d = & $Cli devices 2>&1 | ForEach-Object { "$_" }
+$d | ForEach-Object { "  $_" }
+$mon = $d | Where-Object { $_ -like "monitor 0:*" } | Select-Object -First 1
+Add-Result "T12" "Monitor enumeration finds the primary screen at its real size" ($mon -match "width: $($screen.Width), height: $($screen.Height)" -and $mon -match "primary=true") "$mon"
+$hasOut = @($d | Where-Object { $_ -like "audio_out:*" }).Count
+$hasIn = @($d | Where-Object { $_ -like "audio_in:*" }).Count
+"  audio outputs=$hasOut inputs=$hasIn"
+
+function Get-MeanVolume([string]$path) {
+    $o = & $ff -hide_banner -i $path -map 0:a:0 -af volumedetect -f null - 2>&1 | Out-String
+    if ($o -match "mean_volume: (-?[\d.]+) dB") { return [double]$Matches[1] } else { return $null }
+}
+
+"=== Audio"
+if ($hasOut -gt 0) {
+    $tone = Start-Process pwsh -ArgumentList "-NoProfile", "-File", "$PSScriptRoot\play-tone.ps1", "-Seconds", "14" -PassThru -WindowStyle Hidden
+    Start-Sleep -Seconds 2
+    $out = Join-Path $work "T13.mp4"
+    $r = Invoke-Cli @("record", "--out", $out, "--source", $src, "--method", "gdi", "--encoder", "software", "--fps", "30", "--seconds", "6", "--audio", "system")
+    $m = Get-MediaInfo $out
+    $vol = if ($m -and $m.AudioTracks -ge 1) { Get-MeanVolume $out } else { $null }
+    $ok = $r.Code -eq 0 -and $m.AudioTracks -eq 1 -and $vol -ne $null -and $vol -gt -45 -and -not $m.DecodeErrors
+    Add-Result "T13" "Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone" $ok "state=$($r.Kv['audio_system_state']) end=$($r.Kv['audio_end_system']) tracks=$($m.AudioTracks) mean=$vol dB dur=$($m.Duration)s"
+    $tone | Wait-Process -Timeout 20 -ErrorAction SilentlyContinue
+
+    $out = Join-Path $work "T14.mp4"
+    $r = Invoke-Cli @("record", "--out", $out, "--source", $src, "--method", "gdi", "--encoder", "software", "--fps", "30", "--seconds", "4", "--audio", "both", "--layout", "separate")
+    $m = Get-MediaInfo $out
+    $micActive = "$($r.Kv['audio_mic_state'])" -like "Active*"
+    $expect = 1 + [int]$micActive
+    Add-Result "T14" "Separate tracks: one per working source (mic present: $micActive)" ($r.Code -eq 0 -and $m.AudioTracks -eq $expect -and -not $m.DecodeErrors) "tracks=$($m.AudioTracks) expected=$expect mic=$($r.Kv['audio_mic_state'])"
+} else {
+    Add-Result "T13" "Game/desktop sound (WASAPI loopback)" $false "no audio output device on this machine"
+}
+
+$out = Join-Path $work "T15.mp4"
+$r = Invoke-Cli @("record", "--out", $out, "--source", $src, "--method", "gdi", "--encoder", "software", "--fps", "30", "--seconds", "3", "--audio", "mic")
+$m = Get-MediaInfo $out
+$micState = "$($r.Kv['audio_mic_state'])"
+$consistent = ($micState -like "Active*" -and $m.AudioTracks -eq 1) -or ($micState -like "Failed*" -and $m.AudioTracks -eq 0)
+Add-Result "T15" "Microphone: recorded only if it really initialized; recording works either way" ($r.Code -eq 0 -and $consistent -and -not $m.DecodeErrors) "mic=$micState tracks=$($m.AudioTracks)"
+
+"=== Window capture"
+$np = Start-Process notepad -PassThru
+Start-Sleep -Seconds 2
+$out = Join-Path $work "T16.mp4"
+$r = Invoke-Cli @("record", "--out", $out, "--window", "notepad", "--method", "gdi", "--encoder", "software", "--fps", "30", "--seconds", "3")
+$m = Get-MediaInfo $out
+$np | Stop-Process -Force -ErrorAction SilentlyContinue
+Add-Result "T16" "Window capture (Notepad) records just that window" ($r.Code -eq 0 -and $m -and $m.Width -lt $screen.Width -and -not $m.DecodeErrors) "$($m.Width)x$($m.Height) via $($r.Kv['method']) $(($r.Out | Select-Object -Last 2) -join ' ')"
+
 "=== Summary"
 $results | Format-Table -AutoSize -Wrap | Out-String -Width 250
 $failed = @($results | Where-Object Result -eq "FAIL").Count
