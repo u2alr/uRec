@@ -19,8 +19,11 @@ $installed = (Get-Item "$app\uRec.exe").LastWriteTimeUtc
 
 function Run-Check([hashtable]$envs) {
     foreach ($k in $envs.Keys) { Set-Item "env:$k" $envs[$k] }
-    $r = Start-Process "$app\uRec.exe" -ArgumentList "--update-check" -PassThru -Wait
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+    $r = Start-Process "$app\uRec.exe" -ArgumentList "--update-check" -PassThru
+    $r.WaitForExit()
     foreach ($k in $envs.Keys) { Remove-Item "env:$k" -ErrorAction SilentlyContinue }
+    $script:cost = "cpu=$([math]::Round($r.TotalProcessorTime.TotalSeconds, 2)) s wall=$([math]::Round($sw.Elapsed.TotalSeconds, 1)) s"
     $r.ExitCode
 }
 
@@ -28,13 +31,13 @@ function Run-Check([hashtable]$envs) {
 Remove-Item $updates -Recurse -Force -ErrorAction SilentlyContinue
 $code = Run-Check @{}
 $last = (Get-Content $log -Tail 1)
-Check "U01" "Current build reports up to date" ($code -eq 0 -and $last -match "UpToDate") $last
+Check "U01" "Current build reports up to date" ($code -eq 0 -and $last -match "UpToDate") "$last | one check: $cost"
 
 # U02: an older version finds, downloads and verifies the published installer.
 $code = Run-Check @{ UREC_FAKE_VERSION = "0.0.1" }
 $last = (Get-Content $log -Tail 1)
 $pending = Get-Content "$updates\pending.txt" -ErrorAction SilentlyContinue
-Check "U02" "Older version downloads and verifies the update" ($code -eq 0 -and $last -match "Ready" -and $pending.Count -ge 3) "$last | pending=$($pending -join ' ')"
+Check "U02" "Older version downloads and verifies the update" ($code -eq 0 -and $last -match "Ready" -and $pending.Count -ge 3) "$last | pending=$($pending -join ' ') | check+download+verify: $cost"
 if ($pending) {
     $file = Join-Path $updates $pending[1]
     $hash = (Get-FileHash $file -Algorithm SHA256).Hash

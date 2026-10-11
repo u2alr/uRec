@@ -405,8 +405,8 @@ fn worker(
     mut auto: bool,
     repaint: Arc<dyn Fn() + Send + Sync>,
 ) {
-    // Don't compete with startup; CI can shorten this.
-    let delay = std::env::var("UREC_UPDATE_DELAY").ok().and_then(|s| s.parse().ok()).unwrap_or(30);
+    // Wait two minutes so the check never competes with startup or a game that is launching.
+    let delay = std::env::var("UREC_UPDATE_DELAY").ok().and_then(|s| s.parse().ok()).unwrap_or(120);
     let mut wait = Duration::from_secs(delay);
     loop {
         let manual = match rx.recv_timeout(wait) {
