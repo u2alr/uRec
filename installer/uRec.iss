@@ -59,6 +59,9 @@ Name: "{autodesktop}\{#AppName}"; Filename: "{app}\{#AppExe}"; Tasks: desktopico
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "{#AppName}"; ValueData: """{app}\{#AppExe}"" --minimized"; Tasks: startup
 ; Remove the startup entry on uninstall, even if it was turned on from inside the app.
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueName: "{#AppName}"; Flags: dontcreatekey uninsdeletevalue
+; Written by the app at startup (notification name and the urec: link for "Open clip"); removed on uninstall.
+Root: HKCU; Subkey: "Software\Classes\urec"; Flags: dontcreatekey uninsdeletekey
+Root: HKCU; Subkey: "Software\Classes\AppUserModelId\u2alr.uRec"; Flags: dontcreatekey uninsdeletekey
 
 [Run]
 Filename: "{app}\{#AppExe}"; Description: "Open uRec"; Flags: nowait postinstall skipifsilent

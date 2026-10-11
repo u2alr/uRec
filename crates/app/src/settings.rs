@@ -154,6 +154,8 @@ pub struct Appearance {
     /// "top_right" | "top_left" | "bottom_right" | "bottom_left"
     pub overlay_corner: String,
     pub ui_scale: f32,
+    /// "system" (follow Windows animation effects) | "reduced" | "full"
+    pub motion: String,
 }
 
 impl Default for Settings {
@@ -262,7 +264,13 @@ impl Default for Storage {
 
 impl Default for Appearance {
     fn default() -> Self {
-        Appearance { theme: "system".into(), overlay: true, overlay_corner: "top_right".into(), ui_scale: 1.0 }
+        Appearance {
+            theme: "system".into(),
+            overlay: true,
+            overlay_corner: "top_right".into(),
+            ui_scale: 1.0,
+            motion: "system".into(),
+        }
     }
 }
 
@@ -353,6 +361,10 @@ impl Settings {
         check(["mixed", "separate"].contains(&a.layout.as_str()), "audio tracks", &mut || a.layout = "mixed".into());
         let r = &mut self.replay;
         check((5..=REPLAY_MAX).contains(&r.seconds), "replay length", &mut || r.seconds = 60);
+        let ap = &mut self.appearance;
+        check(["system", "reduced", "full"].contains(&ap.motion.as_str()), "animations", &mut || {
+            ap.motion = "system".into()
+        });
         let c = &mut self.capture;
         check(["monitor", "window", "region"].contains(&c.kind.as_str()), "capture source", &mut || {
             c.kind = "monitor".into()

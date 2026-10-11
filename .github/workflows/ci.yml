@@ -59,6 +59,11 @@ jobs:
           if (Test-Path target/release/uRec.exe) { ./ci/ui-screenshots.ps1 -Exe target/release/uRec.exe -Cli target/release/urec-cli.exe -Out screenshots *>&1 | Tee-Object -FilePath ui.txt }
           New-Item -ItemType Directory -Force screenshots | Out-Null
           Copy-Item Cargo.lock screenshots/Cargo.lock -ErrorAction SilentlyContinue
+      - name: Instant Replay indicator and notifications
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path target/release/uRec.exe) { ./ci/indicator-test.ps1 -Exe target/release/uRec.exe -Cli target/release/urec-cli.exe -Out screenshots *>&1 | Tee-Object -FilePath indicator.txt }
       - name: Publish results
         if: always()
         shell: pwsh
@@ -67,5 +72,5 @@ jobs:
         run: |
           $all = "ci-report.txt"
           "commit $env:GITHUB_SHA run $env:GITHUB_RUN_ID" | Out-File $all
-          foreach ($f in "checks.txt", "integration.txt", "ui.txt") { if (Test-Path $f) { Get-Content $f | Out-File -Append $all } }
+          foreach ($f in "checks.txt", "integration.txt", "ui.txt", "indicator.txt") { if (Test-Path $f) { Get-Content $f | Out-File -Append $all } }
           ./ci/publish-results.ps1 -Name ci -File $all -Dir screenshots

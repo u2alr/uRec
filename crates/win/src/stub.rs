@@ -114,6 +114,9 @@ impl Overlay {
         Overlay
     }
     pub fn set(&self, _st: crate::OverlayState) {}
+    pub fn notify(&self, _ev: crate::OverlayEvent, _reduced_motion: bool) -> bool {
+        false
+    }
 }
 pub fn open_file(path: &Path) {
     let _ = std::process::Command::new("xdg-open").arg(path).spawn();
@@ -134,3 +137,16 @@ pub fn https_download(
     Err("HTTPS is only implemented on Windows".into())
 }
 pub fn open_url(_url: &str) {}
+pub fn system_reduced_motion() -> bool {
+    false
+}
+pub const AUMID: &str = "u2alr.uRec";
+pub fn register_notifications(_exe: &Path) -> bool {
+    false
+}
+pub fn show_toast(_xml: &str) -> Result<(), String> {
+    Err("notifications are only implemented on Windows".into())
+}
+pub fn toast_history_count() -> Option<u32> {
+    None
+}

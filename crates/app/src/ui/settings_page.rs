@@ -931,7 +931,7 @@ fn appearance(app: &mut App, ui: &mut egui::Ui) {
         &p,
         "Recording overlay",
         if excl {
-            "A small dot in a corner of your screen: red while recording, amber while Instant Replay is on. It never appears in your videos."
+            "A small dot in a corner of your screen: red while recording, amber while Instant Replay is on. It briefly shows \"Instant Replay Saved\" when a clip is saved. It never appears in your videos."
         } else {
             "A small dot in a corner of your screen while recording. On this version of Windows it may appear in recordings."
         },
@@ -955,6 +955,36 @@ fn appearance(app: &mut App, ui: &mut egui::Ui) {
             );
         });
     });
+    let overlay_on = a.overlay;
+    theme::row(
+        ui,
+        &p,
+        "Animations",
+        "Same as Windows follows Settings › Accessibility › Visual effects › Animation effects.",
+        |ui| {
+            combo(
+                ui,
+                "motion",
+                &mut a.motion,
+                &opts(&[("system", "Same as Windows"), ("reduced", "Reduced"), ("full", "Full")]),
+                180.0,
+            );
+        },
+    );
+    let g = &mut app.s.general;
+    theme::row(
+        ui,
+        &p,
+        "Windows notifications",
+        if overlay_on {
+            "Used for Instant Replay results only when the overlay is off."
+        } else {
+            "The overlay is off, so Instant Replay results appear as Windows notifications."
+        },
+        |ui| {
+            theme::switch(ui, &p, &mut g.notifications);
+        },
+    );
 }
 
 // ------------------------------------------------------------------ Advanced

@@ -4,6 +4,8 @@
 //!   urec-cli record --out FILE --seconds N [options]
 //!   urec-cli replay --dir DIR --out FILE --run-seconds N --save-seconds N [options]
 //!   urec-cli devices
+//!   urec-cli overlay --events saving@0,saved@1500 [--corner top_right] [--hold N] [--reduced] [--hidden]
+//!   urec-cli toast [--file CLIP] [--fail] | toast --count
 //!
 //! Options: --method auto|wgc|dda|gdi|test  --encoder auto|nvenc|amf|qsv|mf_hw|software|mf
 //!          --codec h264|hevc|av1  --res native|2160|1440|1080|900|720|WxH  --fps N
@@ -82,6 +84,12 @@ fn main() -> ExitCode {
     urec_win::set_dpi_aware();
     if args.cmd == "devices" {
         return cmd_devices();
+    }
+    if args.cmd == "overlay" {
+        return cmd_overlay(&args);
+    }
+    if args.cmd == "toast" {
+        return cmd_toast(&args);
     }
     if args.cmd == "reveal" {
         // Same call the app's "Show in folder" / "Open folder" buttons make.
@@ -420,4 +428,63 @@ fn cmd_replay(ffmpeg: &Path, args: &Args) -> ExitCode {
     } else {
         ExitCode::SUCCESS
     }
+}
+
+/// Drive the real overlay with scripted save events (for screenshots / timing on CI).
+fn cmd_overlay(args: &Args) -> ExitCode {
+    let mon = urec_win::monitors().into_iter().find(|m| m.primary);
+    let overlay = urec_win::Overlay::new();
+    let mut st = urec_win::OverlayState {
+        visible: !args.flag("hidden"),
+        dot: (217, 164, 65),
+        corner: args.get("corner").unwrap_or("top_right").into(),
+        ..Default::default()
+    };
+    if let Some(m) = &mon {
+        st.monitor = (m.bounds.x, m.bounds.y, m.bounds.width, m.bounds.height);
+    }
+    overlay.set(st);
+    let t0 = Instant::now();
+    println!("start");
+    for item in args.get("events").unwrap_or("saved@500").split(',') {
+        let (name, at) = item.split_once('@').unwrap_or((item, "0"));
+        let at = Duration::from_millis(at.parse().unwrap_or(0));
+        if let Some(wait) = at.checked_sub(t0.elapsed()) {
+            std::thread::sleep(wait);
+        }
+        let ev = match name {
+            "saving" => urec_win::OverlayEvent::Saving,
+            "failed" => urec_win::OverlayEvent::Failed,
+            _ => urec_win::OverlayEvent::Saved,
+        };
+        let ok = overlay.notify(ev, args.flag("reduced"));
+        println!("event={name} t_ms={} delivered={ok}", t0.elapsed().as_millis());
+    }
+    std::thread::sleep(Duration::from_secs(args.num("hold", 4) as u64));
+    println!("done t_ms={}", t0.elapsed().as_millis());
+    ExitCode::SUCCESS
+}
+
+/// Show an Instant Replay notification the way the app does, or count uRec notifications.
+fn cmd_toast(args: &Args) -> ExitCode {
+    if let Ok(exe) = std::env::current_exe() {
+        println!("registered={}", urec_win::register_notifications(&exe));
+    }
+    if args.flag("count") {
+        println!("toast_history={}", urec_win::toast_history_count().map(|n| n as i64).unwrap_or(-1));
+        return ExitCode::SUCCESS;
+    }
+    let file = args.get("file").map(PathBuf::from);
+    let xml = if args.flag("fail") {
+        urec_win::notify::toast_xml(urec_win::pill::FAILURE_TEXT, "Not enough free space for the clip.", None)
+    } else {
+        let f = file.clone().unwrap_or_else(|| PathBuf::from(r"C:\clip.mp4"));
+        let name = f.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+        urec_win::notify::toast_xml(urec_win::pill::SUCCESS_TEXT, &format!("0:30 · {name}"), Some(&f))
+    };
+    let r = urec_win::show_toast(&xml);
+    println!("shown={} error={}", r.is_ok(), r.err().unwrap_or_default());
+    std::thread::sleep(Duration::from_millis(1500));
+    println!("toast_history={}", urec_win::toast_history_count().map(|n| n as i64).unwrap_or(-1));
+    ExitCode::SUCCESS
 }

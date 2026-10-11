@@ -1115,7 +1115,45 @@ impl Worker {
     /// Visual feedback for replay saves: the overlay pill, or a Windows notification when the
     /// overlay is turned off. The in-app notice is always added separately.
     fn save_feedback(&mut self, fb: SaveFeedback) {
-        log(&format!("save feedback: {fb:?}"));
+        let overlay_on = self.s.appearance.overlay && self.ctl.snapshot().overlay_visible;
+        let reduced = match self.s.appearance.motion.as_str() {
+            "reduced" => true,
+            "full" => false,
+            _ => urec_win::system_reduced_motion(),
+        };
+        let ev = match &fb {
+            SaveFeedback::Saving => urec_win::OverlayEvent::Saving,
+            SaveFeedback::Saved(_) => urec_win::OverlayEvent::Saved,
+            SaveFeedback::Failed(_) => urec_win::OverlayEvent::Failed,
+        };
+        // The overlay is the user's choice: never shown just to deliver this message.
+        if overlay_on && self.overlay.notify(ev, reduced) {
+            return;
+        }
+        if !self.s.general.notifications {
+            return;
+        }
+        let xml = match &fb {
+            SaveFeedback::Saving => return,
+            SaveFeedback::Saved(clip) => {
+                let name = clip.path.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default();
+                urec_win::notify::toast_xml(
+                    urec_win::pill::SUCCESS_TEXT,
+                    &format!("{} · {name}", format_secs(clip.seconds.round() as u32)),
+                    Some(&clip.path),
+                )
+            }
+            SaveFeedback::Failed(e) => {
+                let mut e = e.clone();
+                if e.chars().count() > 140 {
+                    e = e.chars().take(140).collect::<String>() + "…";
+                }
+                urec_win::notify::toast_xml(urec_win::pill::FAILURE_TEXT, &e, None)
+            }
+        };
+        if let Err(e) = urec_win::show_toast(&xml) {
+            log(&format!("notification not shown ({e}); the result is in the app"));
+        }
     }
 
     // -------------------------------------------------------------- periodic work

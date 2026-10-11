@@ -248,6 +248,23 @@ pub fn open_file(path: &Path) {
     }
 }
 
+/// True when Windows' "Animation effects" (Settings › Accessibility › Visual effects) is off.
+pub fn system_reduced_motion() -> bool {
+    use windows::Win32::UI::WindowsAndMessaging::{
+        SystemParametersInfoW, SPI_GETCLIENTAREAANIMATION, SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS,
+    };
+    let mut on = windows::core::BOOL(1);
+    let ok = unsafe {
+        SystemParametersInfoW(
+            SPI_GETCLIENTAREAANIMATION,
+            0,
+            Some(&mut on as *mut _ as *mut std::ffi::c_void),
+            SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS(0),
+        )
+    };
+    ok.is_ok() && !on.as_bool()
+}
+
 /// Open an https:// link in the default browser (nothing else is accepted).
 pub fn open_url(url: &str) {
     use windows::Win32::UI::Shell::ShellExecuteW;

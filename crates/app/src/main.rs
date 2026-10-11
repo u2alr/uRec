@@ -28,6 +28,11 @@ fn main() -> eframe::Result {
     }));
     let args: Vec<String> = std::env::args().collect();
     let minimized = args.iter().any(|a| a == "--minimized");
+    // A button on an Instant Replay notification: open or reveal that clip, then exit.
+    if let Some(i) = args.iter().position(|a| a == "--clip-link") {
+        handle_clip_link(args.get(i + 1).map(|s| s.as_str()).unwrap_or(""));
+        return Ok(());
+    }
     // Headless update check (used by the release pipeline's end-to-end test).
     if args.iter().any(|a| a == "--update-check") {
         std::process::exit(update::cli_check());
@@ -44,6 +49,12 @@ fn main() -> eframe::Result {
         let relaunch = if minimized { update::Relaunch::Minimized } else { update::Relaunch::Normal };
         if update::apply_pending(relaunch) {
             return Ok(());
+        }
+    }
+    #[cfg(windows)]
+    if let Ok(exe) = std::env::current_exe() {
+        if !urec_win::register_notifications(&exe) {
+            controller::log("notifications: couldn't register (results stay in the app)");
         }
     }
     let ctl = Controller::start(settings.clone());
@@ -94,4 +105,30 @@ fn main() -> eframe::Result {
         controller::log(&format!("window error: {e}"));
     }
     result
+}
+
+/// Handle a `urec://open?path=...` / `urec://reveal?path=...` link from a notification.
+/// Only existing video files inside the recordings folder are opened.
+fn handle_clip_link(uri: &str) {
+    use urec_win::notify::{clip_allowed, parse_clip_uri, ClipAction};
+    let Some((action, path)) = parse_clip_uri(uri) else {
+        controller::log(&format!("clip link refused (malformed): {uri}"));
+        return;
+    };
+    let (settings, _) = Settings::load();
+    match clip_allowed(&path, &settings.output_dir()) {
+        Ok(()) => match action {
+            ClipAction::Open => urec_win::open_file(&path),
+            ClipAction::Reveal => urec_win::reveal_in_explorer(&path),
+        },
+        Err("missing") => {
+            // Moved or deleted since: show the folder instead, if it's still there.
+            controller::log(&format!("clip link: {} no longer exists", path.display()));
+            match path.parent().filter(|d| d.is_dir()) {
+                Some(d) => urec_win::open_file(d),
+                None => urec_win::open_file(&settings.output_dir()),
+            }
+        }
+        Err(why) => controller::log(&format!("clip link refused ({why}): {}", path.display())),
+    }
 }

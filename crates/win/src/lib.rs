@@ -13,11 +13,14 @@ mod display;
 mod hotkeys;
 #[cfg(windows)]
 mod http;
+pub mod notify;
 #[cfg(windows)]
 mod overlay;
 pub mod pill;
 #[cfg(windows)]
 mod sys;
+#[cfg(windows)]
+mod toast;
 
 #[cfg(not(windows))]
 mod stub;
@@ -34,6 +37,8 @@ pub use http::{https_download, https_get};
 pub use overlay::Overlay;
 #[cfg(windows)]
 pub use sys::*;
+#[cfg(windows)]
+pub use toast::{register_notifications, show_toast, toast_history_count, AUMID};
 
 #[cfg(not(windows))]
 pub use stub::*;
@@ -165,6 +170,15 @@ pub struct OverlayState {
     pub corner: String,
     /// Monitor rectangle to place it on (x, y, w, h).
     pub monitor: (i32, i32, u32, u32),
+}
+
+/// Instant Replay save progress for the overlay indicator.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum OverlayEvent {
+    Saving,
+    /// Only after the clip is finalized and verified.
+    Saved,
+    Failed,
 }
 
 impl Default for OverlayState {
