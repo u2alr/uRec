@@ -72,11 +72,28 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, st: &Status) {
 
 fn combo<T: PartialEq + Clone>(ui: &mut egui::Ui, id: &str, value: &mut T, options: &[(T, String)], width: f32) {
     let current = options.iter().find(|(v, _)| v == value).map(|(_, l)| l.clone()).unwrap_or_default();
-    egui::ComboBox::from_id_salt(id).selected_text(current).width(width).show_ui(ui, |ui| {
+    // Long names (audio devices, displays) are shortened to fit the box; the full name is on hover.
+    let fit = ((width - 34.0) / 7.2).max(8.0) as usize;
+    let r = egui::ComboBox::from_id_salt(id).selected_text(ellipsize(&current, fit)).width(width).show_ui(ui, |ui| {
+        ui.set_max_width(width.max(420.0));
         for (v, l) in options {
-            ui.selectable_value(value, v.clone(), l);
+            ui.selectable_value(value, v.clone(), ellipsize(l, 60)).on_hover_text(l);
         }
     });
+    if current.chars().count() > fit {
+        r.response.on_hover_text(current);
+    }
+}
+
+/// Shorten long text with an ellipsis (by characters, so it never splits a code point).
+pub(super) fn ellipsize(text: &str, max_chars: usize) -> String {
+    if text.chars().count() <= max_chars {
+        return text.to_string();
+    }
+    let mut t: String = text.chars().take(max_chars.saturating_sub(1)).collect();
+    t = t.trim_end().to_string();
+    t.push('…');
+    t
 }
 
 fn opts(xs: &[(&str, &str)]) -> Vec<(String, String)> {
@@ -225,15 +242,20 @@ fn recording(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     } else {
         theme::row(ui, &p, "Window", "Captures only this window, even when other windows are on top of it.", |ui| {
             let current =
-                if c.window_title.is_empty() { "Choose a window".to_string() } else { c.window_title.clone() };
-            egui::ComboBox::from_id_salt("window").selected_text(current).width(260.0).show_ui(ui, |ui| {
+                if c.window_title.is_empty() { "Choose a window".to_string() } else { ellipsize(&c.window_title, 32) };
+            let r = egui::ComboBox::from_id_salt("window").selected_text(current).width(260.0).show_ui(ui, |ui| {
+                ui.set_max_width(420.0);
                 for w in &windows {
-                    if ui.selectable_label(c.window_title == w.title, &w.title).on_hover_text(&w.exe).clicked() {
+                    let label = format!("{} — {}", ellipsize(&w.title, 48), w.app_name());
+                    if ui.selectable_label(c.window_title == w.title, label).on_hover_text(&w.title).clicked() {
                         c.window_title = w.title.clone();
                         c.window_exe = w.exe.clone();
                     }
                 }
             });
+            if !c.window_title.is_empty() {
+                r.response.on_hover_text(&c.window_title);
+            }
         });
     }
     if c.kind == "region" {

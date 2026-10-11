@@ -40,8 +40,8 @@ impl Kind {
     }
     pub fn accent(self) -> (u8, u8, u8) {
         match self {
-            Kind::Success => (52, 199, 89),
-            Kind::Failure => (229, 72, 77),
+            Kind::Success => (74, 222, 128),
+            Kind::Failure => (248, 113, 113),
         }
     }
 }
@@ -301,7 +301,7 @@ pub struct Metrics {
 
 impl Metrics {
     pub fn for_scale(k: f32) -> Metrics {
-        Metrics { dot: 13.2 * k, halo: 2.64 * k, height: 30.0 * k, icon: 18.0 * k, gap: 8.0 * k, pad_end: 13.0 * k }
+        Metrics { dot: 13.2 * k, halo: 2.64 * k, height: 26.0 * k, icon: 10.0 * k, gap: 7.0 * k, pad_end: 12.0 * k }
     }
 
     /// Full pill width for a message of `text_w` pixels.
@@ -377,7 +377,7 @@ pub fn render(
     // Stadium centre line.
     let (l0, l1) = (left + r, right - r);
     let accent = frame.kind.accent();
-    let fill_dark = (24u8, 24u8, 27u8);
+    let fill_dark = (22u8, 22u8, 24u8);
     // The status colour gives way to the dark body early, so mid-animation frames stay clean.
     let fe = ease_out((e / 0.45).min(1.0));
     let fill = (
@@ -385,56 +385,47 @@ pub fn render(
         mix(dot_color.1 as f32, fill_dark.1 as f32, fe) as u8,
         mix(dot_color.2 as f32, fill_dark.2 as f32, fe) as u8,
     );
-    let fill_a = mix(1.0, 0.88, fe);
-    let icon_r = mix(0.0, m.icon / 2.0, frame.content);
-    let stroke = (m.icon * 0.11).max(1.2);
-    let k = m.icon / 18.0;
-    // Text placement: next to the icon, sliding in from the icon side.
-    let slide = (1.0 - frame.content) * 6.0 * k;
-    let text_x0 = if grow_left {
-        anchor_x - m.icon / 2.0 - m.gap - mask.w as f32 + slide
-    } else {
-        anchor_x + m.icon / 2.0 + m.gap - slide
+    let fill_a = mix(1.0, 0.9, fe);
+    // Only a faint shadow once open (it keeps the pill visible on bright scenes); the closed
+    // dot keeps its usual halo.
+    let shadow_a = mix(0.35, 0.16, fe);
+    let k = m.icon / 10.0;
+    let stroke = 1.7 * k;
+    // Icon: a thin check or cross in the accent colour (different shapes, not only colours).
+    let icon_sd = |ix: f32, iy: f32| -> f32 {
+        match frame.kind {
+            Kind::Success => seg_dist(ix, iy, -4.2, 0.3, -1.4, 3.1).min(seg_dist(ix, iy, -1.4, 3.1, 4.3, -2.9)),
+            Kind::Failure => seg_dist(ix, iy, -3.2, -3.2, 3.2, 3.2).min(seg_dist(ix, iy, -3.2, 3.2, 3.2, -3.2)),
+        }
     };
-    let text_y0 = cy - mask.h as f32 / 2.0;
+    let text_x0 =
+        if grow_left { anchor_x - m.icon / 2.0 - m.gap - mask.w as f32 } else { anchor_x + m.icon / 2.0 + m.gap };
+    let text_y0 = (cy - mask.h as f32 / 2.0).round();
     let mut px = vec![0u8; canvas_w * canvas_h * 4];
     for y in 0..canvas_h {
         for x in 0..canvas_w {
             let (fx, fy) = (x as f32 + 0.5, y as f32 + 0.5);
             let d = seg_dist(fx, fy, l0, cy, l1, cy) - r;
             let i = (y * canvas_w + x) * 4;
-            // Halo, then the body (anti-aliased by distance).
-            let halo = (0.5 - (d - m.halo)).clamp(0.0, 1.0) * 0.35;
-            over(&mut px, i, (0, 0, 0), halo * (1.0 - (0.5 - d).clamp(0.0, 1.0)));
             let body = (0.5 - d).clamp(0.0, 1.0);
+            let shadow = (0.5 - (d - m.halo)).clamp(0.0, 1.0) * shadow_a;
+            over(&mut px, i, (0, 0, 0), shadow * (1.0 - body));
             if body <= 0.0 {
                 continue;
             }
             over(&mut px, i, fill, body * fill_a);
-            // Hairline border in the accent colour once open.
-            let edge = (1.0 - (d + 1.0).abs()).clamp(0.0, 1.0) * 0.5 * e * frame.content;
-            over(&mut px, i, accent, edge * body);
             if frame.content <= 0.0 {
                 continue;
             }
-            // Icon: accent disc with a white check or cross (shape differs, not only colour).
-            let di = ((fx - anchor_x).powi(2) + (fy - cy).powi(2)).sqrt();
-            let disc = (0.5 - (di - icon_r)).clamp(0.0, 1.0) * frame.content;
-            if disc > 0.0 {
-                over(&mut px, i, accent, disc * body);
-                let (ix, iy) = ((fx - anchor_x) / k, (fy - cy) / k);
-                let sd = match frame.kind {
-                    Kind::Success => seg_dist(ix, iy, -4.3, 0.2, -1.4, 3.1).min(seg_dist(ix, iy, -1.4, 3.1, 4.4, -3.0)),
-                    Kind::Failure => seg_dist(ix, iy, -3.4, -3.4, 3.4, 3.4).min(seg_dist(ix, iy, -3.4, 3.4, 3.4, -3.4)),
-                } * k;
-                let mark = (0.5 - (sd - stroke / 2.0)).clamp(0.0, 1.0) * frame.content;
-                over(&mut px, i, (255, 255, 255), mark * disc.min(1.0));
+            let sd = icon_sd((fx - anchor_x) / k, (fy - cy) / k) * k;
+            let mark = (0.5 - (sd - stroke / 2.0)).clamp(0.0, 1.0);
+            if mark > 0.0 {
+                over(&mut px, i, accent, mark * frame.content * body);
             }
-            // Text, clipped to the pill.
             let (tx, ty) = (fx - text_x0, fy - text_y0);
             if tx >= 0.0 && ty >= 0.0 && (tx as usize) < mask.w && (ty as usize) < mask.h {
                 let c = mask.cov[ty as usize * mask.w + tx as usize] as f32 / 255.0;
-                over(&mut px, i, (240, 240, 242), c * frame.content * body);
+                over(&mut px, i, (236, 236, 238), c * frame.content * body);
             }
         }
     }
@@ -581,7 +572,7 @@ mod tests {
         assert_eq!(rgb(&dot, dot.anchor_x, dot.anchor_y), (229, 72, 77));
         assert_eq!(a(&dot, dot.anchor_x - 30.0, dot.anchor_y), 0);
         assert_eq!(a(&dot, 1.0, 1.0), 0);
-        // Open: the icon (green) sits where the dot was; the body extends to the left.
+        // Open: the icon sits where the dot was; the body extends to the left.
         let open = render(
             &Frame { expand: 1.0, content: 1.0, kind: Kind::Success, morph: None },
             &m,
@@ -590,10 +581,12 @@ mod tests {
             &mask,
         );
         assert_eq!(open.anchor_x, dot.anchor_x, "dot position is stable");
-        let (r, g, _) = rgb(&open, open.anchor_x + 6.0, open.anchor_y - 6.0);
-        assert!(g > 150 && r < 90, "green icon at the anchor: {r},{g}");
+        assert!(accent_pixels(&open, (74, 222, 128)) > 8, "green check at the anchor");
         assert!(a(&open, open.anchor_x - 60.0, open.anchor_y) > 200, "pill body extends left");
         assert_eq!(a(&open, open.w as f32 - 1.0, open.anchor_y), 0, "nothing past the screen-edge side");
+        // Minimal: the body is a plain dark fill, no coloured border.
+        let edge = rgb(&open, open.anchor_x - 60.0, open.anchor_y - 12.0);
+        assert!(edge.0 < 60 && edge.1 < 60, "no accent border: {edge:?}");
         // Left corners mirror it.
         let lft = render(
             &Frame { expand: 1.0, content: 1.0, kind: Kind::Failure, morph: None },
@@ -603,8 +596,24 @@ mod tests {
             &mask,
         );
         assert!(a(&lft, lft.anchor_x + 60.0, lft.anchor_y) > 200);
-        let (r, g, _) = rgb(&lft, lft.anchor_x + 6.0, lft.anchor_y - 6.0);
-        assert!(r > 180 && g < 120, "red icon for failure: {r},{g}");
+        assert!(accent_pixels(&lft, (248, 113, 113)) > 8, "red cross for failure");
+    }
+
+    /// Pixels close to `color` within 8 px of the anchor (premultiplied, opaque body).
+    fn accent_pixels(img: &Image, color: (u8, u8, u8)) -> usize {
+        let mut n = 0;
+        for dy in -8i32..=8 {
+            for dx in -8i32..=8 {
+                let (x, y) = ((img.anchor_x as i32 + dx) as usize, (img.anchor_y as i32 + dy) as usize);
+                let i = (y * img.w + x) * 4;
+                let (r, g, b) = (img.px[i + 2] as i32, img.px[i + 1] as i32, img.px[i] as i32);
+                if (r - color.0 as i32).abs() < 40 && (g - color.1 as i32).abs() < 40 && (b - color.2 as i32).abs() < 40
+                {
+                    n += 1;
+                }
+            }
+        }
+        n
     }
 
     #[test]
@@ -612,21 +621,21 @@ mod tests {
         let m = Metrics::for_scale(2.0);
         let f = |kind| render(&Frame { expand: 1.0, content: 1.0, kind, morph: None }, &m, (229, 72, 77), true, &mask);
         let (s, x) = (f(Kind::Success), f(Kind::Failure));
-        // White pixels inside the icon disc.
-        let whites = |img: &Image| -> Vec<(i32, i32)> {
+        // Bright (icon) pixels around the anchor.
+        let marks = |img: &Image| -> Vec<(i32, i32)> {
             let mut v = Vec::new();
-            for dy in -8..=8 {
-                for dx in -8..=8 {
+            for dy in -12..=12 {
+                for dx in -12..=12 {
                     let (px, py) = (img.anchor_x as i32 + dx, img.anchor_y as i32 + dy);
                     let i = (py as usize * img.w + px as usize) * 4;
-                    if img.px[i] > 220 && img.px[i + 1] > 220 && img.px[i + 2] > 220 {
+                    if img.px[i] as u32 + img.px[i + 1] as u32 + img.px[i + 2] as u32 > 300 {
                         v.push((dx, dy));
                     }
                 }
             }
             v
         };
-        let (ws, wx) = (whites(&s), whites(&x));
+        let (ws, wx) = (marks(&s), marks(&x));
         assert!(!ws.is_empty() && !wx.is_empty());
         assert_ne!(ws, wx);
         // The cross is symmetric left-right; the check is not.

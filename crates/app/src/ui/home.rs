@@ -212,7 +212,7 @@ fn source_picker(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     ui.add_enabled_ui(!locked, |ui| {
         ui.horizontal(|ui| {
             ui.label(RichText::new("Record").color(p.muted));
-            let current = source_label(app);
+            let current = truncate(&source_label(app), 40);
             let mut changed = false;
             egui::ComboBox::from_id_salt("source").selected_text(current).width(320.0).show_ui(ui, |ui| {
                 ui.label(RichText::new("Displays").small().color(p.muted));

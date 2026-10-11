@@ -1,5 +1,6 @@
 //! Library: every recording with thumbnail, duration, resolution, frame rate, size and date.
-//! Search, sort, play, show in folder, rename, copy path, delete (to the Recycle Bin).
+//! Search, sort, favorites, play, show in folder, rename, copy path, delete one or many
+//! (always to the Recycle Bin).
 
 use super::home::open_file;
 use super::theme;
@@ -7,6 +8,7 @@ use super::App;
 use crate::controller::{Level, Status};
 use crate::library::{format_duration, Item};
 use eframe::egui::{self, Align, Color32, CornerRadius, Layout, RichText, Sense, Vec2};
+use std::collections::HashSet;
 use std::path::PathBuf;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -38,8 +40,10 @@ pub struct LibraryUi {
     pub search: String,
     pub sort: Sort,
     pub renaming: Option<(PathBuf, String)>,
-    pub confirm_delete: Option<Item>,
+    pub confirm_delete: Option<Pending>,
     pub favorites_only: bool,
+    pub selecting: bool,
+    pub selected: HashSet<PathBuf>,
 }
 
 /// Act on a file only if it's still there; otherwise say so and re-scan.
@@ -130,20 +134,25 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, _st: &Status) {
             if theme::quiet_button(ui, &p, "Refresh").clicked() {
                 app.library.refresh(&app.s.output_dir());
             }
+            let label = if app.lib.selecting { "Done" } else { "Select" };
+            if theme::quiet_button(ui, &p, label).clicked() {
+                app.lib.selecting = !app.lib.selecting;
+                app.lib.selected.clear();
+            }
             if app.library.scanning.load(std::sync::atomic::Ordering::Relaxed) {
                 ui.spinner();
             }
         });
     });
     ui.add_space(10.0);
-    ui.horizontal(|ui| {
+    ui.horizontal_wrapped(|ui| {
         ui.add(
             egui::TextEdit::singleline(&mut app.lib.search)
                 .hint_text("Search recordings")
-                .desired_width(280.0)
+                .desired_width(260.0)
                 .margin(egui::Margin::symmetric(10, 8)),
         );
-        egui::ComboBox::from_id_salt("lib_sort").selected_text(app.lib.sort.label()).width(150.0).show_ui(ui, |ui| {
+        egui::ComboBox::from_id_salt("lib_sort").selected_text(app.lib.sort.label()).width(140.0).show_ui(ui, |ui| {
             for s in Sort::ALL {
                 ui.selectable_value(&mut app.lib.sort, s, s.label());
             }
@@ -171,53 +180,141 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, _st: &Status) {
         }),
         Sort::Name => items.sort_by_key(|i| i.name.to_lowercase()),
     }
+    // Selections only ever refer to files that are still listed.
+    app.lib.selected.retain(|p| items.iter().any(|i| &i.path == p));
 
     if items.is_empty() {
         ui.add_space(30.0);
-        if q.is_empty() {
+        if app.lib.favorites_only && q.is_empty() {
+            theme::note(ui, &p, "No favorites yet. Star a recording to keep it here.");
+        } else if q.is_empty() {
             ui.label(RichText::new("No recordings yet").font(theme::semibold(16.0)));
             theme::note(
                 ui,
                 &p,
-                &format!("Recordings and saved replays appear here. They're saved to {}.", app.s.storage.output_dir),
+                &format!(
+                    "Recordings and saved replays appear here. They're saved to {}.",
+                    app.s.output_dir().display()
+                ),
             );
-        } else if app.lib.favorites_only && q.is_empty() {
-            theme::note(ui, &p, "No favorites yet. Star a recording to keep it here.");
         } else {
             theme::note(ui, &p, "Nothing matches your search.");
         }
         return;
     }
 
-    let total: u64 = items.iter().map(|i| i.size).sum();
-    ui.label(
-        RichText::new(format!(
-            "{} recording{}, {}",
-            items.len(),
-            if items.len() == 1 { "" } else { "s" },
-            urec_engine::video::format_bytes(total)
-        ))
-        .small()
-        .color(p.muted),
-    );
+    if app.lib.selecting {
+        selection_bar(app, ui, &items);
+    } else {
+        let total: u64 = items.iter().map(|i| i.size).sum();
+        ui.label(
+            RichText::new(format!(
+                "{} recording{}, {}",
+                items.len(),
+                if items.len() == 1 { "" } else { "s" },
+                urec_engine::video::format_bytes(total)
+            ))
+            .small()
+            .color(p.muted),
+        );
+    }
     ui.add_space(6.0);
     let offset = utc_offset();
-    egui::ScrollArea::vertical().auto_shrink([false, false]).show_rows(ui, 104.0, items.len(), |ui, range| {
-        for item in &items[range] {
+    egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
+        for item in &items {
             row(app, ui, item, offset);
         }
     });
     delete_dialog(app, ui.ctx());
 }
 
+/// "3 selected · Select all · Clear" and the delete button.
+fn selection_bar(app: &mut App, ui: &mut egui::Ui, items: &[Item]) {
+    let p = app.p;
+    let n = app.lib.selected.len();
+    let bytes: u64 = items.iter().filter(|i| app.lib.selected.contains(&i.path)).map(|i| i.size).sum();
+    ui.horizontal(|ui| {
+        let text = if n == 0 {
+            "Click recordings to select them".to_string()
+        } else {
+            format!("{n} selected, {}", urec_engine::video::format_bytes(bytes))
+        };
+        ui.label(RichText::new(text).small().color(p.muted));
+        ui.add_space(8.0);
+        if n < items.len() && theme::link_button(ui, &p, "Select all").clicked() {
+            app.lib.selected = items.iter().map(|i| i.path.clone()).collect();
+        }
+        if n > 0 && theme::link_button(ui, &p, "Clear").clicked() {
+            app.lib.selected.clear();
+        }
+        ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+            let r = ui.add_enabled_ui(n > 0, |ui| theme::danger_button(ui, &p, "Delete")).inner;
+            if r.clicked() {
+                app.lib.confirm_delete = Some(Pending::Many(app.lib.selected.iter().cloned().collect()));
+            }
+        });
+    });
+}
+
+/// Square checkbox drawn to match the theme.
+fn check_box(ui: &mut egui::Ui, p: &theme::Palette, rect: egui::Rect, on: bool) {
+    let painter = ui.painter();
+    if on {
+        painter.rect_filled(rect, CornerRadius::same(4), p.text);
+        let s = egui::Stroke::new(1.8, p.bg);
+        let c = rect.center();
+        painter.line_segment([c + Vec2::new(-4.0, 0.2), c + Vec2::new(-1.2, 3.0)], s);
+        painter.line_segment([c + Vec2::new(-1.2, 3.0), c + Vec2::new(4.2, -2.8)], s);
+    } else {
+        painter.rect_stroke(rect, CornerRadius::same(4), egui::Stroke::new(1.3, p.faint), egui::StrokeKind::Inside);
+    }
+}
+
 fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
     let p = app.p;
-    let width = ui.available_width();
-    let (rect, resp) = ui.allocate_exact_size(Vec2::new(width, 100.0), Sense::hover());
-    if resp.hovered() {
-        ui.painter().rect_filled(rect, CornerRadius::same(8), p.panel);
+    let selecting = app.lib.selecting;
+    let selected = app.lib.selected.contains(&item.path);
+    // Paint the background after the content is laid out, so the row always wraps its content.
+    let bg = ui.painter().add(egui::Shape::Noop);
+    let full_w = ui.available_width();
+    let inner = egui::Frame::new().inner_margin(egui::Margin::symmetric(8, 8)).show(ui, |ui| {
+        ui.set_width(full_w - 16.0);
+        ui.horizontal_top(|ui| {
+            if selecting {
+                let (r, _) = ui.allocate_exact_size(Vec2::new(26.0, 76.0), Sense::hover());
+                check_box(ui, &p, egui::Rect::from_center_size(r.center(), Vec2::splat(18.0)), selected);
+            }
+            thumbnail(app, ui, item, selecting);
+            ui.add_space(12.0);
+            ui.vertical(|ui| {
+                ui.set_width(ui.available_width());
+                details(app, ui, item, offset, selecting);
+            });
+        });
+    });
+    let rect = inner.response.rect;
+    let resp = ui.interact(rect, ui.id().with(("row", &item.path)), Sense::click());
+    if selecting && resp.clicked() {
+        if selected {
+            app.lib.selected.remove(&item.path);
+        } else {
+            app.lib.selected.insert(item.path.clone());
+        }
     }
-    let thumb = egui::Rect::from_min_size(rect.left_top() + Vec2::new(6.0, 12.0), Vec2::new(135.0, 76.0));
+    let fill = if selected {
+        p.raised
+    } else if resp.hovered() || resp.contains_pointer() {
+        p.panel
+    } else {
+        Color32::TRANSPARENT
+    };
+    ui.painter().set(bg, egui::Shape::rect_filled(rect, CornerRadius::same(8), fill));
+    ui.add_space(4.0);
+}
+
+fn thumbnail(app: &mut App, ui: &mut egui::Ui, item: &Item, selecting: bool) {
+    let p = app.p;
+    let (thumb, thumb_resp) = ui.allocate_exact_size(Vec2::new(135.0, 76.0), Sense::click());
     if let Some(tex) = item.thumb.as_ref().and_then(|t| app.thumb(ui.ctx(), t)) {
         ui.painter().image(
             tex,
@@ -236,26 +333,27 @@ fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
         ui.painter().rect_filled(bg, CornerRadius::same(3), Color32::from_black_alpha(170));
         ui.painter().galley(bg.min + Vec2::new(4.0, 2.0), galley, Color32::WHITE);
     }
-    let thumb_resp = ui.interact(thumb, ui.id().with(("thumb", &item.path)), Sense::click());
+    if selecting {
+        return;
+    }
     if thumb_resp.clicked() && still_there(app, item) {
         open_file(&item.path);
     }
     if thumb_resp.hovered() {
         ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
     }
+}
 
-    let text_rect = egui::Rect::from_min_max(
-        egui::pos2(thumb.right() + 16.0, rect.top() + 8.0),
-        rect.right_bottom() - Vec2::new(8.0, 8.0),
-    );
-    let mut child = ui.new_child(egui::UiBuilder::new().max_rect(text_rect).layout(Layout::top_down(Align::Min)));
+fn details(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64, selecting: bool) {
+    let p = app.p;
     let renaming = app.lib.renaming.as_ref().is_some_and(|(p2, _)| p2 == &item.path);
     if renaming {
         let mut commit = false;
         let mut cancel = false;
-        child.horizontal(|ui| {
+        ui.horizontal(|ui| {
             if let Some((_, name)) = app.lib.renaming.as_mut() {
-                let r = ui.add(egui::TextEdit::singleline(name).desired_width(300.0));
+                let w = (ui.available_width() - 130.0).clamp(120.0, 320.0);
+                let r = ui.add(egui::TextEdit::singleline(name).desired_width(w));
                 r.request_focus();
                 if r.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
                     commit = true;
@@ -281,12 +379,14 @@ fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
             app.lib.renaming = None;
         }
     } else {
-        child.horizontal(|ui| {
-            let fav = app.library.is_favorite(&item.path);
-            if star(ui, &p, fav).clicked() {
-                app.library.set_favorite(&item.path, !fav);
+        ui.horizontal(|ui| {
+            if !selecting {
+                let fav = app.library.is_favorite(&item.path);
+                if star(ui, &p, fav).clicked() {
+                    app.library.set_favorite(&item.path, !fav);
+                }
             }
-            ui.add(egui::Label::new(RichText::new(&item.name).color(p.text)).truncate());
+            ui.add(egui::Label::new(RichText::new(&item.name).color(p.text)).truncate()).on_hover_text(&item.name);
         });
     }
     let mut meta = Vec::new();
@@ -301,58 +401,108 @@ fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
     if !item.app.is_empty() {
         meta.push(item.app.clone());
     }
-    child.label(RichText::new(meta.join(", ")).small().color(p.muted));
+    ui.add(egui::Label::new(RichText::new(meta.join(" · ")).small().color(p.muted)).truncate());
     if let Some(problem) = &item.problem {
-        child.label(RichText::new(problem).small().color(p.warn));
+        ui.label(RichText::new(problem).small().color(p.warn));
     }
-    child.add_space(4.0);
-    child.horizontal(|ui| {
+    if selecting {
+        return;
+    }
+    ui.add_space(6.0);
+    ui.horizontal_wrapped(|ui| {
         if theme::link_button(ui, &p, "Play").clicked() && still_there(app, item) {
             open_file(&item.path);
         }
+        ui.add_space(6.0);
         if theme::link_button(ui, &p, "Show in folder").clicked() && still_there(app, item) {
             urec_win::reveal_in_explorer(&item.path);
         }
-        if theme::link_button(ui, &p, "Rename").clicked() {
-            app.lib.renaming = Some((item.path.clone(), item.name.clone()));
-        }
-        if theme::link_button(ui, &p, "Copy path").clicked() {
-            ui.ctx().copy_text(item.path.to_string_lossy().into_owned());
-            app.push_notice(Level::Info, "File path copied.".into());
-        }
-        if theme::link_button(ui, &p, "Delete").clicked() {
-            app.lib.confirm_delete = Some(item.clone());
-        }
+        ui.add_space(6.0);
+        let more = egui::Button::new(RichText::new("More").color(p.muted).underline()).frame(false);
+        egui::containers::menu::MenuButton::from_button(more).ui(ui, |ui| {
+            ui.set_min_width(150.0);
+            if ui.button("Rename").clicked() {
+                app.lib.renaming = Some((item.path.clone(), item.name.clone()));
+                ui.close();
+            }
+            if ui.button("Copy path").clicked() {
+                ui.ctx().copy_text(item.path.to_string_lossy().into_owned());
+                app.push_notice(Level::Info, "File path copied.".into());
+                ui.close();
+            }
+            ui.separator();
+            if ui.button(RichText::new("Delete").color(p.rec)).clicked() {
+                app.lib.confirm_delete = Some(Pending::One(item.clone()));
+                ui.close();
+            }
+        });
     });
 }
 
+/// What the delete dialog is about.
+pub enum Pending {
+    One(Item),
+    Many(Vec<PathBuf>),
+}
+
 fn delete_dialog(app: &mut App, ctx: &egui::Context) {
-    let Some(item) = app.lib.confirm_delete.clone() else { return };
+    let Some(pending) = app.lib.confirm_delete.as_ref() else { return };
+    let (title, body) = match pending {
+        Pending::One(item) => (
+            "Delete this recording?".to_string(),
+            format!("\"{}\" will be moved to the Recycle Bin. You can restore it from there.", item.name),
+        ),
+        Pending::Many(paths) => (
+            format!("Delete {} recording{}?", paths.len(), if paths.len() == 1 { "" } else { "s" }),
+            "They will be moved to the Recycle Bin. You can restore them from there.".to_string(),
+        ),
+    };
     let p = app.p;
     let mut close = false;
+    let mut confirm = false;
     let resp = egui::Modal::new(egui::Id::new("confirm_delete")).show(ctx, |ui| {
         ui.set_width(380.0);
-        ui.label(RichText::new("Delete this recording?").font(theme::semibold(16.0)));
+        ui.label(RichText::new(title).font(theme::semibold(16.0)));
         ui.add_space(4.0);
-        theme::note(
-            ui,
-            &p,
-            &format!("\"{}\" will be moved to the Recycle Bin. You can restore it from there.", item.name),
-        );
+        theme::note(ui, &p, &body);
         ui.add_space(12.0);
         ui.horizontal(|ui| {
-            let b = egui::Button::new(RichText::new("Move to Recycle Bin").color(Color32::WHITE).strong()).fill(p.rec);
-            if ui.add(b).clicked() {
-                if let Err(e) = app.library.delete(&item) {
-                    app.push_notice(Level::Error, e);
-                }
+            if theme::danger_button(ui, &p, "Move to Recycle Bin").clicked() {
+                confirm = true;
                 close = true;
             }
-            if theme::quiet_button(ui, &p, "Keep it").clicked() {
+            if theme::quiet_button(ui, &p, "Keep").clicked() {
                 close = true;
             }
         });
     });
+    if confirm {
+        match app.lib.confirm_delete.take() {
+            Some(Pending::One(item)) => {
+                if let Err(e) = app.library.delete(&item) {
+                    app.push_notice(Level::Error, e);
+                }
+            }
+            Some(Pending::Many(paths)) => {
+                let (ok, failed) = app.library.delete_many(&paths);
+                if failed.is_empty() {
+                    app.push_notice(Level::Info, format!("{ok} moved to the Recycle Bin."));
+                } else {
+                    app.push_notice(
+                        Level::Error,
+                        format!(
+                            "{ok} moved to the Recycle Bin. {} couldn't be (open in another app?): {}",
+                            failed.len(),
+                            failed.join(", ")
+                        ),
+                    );
+                }
+                app.lib.selected.clear();
+                app.lib.selecting = false;
+            }
+            None => {}
+        }
+    }
     if close || resp.should_close() {
         app.lib.confirm_delete = None;
     }

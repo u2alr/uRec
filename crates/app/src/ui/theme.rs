@@ -245,14 +245,15 @@ pub fn group_title(ui: &mut Ui, p: &Palette, title: &str) {
 enum ButtonKind {
     Primary,
     Quiet,
+    Danger,
 }
 
 /// Hand-drawn button so hover, pressed and disabled states always show, whatever the fill.
 fn button(ui: &mut Ui, p: &Palette, text: &str, kind: ButtonKind) -> Response {
     let enabled = ui.is_enabled();
-    let font = if kind == ButtonKind::Primary { semibold(14.0) } else { FontId::proportional(14.0) };
+    let font = if kind == ButtonKind::Quiet { FontId::proportional(14.0) } else { semibold(14.0) };
     let galley = ui.painter().layout_no_wrap(text.to_owned(), font, Color32::PLACEHOLDER);
-    let size = Vec2::new(galley.size().x + 30.0, if kind == ButtonKind::Primary { 34.0 } else { 32.0 });
+    let size = Vec2::new(galley.size().x + 30.0, if kind == ButtonKind::Quiet { 32.0 } else { 34.0 });
     let (rect, resp) = ui.allocate_exact_size(size, Sense::click());
     let hovered = enabled && resp.hovered();
     let pressed = enabled && resp.is_pointer_button_down_on();
@@ -267,7 +268,17 @@ fn button(ui: &mut Ui, p: &Palette, text: &str, kind: ButtonKind) -> Response {
             };
             (lerp(p.text, p.bg, t), Stroke::NONE, p.bg)
         }
-        (ButtonKind::Primary, false) => (p.raised, Stroke::NONE, p.faint),
+        (ButtonKind::Primary | ButtonKind::Danger, false) => (p.raised, Stroke::NONE, p.faint),
+        (ButtonKind::Danger, true) => {
+            let t = if pressed {
+                0.24
+            } else if hovered {
+                0.12
+            } else {
+                0.0
+            };
+            (lerp(p.rec, Color32::BLACK, t), Stroke::NONE, Color32::WHITE)
+        }
         (ButtonKind::Quiet, true) => {
             let fill = if pressed {
                 lerp(p.raised, p.hairline, 0.6)
@@ -292,6 +303,11 @@ fn button(ui: &mut Ui, p: &Palette, text: &str, kind: ButtonKind) -> Response {
 /// Solid button in the text colour (inverted), for the single main action on a screen.
 pub fn primary_button(ui: &mut Ui, p: &Palette, text: &str) -> Response {
     button(ui, p, text, ButtonKind::Primary)
+}
+
+/// Solid red button for destructive actions (always behind a confirmation).
+pub fn danger_button(ui: &mut Ui, p: &Palette, text: &str) -> Response {
+    button(ui, p, text, ButtonKind::Danger)
 }
 
 pub fn quiet_button(ui: &mut Ui, p: &Palette, text: &str) -> Response {

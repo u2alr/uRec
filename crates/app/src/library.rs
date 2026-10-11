@@ -221,6 +221,23 @@ impl Library {
             Err("Couldn't move the file to the Recycle Bin. It may be open in another app.".into())
         }
     }
+
+    /// Move several recordings to the Recycle Bin. Returns how many moved and the names that
+    /// couldn't be (files already gone count as done).
+    pub fn delete_many(&self, paths: &[PathBuf]) -> (usize, Vec<String>) {
+        let mut ok = 0;
+        let mut failed = Vec::new();
+        for path in paths {
+            if !path.exists() || urec_win::recycle(path) {
+                ok += 1;
+                self.items.lock().unwrap().retain(|x| &x.path != path);
+                self.set_favorite(path, false);
+            } else {
+                failed.push(path.file_name().map(|n| n.to_string_lossy().to_string()).unwrap_or_default());
+            }
+        }
+        (ok, failed)
+    }
 }
 
 fn is_video(p: &Path) -> bool {

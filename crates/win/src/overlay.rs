@@ -248,7 +248,7 @@ unsafe fn draw(hwnd: HWND) {
             let m = Metrics::for_scale(k);
             let key = (k * 100.0) as u32;
             for kind in [Kind::Success, Kind::Failure] {
-                anim.masks.entry((kind, key)).or_insert_with(|| text_mask(kind.text(), (13.5 * k).round() as i32));
+                anim.masks.entry((kind, key)).or_insert_with(|| text_mask(kind.text(), (12.5 * k).round() as i32));
             }
             let masks = &anim.masks;
             let mask_for = |kind: Kind| masks.get(&(kind, key)).cloned().unwrap_or_default();
