@@ -782,7 +782,7 @@ impl Worker {
                 let secs = rec.started.elapsed().as_secs();
                 self.notice(
                     Level::Success,
-                    format!("Recording saved ({}:{:02}).", secs / 60, secs % 60),
+                    format!("{} recording saved ({}:{:02}).", rec.app, secs / 60, secs % 60),
                     Some(p.clone()),
                 );
                 self.update(|s| s.last_saved = Some(p));
