@@ -6,6 +6,7 @@
 
 pub mod encoder;
 pub mod hotkey;
+pub mod mp4check;
 pub mod naming;
 pub mod pipeline;
 pub mod probe;

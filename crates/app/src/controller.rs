@@ -5,7 +5,7 @@
 use crate::settings::Settings;
 use std::collections::VecDeque;
 use std::path::{Path, PathBuf};
-use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::sync::mpsc::{channel, Receiver, RecvTimeoutError, Sender};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
@@ -15,7 +15,7 @@ use urec_engine::naming::{self, Stamp};
 use urec_engine::pipeline::{AudioInput, CaptureMethod, CaptureTarget, Output, Rect};
 use urec_engine::probe::{self, ProbeResult};
 use urec_engine::process::{locate_ffmpeg, Stats};
-use urec_engine::replay::{self, ReplayBuffer};
+use urec_engine::replay::{self, ReplayBuffer, SavedClip};
 use urec_engine::session::{Session, StartRequest};
 use urec_engine::video::{self, Capabilities, Codec, Preset};
 use urec_win::{AudioFeed, SourceState};
@@ -36,6 +36,16 @@ pub enum Command {
     Apply(Box<Settings>),
     Reprobe,
     Shutdown,
+    /// From the save worker: a queued replay save has started / finished.
+    ReplaySaveStarted(u64),
+    ReplaySaveFinished(u64, Result<SavedClip, String>),
+}
+
+/// Outcome of one Instant Replay save, for the UI and the overlay.
+#[derive(Clone, Debug, PartialEq)]
+pub struct ReplaySaveEvent {
+    pub id: u64,
+    pub result: Result<SavedClip, String>,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -103,6 +113,9 @@ pub struct Status {
     pub hotkey_failures: Vec<String>,
     pub overlay_visible: bool,
     pub last_saved: Option<PathBuf>,
+    /// Instant Replay saves queued or running (at most 2).
+    pub replay_saving: usize,
+    pub last_replay_save: Option<ReplaySaveEvent>,
 }
 
 impl Status {
@@ -188,6 +201,14 @@ impl Controller {
 
 // ------------------------------------------------------------------ worker
 
+/// What the user should see about a replay save.
+#[derive(Clone, Debug)]
+pub enum SaveFeedback {
+    Saving,
+    Saved(SavedClip),
+    Failed(String),
+}
+
 /// Recording that piggybacks on the Instant Replay ring: closed segments are copied as
 /// they appear and joined when recording stops. Nothing is encoded twice.
 struct RingRecording {
@@ -196,6 +217,77 @@ struct RingRecording {
     from: f64,
     copied: Vec<PathBuf>,
     last_end: f64,
+}
+
+/// One queued Instant Replay save. Everything needed is captured when the hotkey is pressed.
+struct SaveJob {
+    id: u64,
+    ffmpeg: PathBuf,
+    buffer_dir: PathBuf,
+    replay_seconds: u32,
+    save_seconds: u32,
+    out: PathBuf,
+}
+
+/// Saves run one at a time on their own thread, so a burst of hotkey presses can't start
+/// competing FFmpeg joins, and hotkeys/recording never wait for a save.
+struct Saver {
+    tx: Sender<SaveJob>,
+    /// Queued + running saves.
+    pending: Arc<AtomicUsize>,
+    next_id: u64,
+}
+
+/// At most one save running and one waiting; further presses are folded into the waiting one
+/// (it starts later, so it includes those moments too).
+const MAX_PENDING_SAVES: usize = 2;
+
+impl Saver {
+    fn start(ctl: Controller) -> Saver {
+        let (tx, rx) = channel::<SaveJob>();
+        let pending = Arc::new(AtomicUsize::new(0));
+        let p2 = pending.clone();
+        let _ = std::thread::Builder::new().name("replay-save".into()).spawn(move || {
+            for job in rx {
+                ctl.send(Command::ReplaySaveStarted(job.id));
+                let t0 = Instant::now();
+                let buffer = ReplayBuffer::new(job.buffer_dir, job.replay_seconds, SEGMENT_SECONDS);
+                let result = buffer.save(&job.ffmpeg, job.save_seconds, &job.out, true).map_err(|e| e.to_string());
+                match &result {
+                    Ok(c) => log(&format!(
+                        "replay save #{} ok in {} ms: {} ({:.1} s, {} bytes)",
+                        job.id,
+                        t0.elapsed().as_millis(),
+                        c.path.display(),
+                        c.seconds,
+                        c.bytes
+                    )),
+                    Err(e) => {
+                        log(&format!("replay save #{} failed after {} ms: {e}", job.id, t0.elapsed().as_millis()))
+                    }
+                }
+                p2.fetch_sub(1, Ordering::SeqCst);
+                ctl.send(Command::ReplaySaveFinished(job.id, result));
+            }
+        });
+        Saver { tx, pending, next_id: 1 }
+    }
+
+    fn pending(&self) -> usize {
+        self.pending.load(Ordering::SeqCst)
+    }
+
+    /// Wait until no save is queued or running (before the buffer is cleared or on exit).
+    fn wait_idle(&self, timeout: Duration) -> bool {
+        let start = Instant::now();
+        while self.pending() > 0 {
+            if start.elapsed() > timeout {
+                return false;
+            }
+            std::thread::sleep(Duration::from_millis(50));
+        }
+        true
+    }
 }
 
 struct Live {
@@ -215,6 +307,7 @@ struct Worker {
     s: Settings,
     rx: Receiver<Command>,
     ffmpeg: Option<PathBuf>,
+    saver: Saver,
     live: Option<Live>,
     ring: Option<RingRecording>,
     recording: Option<Recording>,
@@ -245,11 +338,13 @@ impl Worker {
                 let _ = tx.send(cmd);
             }
         });
+        let saver = Saver::start(ctl.clone());
         Worker {
             ctl,
             s,
             rx,
             ffmpeg: None,
+            saver,
             live: None,
             ring: None,
             recording: None,
@@ -334,6 +429,7 @@ impl Worker {
         }
         self.register_hotkeys();
         log("controller: hotkeys registered");
+        self.remove_leftovers();
         self.run_probe();
         log("controller: probe done");
         if !self.s.first_run_done {
@@ -342,6 +438,24 @@ impl Worker {
         self.update(|s| s.ready = true);
         if self.s.replay.enabled {
             self.start_replay();
+        }
+    }
+
+    /// Clean up after a crash or power loss: staging copies and unfinished clips. Only uRec's
+    /// own temporary names are removed; finished recordings are never touched.
+    fn remove_leftovers(&self) {
+        let rdir = self.s.replay_dir();
+        replay::remove_stale_stages(&rdir);
+        if let Ok(rd) = std::fs::read_dir(&rdir) {
+            for e in rd.flatten() {
+                if e.file_name().to_string_lossy().starts_with("rec-") && e.path().is_dir() {
+                    let _ = std::fs::remove_dir_all(e.path());
+                }
+            }
+        }
+        let n = replay::remove_temp_outputs(&self.s.output_dir());
+        if n > 0 {
+            log(&format!("removed {n} unfinished clip(s) from an interrupted save"));
         }
     }
 
@@ -436,6 +550,12 @@ impl Worker {
                 }
             }
             Command::Shutdown => {}
+            Command::ReplaySaveStarted(_) => {
+                let n = self.saver.pending();
+                self.update(|s| s.replay_saving = n);
+                self.save_feedback(SaveFeedback::Saving);
+            }
+            Command::ReplaySaveFinished(id, result) => self.replay_saved(id, result),
         }
     }
 
@@ -789,7 +909,7 @@ impl Worker {
             self.copy_ring_segments(&mut ring);
             let result = self.join_ring(&ring, &rec.output);
             let _ = std::fs::remove_dir_all(&ring.dir);
-            self.finish_recording(result.map(|_| Some(rec.output.clone())), &rec);
+            self.finish_recording(result.map(Some), &rec);
             return;
         }
         let result = self.stop_live().unwrap_or(Ok(None));
@@ -842,15 +962,11 @@ impl Worker {
         }
     }
 
-    fn join_ring(&self, ring: &RingRecording, out: &Path) -> Result<(), String> {
+    fn join_ring(&self, ring: &RingRecording, out: &Path) -> Result<PathBuf, String> {
         if ring.copied.is_empty() {
             return Err("Nothing was recorded.".into());
         }
-        let list: String = ring
-            .copied
-            .iter()
-            .map(|p| format!("file '{}'\n", p.to_string_lossy().replace('\\', "/").replace('\'', "'\\''")))
-            .collect();
+        let list = replay::concat_list(&ring.copied);
         let list_path = ring.dir.join("list.txt");
         std::fs::write(&list_path, list).map_err(|e| e.to_string())?;
         let ff = self.ffmpeg.as_deref().ok_or("FFmpeg is missing.")?;
@@ -890,6 +1006,10 @@ impl Worker {
         if self.live.is_some() {
             return;
         }
+        // Starting clears the buffer: let queued saves finish reading it first.
+        if !self.saver.wait_idle(Duration::from_secs(30)) {
+            log("start_replay: a save is still running after 30 s; continuing");
+        }
         self.update(|s| s.replay = ReplayState::Starting);
         let buffer = self.replay_buffer();
         let bps = video::bytes_per_second(self.s.video.bitrate_kbps, self.s.audio.bitrate_kbps);
@@ -918,43 +1038,83 @@ impl Worker {
 
     fn save_replay(&mut self) {
         if !self.live.as_ref().is_some_and(|l| l.kind == LiveKind::Replay) {
-            self.notice(Level::Info, "Instant Replay is off. Turn it on to save the last moments.", None);
+            let starting = self.ctl.snapshot().replay == ReplayState::Starting;
+            let text = if starting {
+                "Instant Replay is still starting. Try again in a moment."
+            } else {
+                "Instant Replay is off. Turn it on to save the last moments."
+            };
+            self.notice(Level::Warning, text, None);
+            self.save_feedback(SaveFeedback::Failed(text.into()));
             return;
         }
         let Some(ff) = self.ffmpeg.clone() else { return };
-        if let Err(e) = self.check_folder(&self.s.output_dir(), HARD_MIN_FREE, "recordings") {
-            self.notice(Level::Error, e, None);
+        let pending = self.saver.pending();
+        if pending >= MAX_PENDING_SAVES {
+            // The waiting save starts after the running one and covers this moment too.
+            log("replay save: press folded into the save already waiting");
+            self.notice(Level::Info, "Already saving. This moment is included in the next clip.", None);
             return;
         }
-        let out = self.output_file(&foreground_app(), " Replay", "mp4");
-        let buffer = self.replay_buffer();
         let seconds = self.s.replay.seconds;
-        let ctl = self.ctl.clone();
-        let sound = self.s.general.sound_on_save;
-        // Joining takes a moment; don't block hotkeys or the recording loop.
-        std::thread::spawn(move || {
-            let result = buffer.save(&ff, seconds, &out, true);
-            let worker_notice = |level: Level, text: String, file: Option<PathBuf>| {
-                if let Ok(mut s) = ctl.status.lock() {
-                    s.notices.push_front(Notice { level, text, at: Instant::now(), file: file.clone() });
-                    s.notices.truncate(6);
-                    if let Some(f) = file {
-                        s.last_saved = Some(f);
-                    }
-                }
-                ctl.repaint();
-            };
-            match result {
-                Ok(p) => {
-                    if sound {
-                        urec_win::play_ding();
-                    }
-                    log(&format!("replay saved: {}", p.display()));
-                    worker_notice(Level::Success, format!("Instant Replay saved ({}).", format_secs(seconds)), Some(p));
-                }
-                Err(e) => worker_notice(Level::Error, format!("Instant Replay couldn't be saved: {e}"), None),
-            }
+        let bps = video::bytes_per_second(self.s.video.bitrate_kbps, self.s.audio.bitrate_kbps);
+        let need = bps * seconds as u64 * 12 / 10 + 256_000_000;
+        if let Err(e) = self.check_folder(&self.s.output_dir(), need, "clip") {
+            self.notice(Level::Error, format!("Instant Replay couldn't be saved. {e}"), None);
+            self.save_feedback(SaveFeedback::Failed(e));
+            return;
+        }
+        let job = SaveJob {
+            id: self.saver.next_id,
+            ffmpeg: ff,
+            buffer_dir: self.s.replay_dir(),
+            replay_seconds: seconds,
+            save_seconds: seconds,
+            out: self.output_file(&foreground_app(), " Replay", "mp4"),
+        };
+        self.saver.next_id += 1;
+        self.saver.pending.fetch_add(1, Ordering::SeqCst);
+        log(&format!("replay save #{} queued ({} pending before)", job.id, pending));
+        if self.saver.tx.send(job).is_err() {
+            self.saver.pending.fetch_sub(1, Ordering::SeqCst);
+            self.notice(Level::Error, "Instant Replay couldn't be saved: the save worker stopped.", None);
+            self.save_feedback(SaveFeedback::Failed("save worker stopped".into()));
+            return;
+        }
+        self.update(|s| s.replay_saving = pending + 1);
+    }
+
+    fn replay_saved(&mut self, id: u64, result: Result<SavedClip, String>) {
+        let n = self.saver.pending();
+        self.update(|s| {
+            s.replay_saving = n;
+            s.last_replay_save = Some(ReplaySaveEvent { id, result: result.clone() });
         });
+        match result {
+            Ok(clip) => {
+                if self.s.general.sound_on_save {
+                    urec_win::play_ding();
+                }
+                self.notice(
+                    Level::Success,
+                    format!("Instant Replay saved ({}).", format_secs(clip.seconds.round() as u32)),
+                    Some(clip.path.clone()),
+                );
+                let p = clip.path.clone();
+                self.update(|s| s.last_saved = Some(p));
+                self.save_feedback(SaveFeedback::Saved(clip));
+            }
+            Err(e) => {
+                self.notice(Level::Error, format!("Instant Replay couldn't be saved: {e}"), None);
+                self.save_feedback(SaveFeedback::Failed(e));
+            }
+        }
+    }
+
+    /// Visual feedback for replay saves: the overlay pill, or a Windows notification when the
+    /// overlay is turned off. The in-app notice is always added separately.
+    fn save_feedback(&mut self, fb: SaveFeedback) {
+        let _ = fb;
     }
 
     // -------------------------------------------------------------- periodic work
@@ -1107,6 +1267,11 @@ impl Worker {
     }
 
     fn shutdown(&mut self) {
+        // Finish queued Instant Replay saves while the capture still runs (a save waits for
+        // the segment that was open when the hotkey was pressed).
+        if !self.saver.wait_idle(Duration::from_secs(30)) {
+            log("shutdown: a replay save didn't finish within 30 s");
+        }
         if self.recording.is_some() {
             self.stop_recording();
         }

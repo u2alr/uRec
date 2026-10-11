@@ -98,6 +98,16 @@ $ok = $rr.Code -eq 0 -and $m -and $m.Duration -ge 7.5 -and $m.Duration -le 12.5 
 $ringFiles = (Get-ChildItem (Join-Path $work "ring") -Filter *.ts -ErrorAction SilentlyContinue).Count
 Add-Result "T10" "Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded)" ($ok -and $ringFiles -le [int]$rr.Kv['wrap']) "clip=$($m.Duration)s audio=$($m.AudioTracks) save=$($rr.Kv['save_ms'])ms ring_files=$ringFiles/$($rr.Kv['wrap']) $(if ($m.DecodeErrors) { 'DECODE ERRORS' })"
 
+# Rapid repeated saves: 4 saves at the same instant to the same name (hotkey mashing).
+$rapidDir = Join-Path $work "rapid"
+New-Item -ItemType Directory -Force $rapidDir | Out-Null
+$rapid = Join-Path $rapidDir "Desktop Replay.mp4"
+$r4 = Invoke-Cli @("replay", "--dir", (Join-Path $work "ring4"), "--out", $rapid, "--source", $src, "--method", "gdi", "--encoder", "software", "--fps", "30", "--replay-seconds", "10", "--run-seconds", "14", "--save-seconds", "6", "--audio-test", "--saves", "4")
+$clips = @(Get-ChildItem $rapidDir -Filter *.mp4 | Where-Object { $_.Name -notlike "*.urec-tmp.mp4" })
+$temps = @(Get-ChildItem $rapidDir -Filter "*.urec-tmp.mp4").Count
+$bad = @($clips | ForEach-Object { $mm = Get-MediaInfo $_.FullName; if (-not $mm -or $mm.DecodeErrors -or $mm.Duration -lt 5.5 -or $mm.AudioTracks -ne 1) { $_.Name } })
+Add-Result "T19" "4 simultaneous replay saves: 4 separate complete clips, none overwritten, no leftovers" ($r4.Code -eq 0 -and $clips.Count -eq 4 -and $bad.Count -eq 0 -and $temps -eq 0 -and $r4.Kv['stage_leftovers'] -eq '0') "clips=$($clips.Count) [$(($clips.Name) -join ', ')] bad=[$($bad -join ', ')] temp=$temps stages_left=$($r4.Kv['stage_leftovers']) total=$($r4.Kv['save_ms'])ms"
+
 "=== Repeated start/stop"
 $cycleOk = $true; $cycleDetail = @()
 for ($i = 1; $i -le 5; $i++) {

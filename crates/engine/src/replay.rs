@@ -65,6 +65,8 @@ pub enum SaveError {
     Empty,
     Io(std::io::Error),
     Join(String),
+    /// FFmpeg finished but the result isn't a complete MP4.
+    Invalid(String),
 }
 
 impl std::fmt::Display for SaveError {
@@ -73,6 +75,7 @@ impl std::fmt::Display for SaveError {
             SaveError::Empty => write!(f, "Nothing has been recorded yet."),
             SaveError::Io(e) => write!(f, "Couldn't write the replay: {e}"),
             SaveError::Join(e) => write!(f, "Couldn't join the replay: {e}"),
+            SaveError::Invalid(e) => write!(f, "The saved clip was damaged ({e}) and was discarded."),
         }
     }
 }
@@ -123,7 +126,17 @@ impl ReplayBuffer {
 
     /// Save the last `seconds` to `out` (MP4). Waits up to one segment so the moment the
     /// user pressed the hotkey is included. `ffmpeg` is used to join without re-encoding.
-    pub fn save(&self, ffmpeg: &Path, seconds: u32, out: &Path, wait_for_current: bool) -> Result<PathBuf, SaveError> {
+    ///
+    /// Safe to call from several threads at once: every call stages its own copies, and the
+    /// finished clip never replaces an existing file (a free " (n)" name is used instead).
+    /// Success is only returned once the MP4 has been checked and flushed to disk.
+    pub fn save(
+        &self,
+        ffmpeg: &Path,
+        seconds: u32,
+        out: &Path,
+        wait_for_current: bool,
+    ) -> Result<SavedClip, SaveError> {
         let before = self.segments().last().map(|s| s.end).unwrap_or(-1.0);
         if wait_for_current {
             let deadline = Instant::now() + Duration::from_millis(self.segment_seconds as u64 * 1000 + 1500);
@@ -138,34 +151,140 @@ impl ReplayBuffer {
         if chosen.is_empty() {
             return Err(SaveError::Empty);
         }
-        let stage = self.dir.join(format!("stage-{}", std::process::id()));
+        let stage = self.dir.join(format!("stage-{}-{}", std::process::id(), next_id()));
         let _ = std::fs::remove_dir_all(&stage);
         std::fs::create_dir_all(&stage)?;
-        let mut list = String::new();
-        for (i, s) in chosen.iter().enumerate() {
-            let src = self.dir.join(&s.file);
-            let dst = stage.join(format!("{i:05}.ts"));
-            if std::fs::copy(&src, &dst).is_ok() {
-                list += &format!("file '{}'\n", dst.to_string_lossy().replace('\\', "/").replace('\'', "'\\''"));
-            }
-        }
-        if list.is_empty() {
-            let _ = std::fs::remove_dir_all(&stage);
-            return Err(SaveError::Empty);
-        }
-        std::fs::write(stage.join("list.txt"), &list)?;
-        let result = join_segments(ffmpeg, &stage.join("list.txt"), out);
+        let result = (|| {
+            let files = copy_contiguous(&self.dir, &chosen, &stage)?;
+            let list = concat_list(&files);
+            std::fs::write(stage.join("list.txt"), &list)?;
+            let path = join_segments(ffmpeg, &stage.join("list.txt"), out)?;
+            let covered: f64 = chosen.iter().rev().take(files.len()).map(|s| s.end - s.start).sum();
+            let info = crate::mp4check::check(&path).map_err(SaveError::Invalid)?;
+            Ok(SavedClip { path, seconds: info.duration_secs.unwrap_or(covered), bytes: info.bytes })
+        })();
         let _ = std::fs::remove_dir_all(&stage);
-        result.map(|_| out.to_path_buf())
+        result
     }
 }
 
-/// Concatenate MPEG-TS segments listed in a concat file into a standard MP4.
-pub fn join_segments(ffmpeg: &Path, list: &Path, out: &Path) -> Result<(), SaveError> {
+/// A finished, verified clip.
+#[derive(Clone, Debug, PartialEq)]
+pub struct SavedClip {
+    pub path: PathBuf,
+    pub seconds: f64,
+    pub bytes: u64,
+}
+
+fn next_id() -> u64 {
+    use std::sync::atomic::{AtomicU64, Ordering};
+    static N: AtomicU64 = AtomicU64::new(0);
+    N.fetch_add(1, Ordering::Relaxed)
+}
+
+/// Copy the chosen segments into `stage`. The oldest ones may already have been recycled by
+/// the ring while we were waiting; those are dropped from the front. A segment missing in
+/// the middle would leave a hole in the clip, so that is an error instead.
+pub fn copy_contiguous(dir: &Path, chosen: &[Segment], stage: &Path) -> Result<Vec<PathBuf>, SaveError> {
+    let mut files = Vec::new();
+    for s in chosen {
+        let dst = stage.join(format!("{:05}.ts", files.len()));
+        match std::fs::copy(dir.join(&s.file), &dst) {
+            Ok(n) if n > 0 => files.push(dst),
+            Ok(_) | Err(_) if files.is_empty() => continue,
+            Ok(_) => return Err(SaveError::Join(format!("segment {} was empty", s.file))),
+            Err(e) => return Err(SaveError::Join(format!("couldn't read segment {}: {e}", s.file))),
+        }
+    }
+    if files.is_empty() {
+        return Err(SaveError::Empty);
+    }
+    Ok(files)
+}
+
+/// An FFmpeg concat list for these files.
+pub fn concat_list(files: &[PathBuf]) -> String {
+    files
+        .iter()
+        .map(|p| format!("file '{}'\n", p.to_string_lossy().replace('\\', "/").replace('\'', "'\\''")))
+        .collect()
+}
+
+/// Temporary name next to the final clip. Never shown in the library and removed at startup.
+pub const TEMP_SUFFIX: &str = ".urec-tmp.mp4";
+
+fn temp_path(out: &Path) -> PathBuf {
+    let stem = out.file_stem().map(|s| s.to_string_lossy().to_string()).unwrap_or_else(|| "clip".into());
+    out.with_file_name(format!("{stem}.{}-{}{TEMP_SUFFIX}", std::process::id(), next_id()))
+}
+
+/// Move a finished file into place without ever replacing an existing file. If `out` is
+/// taken, "name (2).ext", "name (3).ext"... are tried. Returns the final path.
+pub fn place_no_overwrite(tmp: &Path, out: &Path) -> std::io::Result<PathBuf> {
+    let stem = out.file_stem().map(|s| s.to_string_lossy().to_string()).unwrap_or_default();
+    let ext = out.extension().map(|s| s.to_string_lossy().to_string()).unwrap_or_default();
+    for n in 1..1000 {
+        let candidate = if n == 1 { out.to_path_buf() } else { out.with_file_name(format!("{stem} ({n}).{ext}")) };
+        // A hard link fails atomically if the name exists. Some drives (FAT32/exFAT) don't
+        // support links; there, check-then-rename (saves are serialized by the caller).
+        match std::fs::hard_link(tmp, &candidate) {
+            Ok(()) => {
+                let _ = std::fs::remove_file(tmp);
+                return Ok(candidate);
+            }
+            Err(e) if e.kind() == std::io::ErrorKind::AlreadyExists => continue,
+            Err(_) => {
+                if candidate.exists() {
+                    continue;
+                }
+                std::fs::rename(tmp, &candidate)?;
+                return Ok(candidate);
+            }
+        }
+    }
+    Err(std::io::Error::other("no free file name"))
+}
+
+/// Remove leftovers of interrupted saves: staging folders in the buffer folder.
+pub fn remove_stale_stages(buffer_dir: &Path) {
+    if let Ok(rd) = std::fs::read_dir(buffer_dir) {
+        for e in rd.flatten() {
+            let name = e.file_name().to_string_lossy().to_string();
+            if name.starts_with("stage-") && e.path().is_dir() {
+                let _ = std::fs::remove_dir_all(e.path());
+            }
+        }
+    }
+}
+
+/// Remove unfinished clips (`*.urec-tmp.mp4`) from a recordings folder and its direct
+/// subfolders. Only uRec's own temporary names are touched; finished recordings never are.
+pub fn remove_temp_outputs(dir: &Path) -> usize {
+    let mut removed = 0;
+    let mut dirs = vec![dir.to_path_buf()];
+    if let Ok(rd) = std::fs::read_dir(dir) {
+        dirs.extend(rd.flatten().map(|e| e.path()).filter(|p| p.is_dir()));
+    }
+    for d in dirs {
+        if let Ok(rd) = std::fs::read_dir(&d) {
+            for e in rd.flatten() {
+                if e.file_name().to_string_lossy().ends_with(TEMP_SUFFIX) && std::fs::remove_file(e.path()).is_ok() {
+                    removed += 1;
+                }
+            }
+        }
+    }
+    removed
+}
+
+/// Concatenate MPEG-TS segments listed in a concat file into a standard MP4 at `out` (or a
+/// free " (n)" variant of it). The file only appears under its final name once FFmpeg has
+/// finished, the structure checks out and the data has been flushed to disk.
+pub fn join_segments(ffmpeg: &Path, list: &Path, out: &Path) -> Result<PathBuf, SaveError> {
     if let Some(d) = out.parent() {
         std::fs::create_dir_all(d)?;
     }
-    let tmp = out.with_extension("part.mp4");
+    let tmp = temp_path(out);
     let args: Vec<String> = vec![
         "-hide_banner".into(),
         "-loglevel".into(),
@@ -188,14 +307,28 @@ pub fn join_segments(ffmpeg: &Path, list: &Path, out: &Path) -> Result<(), SaveE
         "mp4".into(),
         tmp.to_string_lossy().into(),
     ];
-    let (ok, err) = crate::process::run_capture(ffmpeg, &args, Duration::from_secs(300)).map_err(SaveError::Io)?;
-    if !ok || !tmp.exists() {
+    let run = crate::process::run_capture(ffmpeg, &args, Duration::from_secs(300));
+    let fail = |e: SaveError| {
         let _ = std::fs::remove_file(&tmp);
-        return Err(SaveError::Join(err.lines().take(3).collect::<Vec<_>>().join(" ")));
+        Err(e)
+    };
+    let (ok, err) = match run {
+        Ok(r) => r,
+        Err(e) => return fail(SaveError::Io(e)),
+    };
+    if !ok || !tmp.exists() {
+        return fail(SaveError::Join(err.lines().take(3).collect::<Vec<_>>().join(" ")));
     }
-    // Never overwrite: the caller picked a unique name; rename the finished file into place.
-    std::fs::rename(&tmp, out)?;
-    Ok(())
+    if let Err(e) = crate::mp4check::check(&tmp) {
+        return fail(SaveError::Invalid(e));
+    }
+    if let Err(e) = std::fs::OpenOptions::new().write(true).open(&tmp).and_then(|f| f.sync_all()) {
+        return fail(SaveError::Io(e));
+    }
+    match place_no_overwrite(&tmp, out) {
+        Ok(p) => Ok(p),
+        Err(e) => fail(SaveError::Io(e)),
+    }
 }
 
 #[cfg(test)]
@@ -222,5 +355,84 @@ mod tests {
         assert_eq!(ring_size(15, 2), 12);
         // 2 minutes at 2.5 MB/s ~ 320 MB of disk
         assert_eq!(ring_bytes(120, 2, 2_500_000), 320_000_000);
+    }
+
+    fn tmpdir(name: &str) -> PathBuf {
+        let d = std::env::temp_dir().join(format!("urec-replay-{}-{name}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&d);
+        std::fs::create_dir_all(&d).unwrap();
+        d
+    }
+
+    #[test]
+    fn concurrent_placement_never_overwrites() {
+        let d = tmpdir("place");
+        let out = d.join("Desktop 2026-10-12 01-02-03 Replay.mp4");
+        let handles: Vec<_> = (0..8)
+            .map(|i| {
+                let d = d.clone();
+                let out = out.clone();
+                std::thread::spawn(move || {
+                    let tmp = d.join(format!("t{i}{TEMP_SUFFIX}"));
+                    std::fs::write(&tmp, format!("clip {i}")).unwrap();
+                    place_no_overwrite(&tmp, &out).unwrap()
+                })
+            })
+            .collect();
+        let mut paths: Vec<PathBuf> = handles.into_iter().map(|h| h.join().unwrap()).collect();
+        paths.sort();
+        paths.dedup();
+        assert_eq!(paths.len(), 8, "every save gets its own file");
+        let mut contents: Vec<String> = paths.iter().map(|p| std::fs::read_to_string(p).unwrap()).collect();
+        contents.sort();
+        contents.dedup();
+        assert_eq!(contents.len(), 8, "no clip replaced another");
+        assert!(paths.iter().any(|p| p.ends_with("Desktop 2026-10-12 01-02-03 Replay (8).mp4")));
+        let _ = std::fs::remove_dir_all(d);
+    }
+
+    #[test]
+    fn copy_drops_recycled_head_but_not_holes() {
+        let d = tmpdir("copy");
+        let stage = d.join("stage");
+        std::fs::create_dir_all(&stage).unwrap();
+        let seg = |f: &str, a: f64| Segment { file: f.into(), start: a, end: a + 2.0 };
+        std::fs::write(d.join("b.ts"), b"bb").unwrap();
+        std::fs::write(d.join("c.ts"), b"cc").unwrap();
+        // "a" was already recycled by the ring: dropped from the front.
+        let got = copy_contiguous(&d, &[seg("a.ts", 0.0), seg("b.ts", 2.0), seg("c.ts", 4.0)], &stage).unwrap();
+        assert_eq!(got.len(), 2);
+        assert_eq!(concat_list(&got).lines().count(), 2);
+        // A missing segment in the middle is an error, never a silent gap.
+        let err = copy_contiguous(&d, &[seg("b.ts", 2.0), seg("x.ts", 4.0), seg("c.ts", 6.0)], &stage);
+        assert!(matches!(err, Err(SaveError::Join(_))));
+        assert!(matches!(copy_contiguous(&d, &[seg("x.ts", 0.0)], &stage), Err(SaveError::Empty)));
+        let _ = std::fs::remove_dir_all(d);
+    }
+
+    #[test]
+    fn cleanup_touches_only_temp_files() {
+        let d = tmpdir("cleanup");
+        std::fs::create_dir_all(d.join("VALORANT")).unwrap();
+        std::fs::write(d.join("keep.mp4"), b"x").unwrap();
+        std::fs::write(d.join("keep.part.mp4"), b"x").unwrap();
+        std::fs::write(d.join(format!("a.1-2{TEMP_SUFFIX}")), b"x").unwrap();
+        std::fs::write(d.join("VALORANT").join(format!("b.1-3{TEMP_SUFFIX}")), b"x").unwrap();
+        std::fs::write(d.join("VALORANT").join("clip.mp4"), b"x").unwrap();
+        assert_eq!(remove_temp_outputs(&d), 2);
+        assert!(d.join("keep.mp4").exists() && d.join("keep.part.mp4").exists());
+        assert!(d.join("VALORANT").join("clip.mp4").exists());
+        std::fs::create_dir_all(d.join("stage-1-2")).unwrap();
+        std::fs::create_dir_all(d.join("logs")).unwrap();
+        remove_stale_stages(&d);
+        assert!(!d.join("stage-1-2").exists() && d.join("logs").exists());
+        let _ = std::fs::remove_dir_all(d);
+    }
+
+    #[test]
+    fn temp_names_are_unique() {
+        let out = Path::new("C:/x/clip.mp4");
+        assert_ne!(temp_path(out), temp_path(out));
+        assert!(temp_path(out).to_string_lossy().ends_with(TEMP_SUFFIX));
     }
 }

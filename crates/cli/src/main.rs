@@ -8,7 +8,7 @@
 //! Options: --method auto|wgc|dda|gdi|test  --encoder auto|nvenc|amf|qsv|mf_hw|software|mf
 //!          --codec h264|hevc|av1  --res native|2160|1440|1080|900|720|WxH  --fps N
 //!          --bitrate KBPS  --source WxH (capture size)  --monitor N  --audio-test
-//!          --container mp4|mkv  --no-gpu-path  --replay-seconds N  --no-cursor
+//!          --container mp4|mkv  --no-gpu-path  --replay-seconds N  --no-cursor  --saves N
 //!          --audio none|test|system|mic|both  --layout mixed|separate  --window TITLE
 
 use std::cell::RefCell;
@@ -389,20 +389,35 @@ fn cmd_replay(ffmpeg: &Path, args: &Args) -> ExitCode {
     println!("ring_files={files}");
     println!("wrap={}", buffer.wrap());
     let t1 = Instant::now();
-    let saved = buffer.save(ffmpeg, args.num("save-seconds", 10), &out, true);
+    let save_seconds = args.num("save-seconds", 10);
+    // --saves N: N saves at the same moment to the same name (rapid hotkey presses).
+    let n = args.num("saves", 1).max(1);
+    let saved: Vec<_> = std::thread::scope(|sc| {
+        let handles: Vec<_> = (0..n).map(|_| sc.spawn(|| buffer.save(ffmpeg, save_seconds, &out, true))).collect();
+        handles.into_iter().map(|h| h.join().expect("save thread")).collect()
+    });
     println!("save_ms={}", t1.elapsed().as_millis());
     report_session(&session, t0);
     report_audio(&holder);
     let _ = session.stop(Duration::from_secs(10));
     holder.borrow_mut().take(); // stop audio capture after ffmpeg has finished
-    match saved {
-        Ok(p) => {
-            println!("output={}", p.display());
-            ExitCode::SUCCESS
+    let mut failed = false;
+    for r in &saved {
+        match r {
+            Ok(c) => println!("output={} seconds={:.2} bytes={}", c.path.display(), c.seconds, c.bytes),
+            Err(e) => {
+                eprintln!("save failed: {e}");
+                failed = true;
+            }
         }
-        Err(e) => {
-            eprintln!("save failed: {e}");
-            ExitCode::from(1)
-        }
+    }
+    let leftovers = std::fs::read_dir(&dir)
+        .map(|d| d.flatten().filter(|e| e.file_name().to_string_lossy().starts_with("stage-")).count())
+        .unwrap_or(0);
+    println!("stage_leftovers={leftovers}");
+    if failed {
+        ExitCode::from(1)
+    } else {
+        ExitCode::SUCCESS
     }
 }

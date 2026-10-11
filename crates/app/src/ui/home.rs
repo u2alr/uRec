@@ -325,6 +325,11 @@ fn replay_row(app: &mut App, ui: &mut egui::Ui, st: &Status) {
             let save_key =
                 hotkey_text(&app.s.hotkeys.save_replay).map(|k| format!(" Press {k} to save.")).unwrap_or_default();
             let status = match &st.replay {
+                ReplayState::On if st.replay_saving > 0 => format!(
+                    "Saving the last {}…{}",
+                    format_secs(app.s.replay.seconds),
+                    if st.replay_saving > 1 { " One more is queued." } else { "" }
+                ),
                 ReplayState::On => format!("Keeping the last {}.{save_key}", format_secs(app.s.replay.seconds)),
                 ReplayState::Starting => "Starting".into(),
                 ReplayState::Error(e) => format!("Not running: {}", truncate(e, 90)),
