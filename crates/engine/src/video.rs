@@ -98,6 +98,17 @@ impl fmt::Display for Codec {
 pub enum RateControl {
     Cbr,
     Vbr,
+    /// Constant quality: the encoder spends bits where the picture needs them, so still or
+    /// simple scenes take far less space. `bitrate_kbps` becomes a ceiling.
+    Quality,
+}
+
+/// Quality level 1 (smallest files) ..= 10 (best) as the encoder's quantizer on the H.264 /
+/// x264 CRF scale (lower = better). Other codecs adjust it in the encoder arguments.
+pub fn quality_cq(level: u8) -> u32 {
+    // 1 -> 32, 5 -> 26, 7 -> 23, 10 -> 18
+    let l = level.clamp(1, 10) as f32;
+    (33.5 - l * 1.55).round() as u32
 }
 
 /// Speed/quality trade-off passed to the encoder's own preset system.
@@ -115,11 +126,14 @@ pub enum Preset {
     Balanced,
     High,
     VeryHigh,
+    /// Constant quality, HEVC where the PC can encode it: much smaller files.
+    Compact,
     Custom,
 }
 
 impl Preset {
-    pub const ALL: [Preset; 5] = [Preset::LowEnd, Preset::Balanced, Preset::High, Preset::VeryHigh, Preset::Custom];
+    pub const ALL: [Preset; 6] =
+        [Preset::LowEnd, Preset::Balanced, Preset::High, Preset::VeryHigh, Preset::Compact, Preset::Custom];
 
     pub fn label(&self) -> &'static str {
         match self {
@@ -127,6 +141,7 @@ impl Preset {
             Preset::Balanced => "Balanced",
             Preset::High => "High quality",
             Preset::VeryHigh => "Very high quality",
+            Preset::Compact => "Smaller files",
             Preset::Custom => "Custom",
         }
     }
@@ -141,6 +156,8 @@ pub struct VideoSettings {
     /// Target bitrate in kbit/s.
     pub bitrate_kbps: u32,
     pub rate_control: RateControl,
+    /// Quality level 1..=10, used when `rate_control` is `Quality`.
+    pub quality: u8,
     pub effort: EncoderEffort,
     /// Seconds between keyframes.
     pub keyframe_seconds: u32,
@@ -186,17 +203,19 @@ pub fn apply_preset(preset: Preset, caps: &Capabilities) -> VideoSettings {
         Preset::Balanced => (1080, if hw { 60 } else { 30 }, EncoderEffort::Balanced),
         Preset::High => (1080, 60, EncoderEffort::Balanced),
         Preset::VeryHigh => (if caps.source_height >= 2160 { 2160 } else { 1440 }, 60, EncoderEffort::Quality),
+        Preset::Compact => (1080, if hw { 60 } else { 30 }, EncoderEffort::Balanced),
         Preset::Custom => (1080, 60, EncoderEffort::Balanced),
     };
     // A weak CPU without a hardware encoder can't keep up with 60 fps x264.
     let fps = if !hw && caps.logical_cpus <= 4 { fps.min(30) } else { fps };
     let resolution = if height >= caps.source_height { Resolution::Native } else { Resolution::Height(height) };
     let (w, h) = output_size(resolution, caps.source_width, caps.source_height);
-    let codec = Codec::H264;
+    // HEVC needs roughly a third less data for the same picture; only where it really works.
+    let codec = if preset == Preset::Compact && caps.hevc { Codec::Hevc } else { Codec::H264 };
     let quality_factor = match preset {
         Preset::LowEnd => 0.55,
         Preset::Balanced => 0.8,
-        Preset::High | Preset::Custom => 1.0,
+        Preset::High | Preset::Custom | Preset::Compact => 1.0,
         Preset::VeryHigh => 1.5,
     };
     VideoSettings {
@@ -204,7 +223,8 @@ pub fn apply_preset(preset: Preset, caps: &Capabilities) -> VideoSettings {
         frame_rate: FrameRate::Fixed(fps),
         codec,
         bitrate_kbps: recommended_bitrate_kbps(w, h, fps, codec, quality_factor),
-        rate_control: RateControl::Vbr,
+        rate_control: if preset == Preset::Compact { RateControl::Quality } else { RateControl::Vbr },
+        quality: 7,
         effort,
         keyframe_seconds: 2,
     }

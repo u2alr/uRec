@@ -305,6 +305,7 @@ pub fn preset_name(id: &str) -> &'static str {
         "balanced" => "Balanced",
         "high" => "High quality",
         "very_high" => "Very high quality",
+        "compact" => "Smaller files",
         _ => "Custom",
     }
 }

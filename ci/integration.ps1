@@ -75,6 +75,9 @@ $w720 = [int]([math]::Round($screen.Width * 720 / $screen.Height / 2) * 2)
 $p = Invoke-Cli @("probe", "--codecs", "h264,hevc,av1", "--check-args")
 $p.Out | ForEach-Object { "  $_" }
 Add-Result "T01" "Encoder probe: every generated argument set is accepted by FFmpeg" ($p.Code -eq 0) ("best h264: " + $p.Kv['best_h264'])
+$probeQ = Invoke-Cli @("probe", "--check-args", "--rc", "quality")
+$qErr = @($probeQ.Out | Where-Object { $_ -match "arg_error=true" })
+Add-Result "T01b" "Constant-quality argument sets (x264/x265 CRF, NVENC CQ, AMF CQP, QSV ICQ, MF quality) are accepted by FFmpeg" ($probeQ.Code -eq 0 -and $qErr.Count -eq 0) ("argument errors: " + $qErr.Count + " | " + (($probeQ.Out | Where-Object { $_ -match "ok=true" } | ForEach-Object { ($_ -split "\s+")[0] }) -join ", "))
 
 "=== Recordings"
 Test-Recording "T02" "GDI capture, x264, 720p30" @("--method", "gdi", "--encoder", "software", "--res", "720", "--fps", "30", "--seconds", "5") $w720 720 30 4.5 0 | Out-Null
@@ -145,6 +148,16 @@ $other = [System.Security.Cryptography.ECDsa]::Create([System.Security.Cryptogra
 $otherHex = (($other.Q.X + $other.Q.Y) | ForEach-Object { $_.ToString("x2") }) -join ""
 $badKey = Invoke-Cli @("verify-sig", "--key", $otherHex, "--file", $sumsF, "--sig", $sigF)
 Add-Result "T21" "Signed updates: valid signature accepted; changed file, changed signature and other key refused" ($good.Kv['verified'] -eq 'true' -and $badFile.Kv['verified'] -eq 'false' -and $badSig.Kv['verified'] -eq 'false' -and $badKey.Kv['verified'] -eq 'false') "good=$($good.Kv['verified']) tampered_file=$($badFile.Kv['verified']) flipped_sig=$($badSig.Kv['verified']) other_key=$($badKey.Kv['verified'])"
+
+# Constant quality vs VBR on the same mostly-still desktop: size and similarity (SSIM between the two).
+$vbrF = Join-Path $work "T22-vbr.mp4"; $cqF = Join-Path $work "T22-cq.mp4"
+$rv = Invoke-Cli @("record", "--out", $vbrF, "--source", $src, "--method", "gdi", "--encoder", "software", "--res", "720", "--fps", "30", "--seconds", "8", "--bitrate", "6000", "--rc", "vbr")
+$rq = Invoke-Cli @("record", "--out", $cqF, "--source", $src, "--method", "gdi", "--encoder", "software", "--res", "720", "--fps", "30", "--seconds", "8", "--bitrate", "6000", "--rc", "quality", "--quality", "7")
+$mv = Get-MediaInfo $vbrF; $mq = Get-MediaInfo $cqF
+$ssim = ((& $ff -hide_banner -i $cqF -i $vbrF -lavfi "[0:v][1:v]scale2ref[a][b];[a][b]ssim" -f null - 2>&1 | Out-String) -split "`n" | Where-Object { $_ -match "SSIM" } | Select-Object -Last 1)
+$ssimAll = if ($ssim -match "All:([0-9.]+)") { [double]$Matches[1] } else { 0 }
+$ratio = if ($mv -and $mv.SizeMB -gt 0) { [math]::Round($mq.SizeMB / $mv.SizeMB, 2) } else { 0 }
+Add-Result "T22" "Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported" ($rv.Code -eq 0 -and $rq.Code -eq 0 -and $mv -and $mq -and -not $mv.DecodeErrors -and -not $mq.DecodeErrors) "VBR $($mv.SizeMB) MB, constant quality $($mq.SizeMB) MB (ratio $ratio); SSIM between them $ssimAll"
 
 "=== Repeated start/stop"
 $cycleOk = $true; $cycleDetail = @()

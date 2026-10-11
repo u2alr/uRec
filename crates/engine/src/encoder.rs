@@ -134,7 +134,17 @@ impl Encoder {
         let name = self.ffmpeg_name().expect("encoder without ffmpeg name");
         let k = v.bitrate_kbps;
         let cbr = v.rate_control == RateControl::Cbr;
-        let maxrate = if cbr { k } else { k + k / 2 };
+        let cq_mode = v.rate_control == RateControl::Quality;
+        // Quantizer for constant quality, adjusted per codec (HEVC/AV1 scales sit higher).
+        let cq = crate::video::quality_cq(v.quality)
+            + match self.codec {
+                Codec::H264 => 0,
+                Codec::Hevc => 3,
+                Codec::Av1 => 8,
+            };
+        let cq_s = cq.to_string();
+        // In constant-quality mode the bitrate setting is a ceiling, not a target.
+        let maxrate = if cbr || cq_mode { k } else { k + k / 2 };
         let gop = (fps * v.keyframe_seconds).max(1);
         let mut a: Vec<String> = vec!["-c:v".into(), name.into()];
         let mut push = |xs: &[&str]| a.extend(xs.iter().map(|s| s.to_string()));
@@ -147,6 +157,9 @@ impl Encoder {
                     EncoderEffort::Quality => "p6",
                 };
                 push(&["-preset", preset, "-tune", "hq", "-rc", if cbr { "cbr" } else { "vbr" }]);
+                if cq_mode {
+                    push(&["-cq", &cq_s]);
+                }
                 push(&["-forced-idr", "1"]);
             }
             Backend::Amf => {
@@ -155,7 +168,17 @@ impl Encoder {
                     EncoderEffort::Balanced => "balanced",
                     EncoderEffort::Quality => "quality",
                 };
-                push(&["-usage", "transcoding", "-quality", quality, "-rc", if cbr { "cbr" } else { "vbr_peak" }]);
+                if cq_mode {
+                    // Constant QP: supported by every AMF generation (QVBR isn't).
+                    let p = (cq + 2).to_string();
+                    push(&["-usage", "transcoding", "-quality", quality, "-rc", "cqp"]);
+                    push(&["-qp_i", &cq_s, "-qp_p", &p]);
+                    if self.codec == Codec::H264 {
+                        push(&["-qp_b", &p]);
+                    }
+                } else {
+                    push(&["-usage", "transcoding", "-quality", quality, "-rc", if cbr { "cbr" } else { "vbr_peak" }]);
+                }
                 if self.codec == Codec::H264 {
                     push(&["-forced_idr", "1"]);
                 }
@@ -167,9 +190,19 @@ impl Encoder {
                     EncoderEffort::Quality => "slow",
                 };
                 push(&["-preset", preset, "-look_ahead", "0", "-forced_idr", "1"]);
+                if cq_mode {
+                    // Intelligent constant quality (ICQ).
+                    push(&["-global_quality", &cq_s]);
+                }
             }
             Backend::MediaFoundationHw | Backend::MediaFoundation => {
-                push(&["-rate_control", if cbr { "cbr" } else { "pc_vbr" }]);
+                if cq_mode {
+                    // Media Foundation's quality scale is 0-100, higher is better.
+                    let q = (100i32 - (cq as i32 - 10) * 3).clamp(1, 100).to_string();
+                    push(&["-rate_control", "quality", "-quality", &q]);
+                } else {
+                    push(&["-rate_control", if cbr { "cbr" } else { "pc_vbr" }]);
+                }
                 if self.backend == Backend::MediaFoundationHw {
                     push(&["-hw_encoding", "1"]);
                 }
@@ -181,6 +214,9 @@ impl Encoder {
                     EncoderEffort::Quality => "faster",
                 };
                 push(&["-preset", preset]);
+                if cq_mode {
+                    push(&["-crf", &cq_s]);
+                }
                 match self.codec {
                     Codec::H264 if cbr => push(&["-x264-params", "nal-hrd=cbr"]),
                     Codec::Hevc => push(&["-x265-params", "log-level=error"]),
@@ -193,7 +229,15 @@ impl Encoder {
         let buf_s = format!("{}k", maxrate * 2);
         let gop_s = gop.to_string();
         let kf = format!("expr:gte(t,n_forced*{})", v.keyframe_seconds);
-        push(&["-b:v", &k_s, "-maxrate", &max_s, "-bufsize", &buf_s, "-g", &gop_s, "-force_key_frames", &kf]);
+        match (cq_mode, self.backend) {
+            // Constant quality with a ceiling: no average target, only the peak is capped.
+            (true, Backend::Nvenc) => push(&["-b:v", "0", "-maxrate", &max_s, "-bufsize", &buf_s]),
+            (true, Backend::Software) => push(&["-maxrate", &max_s, "-bufsize", &buf_s]),
+            // AMF CQP / QSV ICQ / MF quality ignore bitrates.
+            (true, _) => {}
+            (false, _) => push(&["-b:v", &k_s, "-maxrate", &max_s, "-bufsize", &buf_s]),
+        }
+        push(&["-g", &gop_s, "-force_key_frames", &kf]);
         a
     }
 
@@ -289,6 +333,38 @@ mod tests {
         assert!(j.contains("n_forced*2"));
         let n = Encoder::new(Backend::Nvenc, Codec::H264).args(&v, 60).join(" ");
         assert!(n.contains("-forced-idr 1"));
+    }
+
+    #[test]
+    fn constant_quality_args() {
+        let v = VideoSettings {
+            bitrate_kbps: 20_000,
+            rate_control: RateControl::Quality,
+            quality: 7,
+            ..VideoSettings::default()
+        };
+        let j = |b, c| Encoder::new(b, c).args(&v, 60).join(" ");
+        // x264: CRF with only a ceiling, no average target.
+        let x = j(Backend::Software, Codec::H264);
+        assert!(x.contains("-crf 23") && x.contains("-maxrate 20000k") && !x.contains("-b:v 20000k"), "{x}");
+        // x265 sits 3 higher for the same picture.
+        assert!(j(Backend::Software, Codec::Hevc).contains("-crf 26"));
+        let n = j(Backend::Nvenc, Codec::H264);
+        assert!(n.contains("-rc vbr") && n.contains("-cq 23") && n.contains("-b:v 0"), "{n}");
+        let a = j(Backend::Amf, Codec::Hevc);
+        assert!(a.contains("-rc cqp -qp_i 26 -qp_p 28") && !a.contains("-qp_b") && !a.contains("-b:v"), "{a}");
+        assert!(j(Backend::Amf, Codec::H264).contains("-qp_b 25"));
+        let q = j(Backend::Qsv, Codec::H264);
+        assert!(q.contains("-global_quality 23") && !q.contains("-b:v"), "{q}");
+        let m = j(Backend::MediaFoundation, Codec::H264);
+        assert!(m.contains("-rate_control quality -quality 61"), "{m}");
+        // Keyframes stay regular in every mode (Instant Replay segments depend on it).
+        for b in Backend::PREFERENCE {
+            assert!(j(b, Codec::H264).contains("-g 120"));
+        }
+        assert_eq!(crate::video::quality_cq(1), 32);
+        assert_eq!(crate::video::quality_cq(10), 18);
+        assert!(crate::video::quality_cq(0) == 32 && crate::video::quality_cq(99) == 18);
     }
 
     #[test]

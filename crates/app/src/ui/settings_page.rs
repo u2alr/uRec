@@ -345,7 +345,9 @@ fn video_page(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     ui.label("Quality preset");
     ui.add_space(4.0);
     ui.horizontal_wrapped(|ui| {
-        for preset in [Preset::LowEnd, Preset::Balanced, Preset::High, Preset::VeryHigh, Preset::Custom] {
+        for preset in
+            [Preset::LowEnd, Preset::Balanced, Preset::High, Preset::VeryHigh, Preset::Compact, Preset::Custom]
+        {
             let id = preset_id(preset);
             let selected = app.s.video.preset == id;
             let label =
@@ -355,7 +357,11 @@ fn video_page(app: &mut App, ui: &mut egui::Ui, st: &Status) {
                     let v = video::apply_preset(preset, &caps);
                     let codec = app.s.video.codec.clone();
                     app.s.set_video(&v);
-                    app.s.video.codec = codec;
+                    // Keep the chosen codec, except for "Smaller files", which picks its own.
+                    if preset != Preset::Compact {
+                        app.s.video.codec = codec;
+                    }
+                    app.s.video.preset = id.into();
                     app.s.video.bitrate_kbps = scale_bitrate(&app.s, &caps);
                 }
                 app.s.video.preset = id.into();
@@ -368,6 +374,7 @@ fn video_page(app: &mut App, ui: &mut egui::Ui, st: &Status) {
         "balanced" => "1080p with moderate bitrate. Good for everyday recording.",
         "high" => "1080p at 60 FPS with a higher bitrate.",
         "very_high" => "1440p or 4K with a high bitrate. Needs a hardware encoder and lots of disk space.",
+        "compact" => "1080p, constant quality, HEVC when this PC can encode it. Much smaller files for the same look; HEVC needs Windows' HEVC extension to play.",
         _ => "Your own settings below.",
     };
     theme::note(ui, &p, preset_note);
@@ -431,11 +438,27 @@ fn video_page(app: &mut App, ui: &mut egui::Ui, st: &Status) {
         }
     });
     let bps = video::bytes_per_second(app.s.video.bitrate_kbps, app.s.audio.bitrate_kbps);
+    let cq = app.s.video.rate_control == "quality";
+    if cq {
+        theme::row(
+            ui,
+            &p,
+            "Quality level",
+            "Higher looks better and takes more space. Still or simple scenes stay small either way.",
+            |ui| {
+                ui.add(egui::Slider::new(&mut app.s.video.quality, 1..=10));
+            },
+        );
+    }
     theme::row(
         ui,
         &p,
-        "Bitrate",
-        &format!("About {} per minute, {} per hour.", video::format_bytes(bps * 60), video::format_bytes(bps * 3600)),
+        if cq { "Maximum bitrate" } else { "Bitrate" },
+        &if cq {
+            format!("Busy scenes never use more than this: at most {} per minute.", video::format_bytes(bps * 60))
+        } else {
+            format!("About {} per minute, {} per hour.", video::format_bytes(bps * 60), video::format_bytes(bps * 3600))
+        },
         |ui| {
             let mut mbps = app.s.video.bitrate_kbps as f32 / 1000.0;
             if ui
@@ -511,13 +534,13 @@ fn video_page(app: &mut App, ui: &mut egui::Ui, st: &Status) {
         ui,
         &p,
         "Rate control",
-        "Variable gives better quality for the size. Constant keeps the bitrate steady.",
+        "Constant quality gives the smallest files for how it looks. Variable aims at the bitrate. Constant keeps it steady (for streaming-like files).",
         |ui| {
             combo(
                 ui,
                 "rc",
                 &mut app.s.video.rate_control,
-                &opts(&[("vbr", "Variable (VBR)"), ("cbr", "Constant (CBR)")]),
+                &opts(&[("quality", "Constant quality"), ("vbr", "Variable (VBR)"), ("cbr", "Constant (CBR)")]),
                 200.0,
             );
         },

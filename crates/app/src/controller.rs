@@ -505,7 +505,12 @@ impl Worker {
     fn run_probe(&mut self) {
         let Some(ff) = self.ffmpeg.clone() else { return };
         self.update(|s| s.probing = true);
-        let results = probe::probe_encoders(&ff, &Codec::ALL, &self.s.video_settings());
+        // Probe with standard (VBR) settings: this answers "does this encoder exist and work".
+        // A rejected constant-quality option must not hide a working hardware encoder and push
+        // "Automatic" onto the CPU; that would show up as a start error with a clear choice.
+        let mut v = self.s.video_settings();
+        v.rate_control = urec_engine::video::RateControl::Vbr;
+        let results = probe::probe_encoders(&ff, &Codec::ALL, &v);
         for r in &results {
             log(&format!(
                 "probe {}: ok={} {}",
@@ -1678,6 +1683,7 @@ pub fn preset_id(p: Preset) -> &'static str {
         Preset::Balanced => "balanced",
         Preset::High => "high",
         Preset::VeryHigh => "very_high",
+        Preset::Compact => "compact",
         Preset::Custom => "custom",
     }
 }

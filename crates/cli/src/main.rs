@@ -11,6 +11,7 @@
 //!          --codec h264|hevc|av1  --res native|2160|1440|1080|900|720|WxH  --fps N
 //!          --bitrate KBPS  --source WxH (capture size)  --monitor N  --audio-test
 //!          --container mp4|mkv  --no-gpu-path  --replay-seconds N  --no-cursor  --saves N
+//!          --rc vbr|cbr|quality  --quality 1-10
 //!          --audio none|test|system|mic|both  --layout mixed|separate  --window TITLE
 
 use std::cell::RefCell;
@@ -140,7 +141,12 @@ fn main() -> ExitCode {
 fn cmd_probe(ffmpeg: &Path, args: &Args) -> ExitCode {
     let codecs: Vec<Codec> = args.get("codecs").unwrap_or("h264,hevc,av1").split(',').map(parse_codec).collect();
     println!("ffmpeg={}", probe::ffmpeg_version(ffmpeg).unwrap_or_default());
-    let results = probe::probe_encoders(ffmpeg, &codecs, &VideoSettings::default());
+    // --rc quality: check the constant-quality argument sets too.
+    let mut v = VideoSettings::default();
+    if args.get("rc") == Some("quality") {
+        v.rate_control = urec_engine::video::RateControl::Quality;
+    }
+    let results = probe::probe_encoders(ffmpeg, &codecs, &v);
     let mut arg_errors = 0;
     for r in &results {
         println!(
@@ -187,6 +193,12 @@ fn request(ffmpeg: &Path, args: &Args, output: Output) -> Result<StartRequest, S
     let mut v = VideoSettings { resolution, frame_rate: FrameRate::Fixed(fps), codec, ..VideoSettings::default() };
     let (w, h, fps) = video::validate(&v, sw, sh, None).map_err(|e| e.to_string())?;
     v.bitrate_kbps = args.num("bitrate", video::recommended_bitrate_kbps(w, h, fps, codec, 1.0));
+    v.rate_control = match args.get("rc") {
+        Some("cbr") => urec_engine::video::RateControl::Cbr,
+        Some("quality") => urec_engine::video::RateControl::Quality,
+        _ => urec_engine::video::RateControl::Vbr,
+    };
+    v.quality = args.num("quality", 7) as u8;
 
     let encoder = match args.get("encoder").unwrap_or("auto") {
         "auto" => {

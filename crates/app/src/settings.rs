@@ -81,7 +81,7 @@ pub struct Capture {
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(default)]
 pub struct Video {
-    /// "low" | "balanced" | "high" | "very_high" | "custom"
+    /// "low" | "balanced" | "high" | "very_high" | "compact" | "custom"
     pub preset: String,
     /// 0 = native, otherwise target height (2160/1440/1080/900/720); custom uses custom_w/h.
     pub height: u32,
@@ -93,8 +93,10 @@ pub struct Video {
     /// "h264" | "hevc" | "av1"
     pub codec: String,
     pub bitrate_kbps: u32,
-    /// "vbr" | "cbr"
+    /// "vbr" | "cbr" | "quality" (constant quality; the bitrate becomes a ceiling)
     pub rate_control: String,
+    /// Constant-quality level, 1 (smallest) to 10 (best).
+    pub quality: u8,
     /// "speed" | "balanced" | "quality"
     pub effort: String,
     pub keyframe_seconds: u32,
@@ -233,6 +235,7 @@ impl Default for Video {
             codec: "h264".into(),
             bitrate_kbps: 16_000,
             rate_control: "vbr".into(),
+            quality: 7,
             effort: "balanced".into(),
             keyframe_seconds: 2,
             encoder: "auto".into(),
@@ -376,7 +379,10 @@ impl Settings {
         check((500..=200_000).contains(&v.bitrate_kbps), "bitrate", &mut || v.bitrate_kbps = 16_000);
         check((1..=10).contains(&v.keyframe_seconds), "keyframe interval", &mut || v.keyframe_seconds = 2);
         check(["h264", "hevc", "av1"].contains(&v.codec.as_str()), "codec", &mut || v.codec = "h264".into());
-        check(["vbr", "cbr"].contains(&v.rate_control.as_str()), "rate control", &mut || v.rate_control = "vbr".into());
+        check(["vbr", "cbr", "quality"].contains(&v.rate_control.as_str()), "rate control", &mut || {
+            v.rate_control = "vbr".into()
+        });
+        check((1..=10).contains(&v.quality), "quality level", &mut || v.quality = 7);
         check(["speed", "balanced", "quality"].contains(&v.effort.as_str()), "encoder preset", &mut || {
             v.effort = "balanced".into()
         });
@@ -449,7 +455,12 @@ impl Settings {
             frame_rate: if self.video.fps == 0 { FrameRate::Source } else { FrameRate::Fixed(self.video.fps) },
             codec: self.codec(),
             bitrate_kbps: self.video.bitrate_kbps,
-            rate_control: if self.video.rate_control == "cbr" { RateControl::Cbr } else { RateControl::Vbr },
+            rate_control: match self.video.rate_control.as_str() {
+                "cbr" => RateControl::Cbr,
+                "quality" => RateControl::Quality,
+                _ => RateControl::Vbr,
+            },
+            quality: self.video.quality,
             effort: match self.video.effort.as_str() {
                 "speed" => EncoderEffort::Speed,
                 "quality" => EncoderEffort::Quality,
@@ -487,7 +498,13 @@ impl Settings {
         }
         .into();
         self.video.bitrate_kbps = v.bitrate_kbps;
-        self.video.rate_control = if v.rate_control == RateControl::Cbr { "cbr" } else { "vbr" }.into();
+        self.video.rate_control = match v.rate_control {
+            RateControl::Cbr => "cbr",
+            RateControl::Vbr => "vbr",
+            RateControl::Quality => "quality",
+        }
+        .into();
+        self.video.quality = v.quality;
         self.video.effort = match v.effort {
             EncoderEffort::Speed => "speed",
             EncoderEffort::Balanced => "balanced",

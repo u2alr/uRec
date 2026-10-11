@@ -247,7 +247,7 @@ fn quality(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     );
     ui.add_space(10.0);
     let current = app.s.video.preset.clone();
-    for preset in [Preset::LowEnd, Preset::Balanced, Preset::High, Preset::VeryHigh] {
+    for preset in [Preset::LowEnd, Preset::Balanced, Preset::High, Preset::VeryHigh, Preset::Compact] {
         let v = video::apply_preset(preset, &caps);
         let (w, h) = video::output_size(v.resolution, caps.source_width, caps.source_height);
         let fps = match v.frame_rate {
@@ -284,11 +284,19 @@ fn quality(app: &mut App, ui: &mut egui::Ui, st: &Status) {
         painter.text(
             rect.left_top() + Vec2::new(16.0, 33.0),
             egui::Align2::LEFT_TOP,
-            format!(
-                "{res} · {fps} FPS · {:.0} Mbit/s · about {} per minute",
-                v.bitrate_kbps as f32 / 1000.0,
-                video::format_bytes(per_min)
-            ),
+            if v.rate_control == video::RateControl::Quality {
+                format!(
+                    "{res} · {fps} FPS · {} · constant quality · at most {} per minute, usually far less",
+                    if v.codec == Codec::Hevc { "HEVC" } else { "H.264" },
+                    video::format_bytes(per_min)
+                )
+            } else {
+                format!(
+                    "{res} · {fps} FPS · {:.0} Mbit/s · about {} per minute",
+                    v.bitrate_kbps as f32 / 1000.0,
+                    video::format_bytes(per_min)
+                )
+            },
             egui::FontId::proportional(12.5),
             p.muted,
         );
