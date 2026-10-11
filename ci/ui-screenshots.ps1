@@ -5,10 +5,12 @@ Add-Type -AssemblyName System.Windows.Forms, System.Drawing
 New-Item -ItemType Directory -Force $Out | Out-Null
 $env:UREC_FFMPEG = (& "$PSScriptRoot\get-ffmpeg.ps1" | Select-Object -Last 1)
 $pages = "home", "library", "settings:general", "settings:recording", "settings:video", "settings:audio", "settings:instantreplay", "settings:hotkeys", "settings:storage", "settings:appearance", "settings:advanced"
+$env:RUST_BACKTRACE = "1"
 $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
 foreach ($pg in $pages) {
     $env:UREC_PAGE = $pg
-    $proc = Start-Process $Exe -PassThru
+    $err = Join-Path $Out ("stderr-{0}.txt" -f ($pg -replace ':', '-'))
+    $proc = Start-Process $Exe -PassThru -RedirectStandardError $err -RedirectStandardOutput "$err.out"
     Start-Sleep -Seconds $(if ($pg -eq "home") { 9 } else { 5 })
     $alive = -not $proc.HasExited
     $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
@@ -21,5 +23,7 @@ foreach ($pg in $pages) {
     if ($alive) { Stop-Process -Id $proc.Id -Force } else { "  exit code $($proc.ExitCode)" }
     Start-Sleep -Seconds 1
 }
+Get-WinEvent -FilterHashtable @{ LogName = 'Application'; Id = 1000, 1001, 1026 } -MaxEvents 6 -ErrorAction SilentlyContinue |
+    ForEach-Object { "---- event $($_.Id) $($_.TimeCreated)"; $_.Message } | Out-File (Join-Path $Out "events.txt")
 $log = Join-Path $env:LOCALAPPDATA "uRec\logs\urec.log"
 if (Test-Path $log) { Copy-Item $log (Join-Path $Out "urec.log") }
