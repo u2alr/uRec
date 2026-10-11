@@ -1,0 +1,27 @@
+windows            0.62.2     2025-10-06 msrv=1.82 license=MIT OR Apache-2.0
+windows-core       0.100.0    2026-09-03 msrv=1.95 license=MIT OR Apache-2.0
+eframe             0.36.2     2026-09-08 msrv=1.95 license=MIT OR Apache-2.0
+egui               0.36.2     2026-09-08 msrv=1.95 license=MIT OR Apache-2.0
+egui_extras        0.36.2     2026-09-08 msrv=1.95 license=MIT OR Apache-2.0
+tray-icon          0.26.1     2026-10-07 msrv=1.90 license=MIT OR Apache-2.0
+image              0.25.10    2026-03-10 msrv=1.88.0 license=MIT OR Apache-2.0
+serde              1.0.229    2026-07-18 msrv=1.56 license=MIT OR Apache-2.0
+serde_json         1.0.152    2026-10-10 msrv=1.71 license=MIT OR Apache-2.0
+winres             0.1.12     2021-09-28 msrv= license=MIT
+embed-resource     3.0.12     2026-10-06 msrv=1.76 license=MIT
+raw-window-handle  0.6.2      2024-05-17 msrv=1.64 license=MIT OR Apache-2.0 OR Zlib
+winit              0.30.13    2026-03-02 msrv=1.70.0 license=Apache-2.0
+wgpu               30.0.1     2026-08-22 msrv=1.87.0 license=MIT OR Apache-2.0
+log                0.4.34     2026-08-22 msrv=1.71.0 license=MIT OR Apache-2.0
+simplelog          0.12.2     2024-03-04 msrv= license=MIT OR Apache-2.0
+notify-rust        4.18.2     2026-10-07 msrv=1.89.0 license=MIT OR Apache-2.0
+rfd                0.17.2     2026-01-12 msrv= license=MIT
+directories        6.0.0      2025-01-12 msrv= license=MIT OR Apache-2.0
+dirs               7.0.0      2026-09-05 msrv= license=MIT OR Apache-2.0
+open               5.4.4      2026-09-10 msrv=1.62 license=MIT
+arboard            3.6.1      2025-08-23 msrv=1.71.0 license=MIT OR Apache-2.0
+crossbeam-channel  0.5.17     2026-09-05 msrv=1.60 license=MIT OR Apache-2.0
+parking_lot        0.12.5     2025-10-03 msrv=1.71 license=MIT OR Apache-2.0
+once_cell          1.21.4     2026-03-12 msrv=1.65 license=MIT OR Apache-2.0
+thiserror          2.0.21     2026-09-23 msrv=1.77 license=MIT OR Apache-2.0
+anyhow             1.0.104    2026-07-18 msrv=1.68 license=MIT OR Apache-2.0
