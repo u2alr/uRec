@@ -1,5 +1,37 @@
 # Changelog
 
+## 0.3.0
+
+**Smaller files**
+- New **Constant quality** rate control. The encoder spends data where the picture needs it, so menus, desktops and quiet moments take far less space. Your bitrate setting becomes a ceiling.
+- Works with every encoder: NVIDIA, AMD, Intel, Windows and the CPU.
+- New **Smaller files** preset: 1080p, constant quality, and HEVC where this PC can encode it.
+
+**Library**
+- **Select** mode: pick several recordings, or all of them, and move them to the Recycle Bin in one go.
+- Rows size to their content, so the action links can no longer spill out of their row at larger text sizes.
+- Actions are now **Play**, **Show in folder** and **More** (Rename, Copy path, Delete).
+- Optional clean-up (Settings › Storage): moves recordings older than N days to the Recycle Bin. It's off unless you turn it on, covers Instant Replay clips only by default, and never touches favorites.
+
+**Microphone**
+- **Push to talk** (Settings › Audio). The microphone is silent until you hold the key (Caps Lock by default) or a side mouse button.
+- uRec only watches the key, so it still works in your game.
+
+**Overlay**
+- A cleaner, more minimal save message: a slim dark pill, a thin check or cross, plain text, no border or glow.
+- The message fades in place, and the closing animation no longer shows muddy colours.
+
+**Reliability**
+- If the graphics card's encoder fails to start, uRec offers **Use CPU encoder**, with a warning about the extra CPU load. It never switches on its own.
+- A failed Instant Replay save plays the Windows error sound (when save sounds are on).
+- Long window titles and device names no longer overlap other settings.
+- Plain-letter global hotkeys are refused, because they would stop that letter working in every other app.
+- **Copy diagnostics** (Settings › Advanced) gives a plain summary of this PC and your settings for bug reports. It contains no file names.
+
+**Updates**
+- Updates can now be signed: the release's checksum list carries an ECDSA signature, checked with Windows' own cryptography.
+- Signing turns on once the project creates its key (see SECURITY.md). Until then, updates are checked by SHA-256 only, as before.
+
 ## 0.2.0
 
 **Instant Replay saves are reliable under pressure**

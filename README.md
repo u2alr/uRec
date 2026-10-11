@@ -47,7 +47,8 @@ Hotkeys work while a game has focus. Change them in **Settings › Hotkeys**.
   - Pressing the hotkey several times quickly never overwrites a clip: one save runs, one waits, and further presses are included in the waiting one.
   - Starting a recording while Instant Replay is on reuses the same stream, so nothing is encoded twice.
 - **Library** lists your recordings with thumbnails, length, resolution, frame rate and size.
-  - You can search, sort, star favorites, play, rename, copy the path, show in Explorer, or delete. Deleting moves files to the Recycle Bin.
+  - You can search, sort, star favorites, play, rename, copy the path, show in Explorer, or delete.
+  - **Select** mode lets you remove many recordings at once. Deleting always moves files to the Recycle Bin.
   - Damaged or unfinished files are marked. Files moved or deleted outside uRec are handled without errors.
 - **Overlay** is a small dot in a screen corner: red while recording, amber while Instant Replay is on.
   - When an Instant Replay clip is saved, the dot briefly opens into "Instant Replay Saved" with a green check, then closes again. If a save fails, it shows "Instant Replay Failed" with a red cross.
@@ -64,9 +65,16 @@ Hotkeys work while a game has focus. Change them in **Settings › Hotkeys**.
   - Presets: Low resource usage, Balanced, High quality, Very high quality, Custom, plus one-click recommended settings.
   - Resolution: native, 4K, 1440p, 1080p, 900p, 720p or custom.
   - Frame rate: 24 to 240 FPS, match the display, or custom.
-  - Encoding: bitrate, codec (H.264, HEVC, AV1 when your hardware supports it), encoder, CBR/VBR and encoder preset.
-- **Audio:** game and desktop sound (any output device) and microphone, each with its own volume. Choose one mixed track or separate tracks, and the audio quality.
-- **Storage:** recordings folder, sub-folders per game, a low-space warning. Recording stops automatically below 1 GB free.
+  - Encoding: bitrate, codec (H.264, HEVC, AV1 when your hardware supports it), encoder and encoder preset.
+  - Rate control: **Constant quality** (smallest files for how it looks; the bitrate becomes a ceiling), VBR or CBR.
+  - **Smaller files** preset: constant quality with HEVC when your PC can encode it.
+- **Audio:**
+  - Game and desktop sound (any output device) and microphone, each with its own volume.
+  - Push to talk: the microphone is silent until you hold a key or a side mouse button, and the key still works in your game.
+  - One mixed track or separate tracks, and the audio quality.
+- **Storage:**
+  - Recordings folder, sub-folders per game, and a low-space warning. Recording stops automatically below 1 GB free.
+  - Optional clean-up of old recordings. It's off by default and moves files to the Recycle Bin; favorites are never removed.
 - **Advanced:** keyframe interval, MP4 or MKV, a list of the encoders found on your PC, and log and settings folders.
 
 ## Troubleshooting
