@@ -1,15 +1,17 @@
-variant noov alive=True 
-variant glow alive=False exit 1
-home alive=True -> screenshots\home.png
-library alive=True -> screenshots\library.png
-settings:general alive=True -> screenshots\settings-general.png
-settings:recording alive=True -> screenshots\settings-recording.png
-settings:video alive=True -> screenshots\settings-video.png
-settings:audio alive=True -> screenshots\settings-audio.png
-settings:instantreplay alive=True -> screenshots\settings-instantreplay.png
-settings:hotkeys alive=True -> screenshots\settings-hotkeys.png
-settings:storage alive=True -> screenshots\settings-storage.png
-settings:appearance alive=True -> screenshots\settings-appearance.png
-settings:advanced alive=True -> screenshots\settings-advanced.png
-alive=True exit=
-dump= cdb=C:\Program Files (x86)\Windows Kits\10\Debuggers\x64\cdb.exe
+sample recording: True
+hotkey recording: files before=1 after=2 newest=uRec 2026-10-11 10.55.51.mp4 size=652452
+light home alive=True
+light library alive=True
+light settings:general alive=True
+light settings:recording alive=True
+light settings:video alive=True
+light settings:audio alive=True
+light settings:instantreplay alive=True
+light settings:hotkeys alive=True
+light settings:storage alive=True
+light settings:appearance alive=True
+light settings:advanced alive=True
+dark home alive=True
+dark library alive=True
+dark settings:video alive=True
+dark settings:audio alive=True
