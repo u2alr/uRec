@@ -1,0 +1,62 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["**.md", ".github/workflows/probe.yml", "ci/probe.ps1", "ci/ffmpeg-help.ps1"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: never
+  RUSTFLAGS: -D warnings
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+      - name: Toolchain
+        shell: pwsh
+        run: |
+          rustup component add rustfmt clippy
+          rustc --version
+      - name: FFmpeg
+        shell: pwsh
+        run: ./ci/get-ffmpeg.ps1
+      - name: Checks, unit tests, release build
+        shell: pwsh
+        run: |
+          $log = "checks.txt"
+          "## rustc: $(rustc --version)" | Tee-Object $log
+          $failed = 0
+          foreach ($step in @(
+              @("fmt", "cargo", "fmt", "--all", "--", "--check"),
+              @("clippy", "cargo", "clippy", "--workspace", "--all-targets", "--release", "--", "-D", "warnings"),
+              @("test", "cargo", "test", "--workspace", "--release"),
+              @("build", "cargo", "build", "--workspace", "--release"))) {
+            "## $($step[0])" | Tee-Object -Append $log
+            & $step[1] $step[2..($step.Length - 1)] *>&1 | Tee-Object -Append $log
+            if ($LASTEXITCODE -ne 0) { "## $($step[0]) FAILED" | Tee-Object -Append $log; $failed++ }
+          }
+          if ($failed) { exit 1 }
+      - name: Integration tests (real screen capture)
+        shell: pwsh
+        run: |
+          ./ci/integration.ps1 -Cli target/release/urec-cli.exe *>&1 | Tee-Object -FilePath integration.txt
+          if (Select-String -Path integration.txt -Pattern '^passed=\d+ failed=0$' -Quiet) { exit 0 } else { exit 1 }
+      - name: Publish results
+        if: always()
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $all = "ci-report.txt"
+          "commit $env:GITHUB_SHA run $env:GITHUB_RUN_ID" | Out-File $all
+          foreach ($f in "checks.txt", "integration.txt") { if (Test-Path $f) { Get-Content $f | Out-File -Append $all } }
+          ./ci/publish-results.ps1 -Name ci -File $all
