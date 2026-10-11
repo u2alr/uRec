@@ -1,4 +1,4 @@
-commit 7034d119ca639e0bff6abb54f37203d98ea217f8 run 38161470239
+commit 64ec5d4d3e623b63b188e1c0df3cb969db16321a run 38161721887
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -8,23 +8,6 @@ commit 7034d119ca639e0bff6abb54f37203d98ea217f8 run 38161470239
     Checking urec-win v0.1.2 (D:\a\uRec\uRec\crates\win)
     Checking urec-cli v0.1.2 (D:\a\uRec\uRec\crates\cli)
 error: field `0` is never read
-  --> crates\app\src\controller.rs:40:23
-   |
-40 |     ReplaySaveStarted(u64),
-   |     ----------------- ^^^
-   |     |
-   |     field in this variant
-   |
-   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
-help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
-   |
-40 -     ReplaySaveStarted(u64),
-40 +     ReplaySaveStarted(()),
-   |
-
-error: field `0` is never read
    --> crates\app\src\controller.rs:208:11
     |
 208 |     Saved(SavedClip),
@@ -33,6 +16,8 @@ error: field `0` is never read
     |     field in this variant
     |
     = note: `SaveFeedback` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+    = note: `-D dead-code` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
     |
 208 -     Saved(SavedClip),
@@ -54,9 +39,9 @@ help: consider changing the field to be of unit type to suppress this warning wh
 209 +     Failed(()),
     |
 
-error: could not compile `urec` (bin "uRec" test) due to 3 previous errors
+error: could not compile `urec` (bin "uRec" test) due to 2 previous errors
 warning: build failed, waiting for other jobs to finish...
-error: could not compile `urec` (bin "uRec") due to 3 previous errors
+error: could not compile `urec` (bin "uRec") due to 2 previous errors
 ## clippy FAILED
 ## test
    Compiling urec-engine v0.1.2 (D:\a\uRec\uRec\crates\engine)
@@ -64,23 +49,6 @@ error: could not compile `urec` (bin "uRec") due to 3 previous errors
    Compiling urec-win v0.1.2 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.1.2 (D:\a\uRec\uRec\crates\cli)
 error: field `0` is never read
-  --> crates\app\src\controller.rs:40:23
-   |
-40 |     ReplaySaveStarted(u64),
-   |     ----------------- ^^^
-   |     |
-   |     field in this variant
-   |
-   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
-help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
-   |
-40 -     ReplaySaveStarted(u64),
-40 +     ReplaySaveStarted(()),
-   |
-
-error: field `0` is never read
    --> crates\app\src\controller.rs:208:11
     |
 208 |     Saved(SavedClip),
@@ -89,6 +57,8 @@ error: field `0` is never read
     |     field in this variant
     |
     = note: `SaveFeedback` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+    = note: `-D dead-code` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
     |
 208 -     Saved(SavedClip),
@@ -110,31 +80,14 @@ help: consider changing the field to be of unit type to suppress this warning wh
 209 +     Failed(()),
     |
 
-error: could not compile `urec` (bin "uRec" test) due to 3 previous errors
+error: could not compile `urec` (bin "uRec" test) due to 2 previous errors
 warning: build failed, waiting for other jobs to finish...
 ## test FAILED
 ## build
    Compiling urec-engine v0.1.2 (D:\a\uRec\uRec\crates\engine)
    Compiling urec-win v0.1.2 (D:\a\uRec\uRec\crates\win)
-   Compiling urec v0.1.2 (D:\a\uRec\uRec\crates\app)
    Compiling urec-cli v0.1.2 (D:\a\uRec\uRec\crates\cli)
-error: field `0` is never read
-  --> crates\app\src\controller.rs:40:23
-   |
-40 |     ReplaySaveStarted(u64),
-   |     ----------------- ^^^
-   |     |
-   |     field in this variant
-   |
-   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
-help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
-   |
-40 -     ReplaySaveStarted(u64),
-40 +     ReplaySaveStarted(()),
-   |
-
+   Compiling urec v0.1.2 (D:\a\uRec\uRec\crates\app)
 error: field `0` is never read
    --> crates\app\src\controller.rs:208:11
     |
@@ -144,6 +97,8 @@ error: field `0` is never read
     |     field in this variant
     |
     = note: `SaveFeedback` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+    = note: `-D dead-code` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
     |
 208 -     Saved(SavedClip),
@@ -165,6 +120,6 @@ help: consider changing the field to be of unit type to suppress this warning wh
 209 +     Failed(()),
     |
 
-error: could not compile `urec` (bin "uRec") due to 3 previous errors
+error: could not compile `urec` (bin "uRec") due to 2 previous errors
 warning: build failed, waiting for other jobs to finish...
 ## build FAILED
