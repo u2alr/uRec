@@ -22,8 +22,13 @@ jobs:
         shell: pwsh
         run: |
           ./ci/get-ffmpeg.ps1 | Out-Null
+          $env:CARGO_PROFILE_RELEASE_DEBUG = "1"; $env:CARGO_PROFILE_RELEASE_STRIP = "false"
           cargo build --release -p urec *>&1 | Tee-Object build.txt | Select-String -Pattern "^(error|warning)" -Context 0,4
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Crash dump
+        if: always()
+        shell: pwsh
+        run: if (Test-Path target/release/uRec.exe) { ./ci/crash-dump.ps1 -Exe target/release/uRec.exe *>&1 | Tee-Object -FilePath crash.txt }
       - name: Screenshots
         if: always()
         shell: pwsh
@@ -35,4 +40,6 @@ jobs:
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-        run: ./ci/publish-results.ps1 -Name ui -File ui.txt -Dir screenshots
+        run: |
+          if (Test-Path crash.txt) { Get-Content crash.txt | Out-File -Append ui.txt }
+          ./ci/publish-results.ps1 -Name ui -File ui.txt -Dir screenshots
