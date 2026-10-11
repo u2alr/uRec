@@ -34,7 +34,7 @@ Newest-version notes:
 | Tool | Version | Purpose |
 |---|---|---|
 | Rust (MSVC) | 1.98.1 stable | Compiler used by CI and releases |
-| Inno Setup | 6 (version printed in each release log) | Installer |
+| Inno Setup | 6 (preinstalled on the GitHub `windows-latest` image) | Installer |
 | GitHub Actions `windows-latest` | Windows Server 2025, build 26100 | Build, tests, packaging |
 | `actions/checkout` | v4 | CI |
 | `Swatinem/rust-cache` | v2 | CI build cache |
