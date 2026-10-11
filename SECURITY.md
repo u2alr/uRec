@@ -17,6 +17,8 @@ Please report security issues privately through GitHub: **Security › Report a 
 - **One external program:** it starts only its bundled `ffmpeg.exe`, from its own folder, with arguments it builds itself. FFmpeg is tied to uRec through a Windows job object, so it can't keep running if uRec exits or crashes.
 - **Local data only:** settings in `%APPDATA%\uRec`, and the replay buffer, thumbnails and logs in `%LOCALAPPDATA%\uRec`. Logs never contain screen or audio content.
 - **Deleting goes to the Recycle Bin:** the library never deletes recordings permanently.
+- **Notification links:** uRec registers a per-user `urec:` link scheme in `HKCU\Software\Classes` (removed on uninstall) for the **Open clip** and **Show in folder** notification buttons. The app accepts only `open` or `reveal` of an existing `.mp4` or `.mkv` file inside the configured recordings folder. Anything else is refused and logged.
+- **Temporary files:** an interrupted save can leave `*.urec-tmp.mp4` files and `stage-*` folders behind. Only these names are cleaned up at startup.
 - **Dependency audit:** `cargo audit` runs on every release build. Results are in TESTING.md.
 
 ## Code signing and SmartScreen

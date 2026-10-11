@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.2.0
+
+**Instant Replay saves are reliable under pressure**
+- Saves run one at a time. One more can wait, and further presses are included in the waiting save, so mashing the hotkey can't start competing jobs.
+- Fixed: two saves at nearly the same moment could corrupt each other, because both used the same temporary folder.
+- Fixed: two saves in the same second could overwrite each other. A clip never replaces an existing file now; the second one gets a " (2)" name.
+- A clip is reported as saved only after its MP4 structure has been checked and the file is flushed to disk. Damaged results are discarded and reported.
+- A segment missing in the middle of the buffer is now an error, never a silent gap in the clip.
+- Quitting or changing settings waits for saves in progress. Leftovers from interrupted saves are cleaned up at the next start, and only uRec's own temporary files are ever removed.
+
+**Animated save indicator**
+- The overlay dot opens into "Instant Replay Saved" (green check) or "Instant Replay Failed" (red cross), then closes again: about 2.4 s for a save, 2.9 s for a failure.
+- The dot dims gently while a save runs. Nothing animates at rest.
+- When results arrive close together, a newer failure replaces a success, a success never hides a failure, and repeated successes extend the message instead of stacking.
+- Reduced motion follows Windows' "Animation effects" or a new setting in Appearance.
+- With the overlay off, save results appear as Windows notifications with **Open clip** and **Show in folder**.
+- Overlay size and opacity settings.
+
+**First-run setup**
+- Shows what was found on this PC: capture methods, the encoders that actually work, and sound devices.
+- Recommends a preset and shows the approximate size per minute for each one.
+- Shows where files go and how much space the Instant Replay buffer uses.
+- Offers a real 5-second test recording that reports each stage: capture, encoding, sound, file finalization, and a full decode.
+- Can be skipped, and run again from Settings › Advanced. People upgrading from 0.1.x don't see it.
+
+**Library**
+- Favorites, with a "Favorites only" filter.
+- Damaged or unfinished files are marked.
+- Play, Show in folder, Rename and Delete cope with files that were moved or deleted outside uRec.
+
+**Other**
+- The "Low-end PC" preset is now called "Low resource usage".
+- Settings file version 2, migrated automatically.
+
 ## 0.1.2
 
 - **Updates:** uRec checks GitHub once a day for a new version. The installed app downloads it in the background, verifies its SHA-256 against the published checksums and installs it silently when you quit, or the next time it starts. **Restart now** installs it right away. It never installs during a recording or while Instant Replay is on. Find it in **Settings › General › Updates**, where both the check and automatic install can be turned off. Portable copies only show that an update is available.

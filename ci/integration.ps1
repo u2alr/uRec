@@ -115,9 +115,10 @@ $pl = Start-Process $Cli -ArgumentList "replay", "--dir", $ringL, "--out", $clip
 $samples = @()
 foreach ($t in 20, 50, 80, 110, 140) {
     while ($pl.StartTime -and ((Get-Date) - $pl.StartTime).TotalSeconds -lt $t) { Start-Sleep -Milliseconds 500 }
-    $ff = Get-Process ffmpeg -ErrorAction SilentlyContinue | Sort-Object StartTime | Select-Object -Last 1
+    # (not $ff: that's the FFmpeg path the other tests use)
+    $ffProc = Get-Process ffmpeg -ErrorAction SilentlyContinue | Sort-Object StartTime | Select-Object -Last 1
     $pl.Refresh()
-    $samples += [pscustomobject]@{ T = $t; Ff = [math]::Round($ff.PrivateMemorySize64 / 1MB, 1); Cli = [math]::Round($pl.PrivateMemorySize64 / 1MB, 1); Ring = @(Get-ChildItem $ringL -Filter *.ts -ErrorAction SilentlyContinue).Count }
+    $samples += [pscustomobject]@{ T = $t; Ff = [math]::Round($ffProc.PrivateMemorySize64 / 1MB, 1); Cli = [math]::Round($pl.PrivateMemorySize64 / 1MB, 1); Ring = @(Get-ChildItem $ringL -Filter *.ts -ErrorAction SilentlyContinue).Count }
 }
 $pl.WaitForExit(60000) | Out-Null
 $mL = Get-MediaInfo $clipL

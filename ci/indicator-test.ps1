@@ -7,7 +7,11 @@ $ErrorActionPreference = "Continue"
 New-Item -ItemType Directory -Force $Out | Out-Null
 $env:UREC_FFMPEG = (& "$PSScriptRoot\get-ffmpeg.ps1" | Select-Object -Last 1)
 Add-Type -AssemblyName System.Drawing, System.Windows.Forms
-Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @"
+# PowerShell 7: System.Drawing types are spread over several assemblies; reference what's loaded.
+$refs = @([System.Drawing.Bitmap].Assembly.Location, [System.Drawing.Point].Assembly.Location,
+    [System.Drawing.Color].Assembly.Location, [System.Collections.Generic.List[int]].Assembly.Location,
+    [System.Runtime.InteropServices.Marshal].Assembly.Location, [System.ComponentModel.Component].Assembly.Location) | Select-Object -Unique
+Add-Type -ReferencedAssemblies $refs -TypeDefinition @"
 using System; using System.Drawing; using System.Drawing.Imaging; using System.Collections.Generic;
 public static class Cap {
     public static byte[] Grab(int x, int y, int w, int h) {

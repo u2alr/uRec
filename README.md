@@ -24,7 +24,12 @@ There's also a portable zip (`uRec-<version>-portable.zip`). Unzip it anywhere a
 
 ## Using it
 
-On first launch uRec checks which encoders actually work on your PC and picks quality settings to match. You can start recording right away.
+On first launch, a short setup shows what uRec found on your PC:
+- capture methods;
+- the video encoders that actually work, tested rather than guessed from the graphics card's brand;
+- your sound devices.
+
+It then recommends a quality preset, shows where files go and how much space the Instant Replay buffer uses, and offers a 5-second test recording. The test checks capture, encoding, sound, saving and playback, and shows which parts passed. You can skip setup and run it again later from **Settings › Advanced**.
 
 | Action | Default hotkey |
 |---|---|
@@ -37,9 +42,19 @@ On first launch uRec checks which encoders actually work on your PC and picks qu
 Hotkeys work while a game has focus. Change them in **Settings › Hotkeys**.
 
 - **Recordings** are saved to `Videos\uRec`, in a sub-folder per game, with names like `VALORANT 2026-10-11 15.02.11.mp4`.
-- **Instant Replay** is off by default. When it's on, uRec keeps the last 15 seconds to 20 minutes in a fixed-size buffer on disk and saves it when you press the hotkey. Starting a recording while it's on reuses the same stream, so nothing is encoded twice.
-- **Library** lists your recordings with thumbnails, length, resolution, frame rate and size. You can play, rename, copy the path, show in Explorer, or delete. Deleting moves files to the Recycle Bin.
-- **Overlay** is a small dot in a screen corner: red while recording, amber while Instant Replay is on. It's click-through and hidden from your recordings on Windows 10 2004 and newer.
+- **Instant Replay** is off by default. When it's on, uRec keeps the last 15 seconds to 20 minutes in a fixed-size buffer on disk and saves it when you press the hotkey.
+  - Saves are written without re-encoding. A clip counts as saved only once it has been checked as a complete MP4 and flushed to disk.
+  - Pressing the hotkey several times quickly never overwrites a clip: one save runs, one waits, and further presses are included in the waiting one.
+  - Starting a recording while Instant Replay is on reuses the same stream, so nothing is encoded twice.
+- **Library** lists your recordings with thumbnails, length, resolution, frame rate and size.
+  - You can search, sort, star favorites, play, rename, copy the path, show in Explorer, or delete. Deleting moves files to the Recycle Bin.
+  - Damaged or unfinished files are marked. Files moved or deleted outside uRec are handled without errors.
+- **Overlay** is a small dot in a screen corner: red while recording, amber while Instant Replay is on.
+  - When an Instant Replay clip is saved, the dot briefly opens into "Instant Replay Saved" with a green check, then closes again. If a save fails, it shows "Instant Replay Failed" with a red cross.
+  - The dot dims gently while a save is in progress. Nothing animates while idle.
+  - It's click-through, never takes focus, and is hidden from your recordings on Windows 10 2004 and newer.
+  - You can set its corner, size and opacity. Animations follow Windows' "Animation effects" setting, or you can set them yourself.
+- **Overlay off:** save results appear as Windows notifications instead, with **Open clip** and **Show in folder** buttons. They also always appear inside the app.
 - **Tray:** closing the window keeps uRec in the system tray so hotkeys keep working. Quit from the tray icon.
 
 ### Settings at a glance
@@ -67,7 +82,7 @@ Hotkeys work while a game has focus. Change them in **Settings › Hotkeys**.
 
 ## Privacy
 
-uRec has no account, no telemetry and no uploads. Recordings, settings and logs stay on your PC.
+uRec has no account, no telemetry and no uploads. Recordings, settings and logs stay on your PC. Windows notifications are created locally. Their buttons use a per-user `urec:` link that only opens or reveals existing videos in your recordings folder.
 
 Its only network connection is the update check: once a day it asks GitHub (`api.github.com`) for the latest uRec release. The request carries nothing but a `uRec/<version>` user agent. Turn it off in **Settings › General › Check for updates**.
 
