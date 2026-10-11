@@ -38,6 +38,8 @@ pub enum Command {
     /// First-run setup: record 5 seconds with the current settings and check the result.
     TestRecording,
     Shutdown,
+    /// Push-to-talk key pressed (true) or released (false).
+    PushToTalk(bool),
     /// From the save worker: a queued replay save has started / finished.
     ReplaySaveStarted(u64),
     ReplaySaveFinished(u64, Result<SavedClip, String>),
@@ -57,6 +59,7 @@ pub struct TestReport {
     pub stage: String,
     pub checks: Vec<TestCheck>,
     pub file: Option<PathBuf>,
+    pub action: Option<NoticeAction>,
 }
 
 impl TestReport {
@@ -81,6 +84,13 @@ pub enum Level {
 }
 
 #[derive(Clone, Debug)]
+/// Something a notice offers to do. Handled by the UI (it owns the settings being edited).
+#[derive(Clone, Debug, PartialEq)]
+pub enum NoticeAction {
+    /// The hardware encoder failed: switch to the CPU encoder and try again.
+    UseCpuEncoder { retry_replay: bool },
+}
+
 pub struct Notice {
     pub level: Level,
     pub text: String,
@@ -338,6 +348,8 @@ struct Worker {
     rx: Receiver<Command>,
     ffmpeg: Option<PathBuf>,
     saver: Saver,
+    /// Watches the push-to-talk key while something is being captured.
+    ptt: Option<urec_win::PushToTalk>,
     live: Option<Live>,
     ring: Option<RingRecording>,
     recording: Option<Recording>,
@@ -375,6 +387,7 @@ impl Worker {
             rx,
             ffmpeg: None,
             saver,
+            ptt: None,
             live: None,
             ring: None,
             recording: None,
@@ -416,7 +429,7 @@ impl Worker {
         let text = text.into();
         log(&format!("{level:?}: {text}"));
         self.update(|s| {
-            s.notices.push_front(Notice { level, text, at: Instant::now(), file });
+            s.notices.push_front(Notice { level, text, at: Instant::now(), file, action: None });
             s.notices.truncate(6);
         });
     }
@@ -588,6 +601,14 @@ impl Worker {
                 self.save_feedback(SaveFeedback::Saving);
             }
             Command::ReplaySaveFinished(id, result) => self.replay_saved(id, result),
+            Command::PushToTalk(down) => {
+                if self.push_to_talk() {
+                    if let Some(feed) = self.live.as_ref().and_then(|l| l.audio.as_ref()) {
+                        feed.set_mic_muted(!down);
+                    }
+                    self.update(|s| s.mic_muted = !down);
+                }
+            }
         }
     }
 
@@ -601,9 +622,21 @@ impl Worker {
         let replay_toggled = new.replay.enabled != self.s.replay.enabled;
         let volumes_changed =
             new.audio.system_volume != self.s.audio.system_volume || new.audio.mic_volume != self.s.audio.mic_volume;
+        let ptt_changed = (new.audio.mic, &new.audio.mic_mode, &new.hotkeys.push_to_talk)
+            != (self.s.audio.mic, &self.s.audio.mic_mode, &self.s.hotkeys.push_to_talk);
         self.s = new;
         if hotkeys_changed {
             self.register_hotkeys();
+        }
+        if ptt_changed {
+            if !self.push_to_talk() {
+                // Leaving push-to-talk: back to an open microphone.
+                if let Some(feed) = self.live.as_ref().and_then(|l| l.audio.as_ref()) {
+                    feed.set_mic_muted(false);
+                }
+                self.update(|s| s.mic_muted = false);
+            }
+            self.update_push_to_talk();
         }
         if volumes_changed {
             if let Some(feed) = self.live.as_ref().and_then(|l| l.audio.as_ref()) {
@@ -623,7 +656,51 @@ impl Worker {
         }
     }
 
+    fn push_to_talk(&self) -> bool {
+        self.s.audio.mic && self.s.audio.mic_mode == "push_to_talk"
+    }
+
+    /// Start or stop watching the push-to-talk key. It's watched only while capturing; outside
+    /// push-to-talk mode the microphone follows the mute hotkey as before.
+    fn update_push_to_talk(&mut self) {
+        self.ptt = None;
+        if !self.push_to_talk() {
+            return;
+        }
+        // Silent until the key is held.
+        if let Some(feed) = self.live.as_ref().and_then(|l| l.audio.as_ref()) {
+            feed.set_mic_muted(true);
+        }
+        self.update(|s| s.mic_muted = true);
+        if self.live.is_none() {
+            return;
+        }
+        match Hotkey::parse(&self.s.hotkeys.push_to_talk) {
+            Some(key) => {
+                let tx = self.ctl.tx.clone();
+                self.ptt = Some(urec_win::PushToTalk::start(key, move |down| {
+                    if let Ok(tx) = tx.lock() {
+                        let _ = tx.send(Command::PushToTalk(down));
+                    }
+                }));
+            }
+            None => self.notice(
+                Level::Warning,
+                "Push-to-talk is on but has no key. Choose one in Settings › Hotkeys; the microphone stays silent until then.",
+                None,
+            ),
+        }
+    }
+
     fn toggle_mute(&mut self) {
+        if self.push_to_talk() {
+            self.notice(
+                Level::Info,
+                format!("Push-to-talk is on: hold {} to talk.", self.s.hotkeys.push_to_talk.replace('+', " + ")),
+                None,
+            );
+            return;
+        }
         if !self.s.audio.mic {
             self.notice(Level::Info, "The microphone is turned off in Settings › Audio.", None);
             return;
@@ -798,7 +875,7 @@ impl Worker {
         })?;
         #[cfg(windows)]
         urec_win::bind_child_to_app(session.process.raw_handle());
-        let muted = self.ctl.snapshot().mic_muted;
+        let muted = self.push_to_talk() || self.ctl.snapshot().mic_muted;
         if let Some(f) = &feed_slot {
             f.set_mic_muted(muted);
         }
@@ -839,6 +916,7 @@ impl Worker {
             }
         }
         self.live = Some(Live { session, audio: feed_slot, kind });
+        self.update_push_to_talk();
         self.lag_since = None;
         self.lag_warned = false;
         Ok(())
@@ -846,6 +924,7 @@ impl Worker {
 
     fn stop_live(&mut self) -> Option<Result<Option<PathBuf>, String>> {
         let live = self.live.take()?;
+        self.ptt = None;
         let result = live.session.stop(Duration::from_secs(20));
         drop(live.audio);
         self.update(|s| {
@@ -909,7 +988,7 @@ impl Worker {
         let out = Output::File { path: output.to_string_lossy().into(), container: self.s.container() };
         match self.launch(out, LiveKind::File) {
             Ok(()) => self.begin_recording(output, app),
-            Err(e) => self.notice(Level::Error, format!("Recording didn't start. {e}"), None),
+            Err(e) => self.start_failed(format!("Recording didn't start. {e}"), false),
         }
     }
 
@@ -1062,9 +1141,39 @@ impl Worker {
         match self.launch(output, LiveKind::Replay) {
             Ok(()) => self.update(|s| s.replay = ReplayState::On),
             Err(e) => {
-                self.notice(Level::Error, format!("Instant Replay couldn't start. {e}"), None);
+                self.start_failed(format!("Instant Replay couldn't start. {e}"), true);
                 self.update(|s| s.replay = ReplayState::Error(e));
             }
+        }
+    }
+
+    /// A capture didn't start. If a hardware encoder was in use and the CPU encoder works,
+    /// offer to switch, saying plainly that it costs CPU. Never switches by itself.
+    fn start_failed(&mut self, text: String, retry_replay: bool) {
+        let hw = self.pick_encoder().is_ok_and(|e| e.backend.is_hardware());
+        let cpu_ok = self
+            .ctl
+            .snapshot()
+            .probe
+            .iter()
+            .any(|r| r.ok && r.encoder.codec == self.s.codec() && !r.encoder.backend.is_hardware());
+        log(&text);
+        if hw && cpu_ok {
+            let text = format!(
+                "{text} The CPU encoder works on this PC but uses much more processor time, which can lower game frame rates."
+            );
+            self.update(|s| {
+                s.notices.push_front(Notice {
+                    level: Level::Error,
+                    text,
+                    at: Instant::now(),
+                    file: None,
+                    action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
+                });
+                s.notices.truncate(6);
+            });
+        } else {
+            self.notice(Level::Error, text, None);
         }
     }
 

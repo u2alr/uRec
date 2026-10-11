@@ -116,6 +116,8 @@ pub struct Audio {
     /// "mixed" | "separate"
     pub layout: String,
     pub bitrate_kbps: u32,
+    /// "open" (on, mute with the hotkey) | "push_to_talk" (only while the key is held)
+    pub mic_mode: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -135,6 +137,9 @@ pub struct Hotkeys {
     pub toggle_replay: String,
     pub mute_mic: String,
     pub overlay: String,
+    /// Held to talk when the microphone is in push-to-talk mode. Plain keys are fine here:
+    /// this key is watched, not taken away from the game.
+    pub push_to_talk: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -145,6 +150,12 @@ pub struct Storage {
     pub folder_per_app: bool,
     /// Warn below this much free space (GB). Recording stops automatically at 1 GB.
     pub low_space_gb: u32,
+    /// Opt-in clean-up: move old recordings to the Recycle Bin. Off by default; favorites are
+    /// never touched.
+    pub retention: bool,
+    pub retention_days: u32,
+    /// "replays" (Instant Replay clips only) | "all"
+    pub retention_scope: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -241,6 +252,7 @@ impl Default for Audio {
             mic_volume: 1.0,
             layout: "mixed".into(),
             bitrate_kbps: 160,
+            mic_mode: "open".into(),
         }
     }
 }
@@ -259,13 +271,21 @@ impl Default for Hotkeys {
             toggle_replay: "Alt+Shift+F10".into(),
             mute_mic: "Ctrl+Alt+M".into(),
             overlay: String::new(),
+            push_to_talk: "CapsLock".into(),
         }
     }
 }
 
 impl Default for Storage {
     fn default() -> Self {
-        Storage { output_dir: default_output_dir().to_string_lossy().into(), folder_per_app: true, low_space_gb: 5 }
+        Storage {
+            output_dir: default_output_dir().to_string_lossy().into(),
+            folder_per_app: true,
+            low_space_gb: 5,
+            retention: false,
+            retention_days: 30,
+            retention_scope: "replays".into(),
+        }
     }
 }
 
@@ -369,8 +389,16 @@ impl Settings {
         check((0.0..=2.0).contains(&a.mic_volume), "mic volume", &mut || a.mic_volume = 1.0);
         check([96, 128, 160, 192, 256, 320].contains(&a.bitrate_kbps), "audio bitrate", &mut || a.bitrate_kbps = 160);
         check(["mixed", "separate"].contains(&a.layout.as_str()), "audio tracks", &mut || a.layout = "mixed".into());
+        check(["open", "push_to_talk"].contains(&a.mic_mode.as_str()), "microphone mode", &mut || {
+            a.mic_mode = "open".into()
+        });
         let r = &mut self.replay;
         check((5..=REPLAY_MAX).contains(&r.seconds), "replay length", &mut || r.seconds = 60);
+        let st = &mut self.storage;
+        check((1..=3650).contains(&st.retention_days), "clean-up age", &mut || st.retention_days = 30);
+        check(["replays", "all"].contains(&st.retention_scope.as_str()), "clean-up scope", &mut || {
+            st.retention_scope = "replays".into()
+        });
         let ap = &mut self.appearance;
         check(["system", "reduced", "full"].contains(&ap.motion.as_str()), "animations", &mut || {
             ap.motion = "system".into()

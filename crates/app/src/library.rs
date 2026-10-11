@@ -46,6 +46,12 @@ struct Cache {
 
 enum Job {
     Refresh(PathBuf),
+    /// Opt-in clean-up, then a refresh.
+    Retention {
+        dir: PathBuf,
+        days: u32,
+        all: bool,
+    },
 }
 
 pub struct Library {
@@ -53,7 +59,7 @@ pub struct Library {
     pub scanning: Arc<AtomicBool>,
     tx: Sender<Job>,
     /// Starred recordings (full paths), kept in %APPDATA%\uRec\favorites.json.
-    favorites: Mutex<Vec<PathBuf>>,
+    favorites: Arc<Mutex<Vec<PathBuf>>>,
 }
 
 fn favorites_path() -> PathBuf {
@@ -79,6 +85,10 @@ impl Library {
         let scanning = Arc::new(AtomicBool::new(false));
         let (tx, rx) = channel::<Job>();
         let (it, sc) = (items.clone(), scanning.clone());
+        let favorites: Vec<PathBuf> =
+            std::fs::read(favorites_path()).ok().and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default();
+        let favorites = Arc::new(Mutex::new(favorites));
+        let favs = favorites.clone();
         std::thread::Builder::new()
             .name("library".into())
             .spawn(move || {
@@ -94,7 +104,28 @@ impl Library {
                             Err(_) => break,
                         },
                     };
-                    let Job::Refresh(dir) = job;
+                    let dir = match job {
+                        Job::Refresh(dir) => dir,
+                        Job::Retention { dir, days, all } => {
+                            let found = scan(&dir);
+                            let favs = favs.lock().map(|f| f.clone()).unwrap_or_default();
+                            let picked = retention_candidates(
+                                &found,
+                                days,
+                                all,
+                                &|p| favs.iter().any(|f| f == p),
+                                SystemTime::now(),
+                            );
+                            let moved = picked.iter().filter(|p| urec_win::recycle(p)).count();
+                            if !picked.is_empty() {
+                                crate::controller::log(&format!(
+                                    "clean-up: {moved} of {} recording(s) older than {days} days moved to the Recycle Bin",
+                                    picked.len()
+                                ));
+                            }
+                            dir
+                        }
+                    };
                     sc.store(true, Ordering::Relaxed);
                     repaint();
                     let mut found = scan(&dir);
@@ -150,9 +181,18 @@ impl Library {
                 }
             })
             .expect("spawn library");
-        let favorites: Vec<PathBuf> =
-            std::fs::read(favorites_path()).ok().and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default();
-        Library { items, scanning, tx, favorites: Mutex::new(favorites) }
+        Library { items, scanning, tx, favorites }
+    }
+
+    /// Run the opt-in clean-up rule in the background (then refresh the list).
+    pub fn retention(&self, dir: &Path, days: u32, all: bool) {
+        let _ = self.tx.send(Job::Retention { dir: dir.to_path_buf(), days, all });
+    }
+
+    /// How many recordings the rule would move right now (for the settings preview).
+    pub fn retention_preview(&self, days: u32, all: bool) -> usize {
+        let items = self.snapshot();
+        retention_candidates(&items, days, all, &|p| self.is_favorite(p), SystemTime::now()).len()
     }
 
     pub fn is_favorite(&self, path: &Path) -> bool {
@@ -238,6 +278,25 @@ impl Library {
         }
         (ok, failed)
     }
+}
+
+/// Which recordings an opt-in clean-up rule would move to the Recycle Bin: older than `days`,
+/// not a favorite, and (unless `all`) only Instant Replay clips. Recent files are never picked.
+pub fn retention_candidates(
+    items: &[Item],
+    days: u32,
+    all: bool,
+    is_favorite: &dyn Fn(&Path) -> bool,
+    now: SystemTime,
+) -> Vec<PathBuf> {
+    let max_age = Duration::from_secs(days.max(1) as u64 * 86_400);
+    items
+        .iter()
+        .filter(|i| now.duration_since(i.modified).map(|age| age > max_age).unwrap_or(false))
+        .filter(|i| all || i.name.ends_with(" Replay") || i.name.contains(" Replay ("))
+        .filter(|i| !is_favorite(&i.path))
+        .map(|i| i.path.clone())
+        .collect()
 }
 
 fn is_video(p: &Path) -> bool {
@@ -433,5 +492,35 @@ mod tests {
         std::fs::write(&mkv, b"x").unwrap();
         assert_eq!(diagnose(&mkv, old), "Can't be read");
         let _ = std::fs::remove_dir_all(d);
+    }
+
+    #[test]
+    fn retention_picks_only_old_unstarred_clips() {
+        let now = SystemTime::now();
+        let day = Duration::from_secs(86_400);
+        let item = |name: &str, age_days: u64| Item {
+            path: PathBuf::from(format!("C:/v/{name}.mp4")),
+            name: name.into(),
+            app: String::new(),
+            size: 1,
+            modified: now - day * age_days as u32,
+            meta: None,
+            thumb: None,
+            problem: None,
+        };
+        let items = vec![
+            item("VALORANT 2026-09-01 Replay", 40),
+            item("VALORANT 2026-09-01 Replay (2)", 40),
+            item("VALORANT 2026-10-10 Replay", 2),
+            item("Desktop 2026-09-01", 40),
+            item("Starred 2026-09-01 Replay", 40),
+        ];
+        let fav = |p: &Path| p.to_string_lossy().contains("Starred");
+        let picked = retention_candidates(&items, 30, false, &fav, now);
+        let names: Vec<_> = picked.iter().map(|p| p.file_stem().unwrap().to_string_lossy().to_string()).collect();
+        assert_eq!(names, vec!["VALORANT 2026-09-01 Replay", "VALORANT 2026-09-01 Replay (2)"]);
+        let all = retention_candidates(&items, 30, true, &fav, now);
+        assert_eq!(all.len(), 3, "recordings too, still never favorites or recent files");
+        assert!(retention_candidates(&items, 60, true, &fav, now).is_empty());
     }
 }

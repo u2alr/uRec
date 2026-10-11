@@ -30,7 +30,7 @@ pub use audio::{audio_inputs, audio_outputs, AudioFeed};
 #[cfg(windows)]
 pub use display::{foreground_window, monitors, windows};
 #[cfg(windows)]
-pub use hotkeys::Hotkeys;
+pub use hotkeys::{Hotkeys, PushToTalk};
 #[cfg(windows)]
 pub use http::{https_download, https_get};
 #[cfg(windows)]

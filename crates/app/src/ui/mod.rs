@@ -113,7 +113,12 @@ impl App {
             ctl.capturing.clone(),
             Arc::new(move || ctx2.request_repaint()),
         );
-        library.refresh(&s.output_dir());
+        if s.storage.retention {
+            // Opt-in clean-up (Settings › Storage), then the normal scan.
+            library.retention(&s.output_dir(), s.storage.retention_days, s.storage.retention_scope == "all");
+        } else {
+            library.refresh(&s.output_dir());
+        }
         let ctx3 = cc.egui_ctx.clone();
         let updater = crate::update::Updater::start(
             s.general.check_updates,
@@ -206,7 +211,13 @@ impl App {
 
     pub fn push_notice(&self, level: Level, text: String) {
         if let Ok(mut s) = self.ctl.status.lock() {
-            s.notices.push_front(crate::controller::Notice { level, text, at: Instant::now(), file: None });
+            s.notices.push_front(crate::controller::Notice {
+                level,
+                text,
+                at: Instant::now(),
+                file: None,
+                action: None,
+            });
             s.notices.truncate(6);
         }
     }
@@ -361,6 +372,7 @@ impl App {
         let p = self.p;
         let mut dismiss = None;
         let mut open = None;
+        let mut act = None;
         egui::Area::new(egui::Id::new("notices"))
             .anchor(egui::Align2::RIGHT_BOTTOM, Vec2::new(-18.0, -18.0))
             .order(egui::Order::Foreground)
@@ -394,6 +406,16 @@ impl App {
                                 ui.vertical(|ui| {
                                     ui.add(egui::Label::new(RichText::new(&n.text).color(p.text)).wrap());
                                     ui.horizontal(|ui| {
+                                        if let Some(a) = &n.action {
+                                            let label = match a {
+                                                crate::controller::NoticeAction::UseCpuEncoder { .. } => {
+                                                    "Use CPU encoder"
+                                                }
+                                            };
+                                            if theme::link_button(ui, &p, label).clicked() {
+                                                act = Some((i, a.clone()));
+                                            }
+                                        }
                                         if let Some(f) = &n.file {
                                             if theme::link_button(ui, &p, "Show in folder").clicked() {
                                                 open = Some(f.clone());
@@ -411,6 +433,16 @@ impl App {
             });
         if let Some(f) = open {
             urec_win::reveal_in_explorer(&f);
+        }
+        if let Some((i, a)) = act {
+            match a {
+                crate::controller::NoticeAction::UseCpuEncoder { retry_replay } => {
+                    self.s.video.encoder = urec_engine::encoder::Backend::Software.id().into();
+                    self.commit();
+                    self.ctl.send(if retry_replay { Command::SetReplay(true) } else { Command::ToggleRecording });
+                }
+            }
+            dismiss = Some(i);
         }
         if let Some(i) = dismiss {
             self.ctl.dismiss_notice(i);

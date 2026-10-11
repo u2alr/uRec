@@ -74,6 +74,55 @@ impl Hotkeys {
     }
 }
 
+/// Push-to-talk: watches one key (or side mouse button) and reports press and release.
+/// Polls the key state every 20 ms instead of registering a hotkey, so the key still reaches
+/// the game (a registered hotkey would be swallowed). Runs only while it exists.
+pub struct PushToTalk {
+    stop: Arc<std::sync::atomic::AtomicBool>,
+    thread: Option<JoinHandle<()>>,
+}
+
+impl PushToTalk {
+    pub fn start(key: Hotkey, on_change: impl Fn(bool) + Send + 'static) -> PushToTalk {
+        use std::sync::atomic::{AtomicBool, Ordering};
+        use windows::Win32::UI::Input::KeyboardAndMouse::{GetAsyncKeyState, VK_CONTROL, VK_MENU, VK_SHIFT};
+        let stop = Arc::new(AtomicBool::new(false));
+        let s2 = stop.clone();
+        let thread = std::thread::Builder::new()
+            .name("push-to-talk".into())
+            .spawn(move || {
+                let down = |vk: i32| unsafe { (GetAsyncKeyState(vk) as u16 & 0x8000) != 0 };
+                let mut held = false;
+                while !s2.load(Ordering::Relaxed) {
+                    let mods_ok = (key.mods & urec_engine::hotkey::MOD_CONTROL == 0 || down(VK_CONTROL.0 as i32))
+                        && (key.mods & urec_engine::hotkey::MOD_ALT == 0 || down(VK_MENU.0 as i32))
+                        && (key.mods & urec_engine::hotkey::MOD_SHIFT == 0 || down(VK_SHIFT.0 as i32));
+                    // Releasing either the key or a modifier ends talking.
+                    let now = down(key.vk as i32) && mods_ok;
+                    if now != held {
+                        held = now;
+                        on_change(held);
+                    }
+                    std::thread::sleep(std::time::Duration::from_millis(20));
+                }
+                if held {
+                    on_change(false);
+                }
+            })
+            .ok();
+        PushToTalk { stop, thread }
+    }
+}
+
+impl Drop for PushToTalk {
+    fn drop(&mut self) {
+        self.stop.store(true, std::sync::atomic::Ordering::Relaxed);
+        if let Some(t) = self.thread.take() {
+            let _ = t.join();
+        }
+    }
+}
+
 impl Drop for Hotkeys {
     fn drop(&mut self) {
         self.stop();

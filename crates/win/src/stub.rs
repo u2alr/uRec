@@ -153,3 +153,9 @@ pub fn toast_history_count() -> Option<u32> {
 pub fn work_area() -> Option<(f32, f32, f32, f32)> {
     None
 }
+pub struct PushToTalk;
+impl PushToTalk {
+    pub fn start(_key: urec_engine::hotkey::Hotkey, _on_change: impl Fn(bool) + Send + 'static) -> PushToTalk {
+        PushToTalk
+    }
+}

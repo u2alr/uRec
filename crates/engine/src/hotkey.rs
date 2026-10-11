@@ -37,7 +37,16 @@ const NAMED: &[(&str, u32)] = &[
     (".", 0xBE),
     ("/", 0xBF),
     ("\\", 0xDC),
+    ("CapsLock", 0x14),
+    // Side mouse buttons: push-to-talk only (Windows can't register them as global hotkeys).
+    ("Mouse4", 0x05),
+    ("Mouse5", 0x06),
 ];
+
+/// Mouse buttons can be watched (push-to-talk) but not registered as hotkeys.
+pub fn is_mouse_button(vk: u32) -> bool {
+    matches!(vk, 0x05 | 0x06)
+}
 
 impl Hotkey {
     pub fn parse(text: &str) -> Option<Hotkey> {
@@ -134,6 +143,11 @@ mod tests {
         assert_eq!(Hotkey::parse("Hyper+F1"), None);
         assert_eq!(Hotkey::parse("Alt+"), None);
         assert_eq!(Hotkey::parse("shift+alt+r").unwrap().to_text(), "Alt+Shift+R");
+        // Push-to-talk keys: a plain key or a side mouse button.
+        assert_eq!(Hotkey::parse("V"), Some(Hotkey { mods: 0, vk: 0x56 }));
+        assert_eq!(Hotkey::parse("Mouse4").unwrap().to_text(), "Mouse4");
+        assert!(is_mouse_button(Hotkey::parse("Mouse5").unwrap().vk));
+        assert!(!is_mouse_button(Hotkey::parse("CapsLock").unwrap().vk));
     }
 
     #[test]

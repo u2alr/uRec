@@ -606,6 +606,20 @@ fn audio(app: &mut App, ui: &mut egui::Ui) {
                 egui::Slider::new(&mut a.mic_volume, 0.0..=2.0).custom_formatter(|v, _| format!("{:.0}%", v * 100.0)),
             );
         });
+        let help = if a.mic_mode == "push_to_talk" {
+            "Silent until you hold the push-to-talk key (Settings › Hotkeys). The key still works in your game."
+        } else {
+            "Always recorded. The mute hotkey turns it off and on."
+        };
+        theme::row(ui, &p, "Microphone mode", help, |ui| {
+            combo(
+                ui,
+                "mic_mode",
+                &mut a.mic_mode,
+                &opts(&[("open", "Always on"), ("push_to_talk", "Push to talk")]),
+                180.0,
+            );
+        });
     });
     theme::group_title(ui, &p, "Output");
     theme::row(
@@ -711,13 +725,15 @@ fn replay_page(app: &mut App, ui: &mut egui::Ui) {
 
 // ------------------------------------------------------------------ Hotkeys
 
-const ACTIONS: [&str; 5] = [
+const ACTIONS: [&str; 6] = [
     "Start or stop recording",
     "Save Instant Replay",
     "Turn Instant Replay on or off",
     "Mute or unmute microphone",
     "Show or hide the overlay",
+    "Push to talk (hold)",
 ];
+const PUSH_TO_TALK: usize = 5;
 
 fn hotkey_field(s: &mut Settings, i: usize) -> &mut String {
     match i {
@@ -725,7 +741,8 @@ fn hotkey_field(s: &mut Settings, i: usize) -> &mut String {
         1 => &mut s.hotkeys.save_replay,
         2 => &mut s.hotkeys.toggle_replay,
         3 => &mut s.hotkeys.mute_mic,
-        _ => &mut s.hotkeys.overlay,
+        4 => &mut s.hotkeys.overlay,
+        _ => &mut s.hotkeys.push_to_talk,
     }
 }
 
@@ -774,6 +791,18 @@ fn hotkeys(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     if let Some(i) = app.listening {
         let events = ui.input(|inp| inp.events.clone());
         for e in events {
+            // Side mouse buttons work for push-to-talk only.
+            if let egui::Event::PointerButton { button, pressed: true, .. } = e {
+                let name = match button {
+                    egui::PointerButton::Extra1 => Some("Mouse4"),
+                    egui::PointerButton::Extra2 => Some("Mouse5"),
+                    _ => None,
+                };
+                if let (Some(n), true) = (name, i == PUSH_TO_TALK) {
+                    *hotkey_field(&mut app.s, i) = n.into();
+                    app.listening = None;
+                }
+            }
             if let egui::Event::Key { key, pressed: true, modifiers, .. } = e {
                 if key == egui::Key::Escape {
                     app.listening = None;
@@ -792,7 +821,15 @@ fn hotkeys(app: &mut App, ui: &mut egui::Ui, st: &Status) {
                         parts.push("Shift");
                     }
                     let text = format!("{}{}{}", parts.join("+"), if parts.is_empty() { "" } else { "+" }, name);
-                    if hotkey::Hotkey::parse(&text).is_some() {
+                    // A plain letter or digit as a global hotkey would stop working everywhere
+                    // else; push-to-talk only watches its key, so it may be a plain key.
+                    let plain = parts.is_empty() && name.chars().count() == 1;
+                    if plain && i != PUSH_TO_TALK {
+                        app.push_notice(
+                            Level::Warning,
+                            format!("Add Ctrl, Alt or Shift: on its own, {name} would stop typing in every other app."),
+                        );
+                    } else if hotkey::Hotkey::parse(&text).is_some() {
                         *hotkey_field(&mut app.s, i) = text;
                     }
                     app.listening = None;
@@ -814,6 +851,12 @@ fn hotkeys(app: &mut App, ui: &mut egui::Ui, st: &Status) {
             help = format!("Also used for \"{other}\". Pick a different shortcut.");
         } else if st.hotkey_failures.iter().any(|f| f.starts_with(short_name(i))) {
             help = "Another app is already using this shortcut.".into();
+        } else if i == PUSH_TO_TALK {
+            help = if app.s.audio.mic && app.s.audio.mic_mode == "push_to_talk" {
+                "Hold to talk. The key keeps working in your game. A side mouse button works too.".into()
+            } else {
+                "Used when the microphone is set to push to talk (Settings › Audio).".into()
+            };
         }
         theme::row(ui, &p, action, &help, |ui| {
             let listening = app.listening == Some(i);
@@ -848,6 +891,7 @@ fn short_name(i: usize) -> &'static str {
         "Turn Instant Replay on/off",
         "Mute microphone",
         "Show/hide overlay",
+        "Push to talk",
     ][i]
 }
 
@@ -898,6 +942,49 @@ fn storage(app: &mut App, ui: &mut egui::Ui, st: &Status) {
             ui.add(egui::DragValue::new(&mut app.s.storage.low_space_gb).range(1..=500).suffix(" GB"));
         },
     );
+    theme::group_title(ui, &p, "Clean-up");
+    theme::row(
+        ui,
+        &p,
+        "Remove old recordings automatically",
+        "Off unless you turn it on. Files go to the Recycle Bin, and starred favorites are always kept.",
+        |ui| {
+            theme::switch(ui, &p, &mut app.s.storage.retention);
+        },
+    );
+    if app.s.storage.retention {
+        let st = &mut app.s.storage;
+        theme::row(ui, &p, "Older than", "", |ui| {
+            ui.add(egui::DragValue::new(&mut st.retention_days).range(1..=3650).suffix(" days"));
+        });
+        theme::row(ui, &p, "Applies to", "", |ui| {
+            combo(
+                ui,
+                "retention_scope",
+                &mut st.retention_scope,
+                &opts(&[("replays", "Instant Replay clips"), ("all", "All recordings")]),
+                200.0,
+            );
+        });
+        let (days, all) = (st.retention_days, st.retention_scope == "all");
+        let n = app.library.retention_preview(days, all);
+        theme::row(
+            ui,
+            &p,
+            &if n == 0 {
+                "Nothing to remove right now".to_string()
+            } else {
+                format!("{n} recording{} would be removed now", if n == 1 { "" } else { "s" })
+            },
+            "Runs each time uRec starts.",
+            |ui| {
+                let r = ui.add_enabled_ui(n > 0, |ui| theme::quiet_button(ui, &p, "Run now")).inner;
+                if r.clicked() {
+                    app.library.retention(&app.s.output_dir(), days, all);
+                }
+            },
+        );
+    }
     let bps = video::bytes_per_second(app.s.video.bitrate_kbps, app.s.audio.bitrate_kbps);
     ui.add_space(10.0);
     theme::note(
