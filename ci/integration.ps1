@@ -108,6 +108,23 @@ $temps = @(Get-ChildItem $rapidDir -Filter "*.urec-tmp.mp4").Count
 $bad = @($clips | ForEach-Object { $mm = Get-MediaInfo $_.FullName; if (-not $mm -or $mm.DecodeErrors -or $mm.Duration -lt 5.5 -or $mm.AudioTracks -ne 1) { $_.Name } })
 Add-Result "T19" "4 simultaneous replay saves: 4 separate complete clips, none overwritten, no leftovers" ($r4.Code -eq 0 -and $clips.Count -eq 4 -and $bad.Count -eq 0 -and $temps -eq 0 -and $r4.Kv['stage_leftovers'] -eq '0') "clips=$($clips.Count) [$(($clips.Name) -join ', ')] bad=[$($bad -join ', ')] temp=$temps stages_left=$($r4.Kv['stage_leftovers']) total=$($r4.Kv['save_ms'])ms"
 
+# Long run: memory of the capture/encoder process and the CLI host while Instant Replay runs 150 s.
+$ringL = Join-Path $work "ringL"
+$clipL = Join-Path $work "long.mp4"
+$pl = Start-Process $Cli -ArgumentList "replay", "--dir", $ringL, "--out", $clipL, "--source", $src, "--method", "gdi", "--encoder", "software", "--fps", "30", "--replay-seconds", "30", "--run-seconds", "150", "--save-seconds", "20", "--audio-test" -PassThru -WindowStyle Hidden
+$samples = @()
+foreach ($t in 20, 50, 80, 110, 140) {
+    while ($pl.StartTime -and ((Get-Date) - $pl.StartTime).TotalSeconds -lt $t) { Start-Sleep -Milliseconds 500 }
+    $ff = Get-Process ffmpeg -ErrorAction SilentlyContinue | Sort-Object StartTime | Select-Object -Last 1
+    $pl.Refresh()
+    $samples += [pscustomobject]@{ T = $t; Ff = [math]::Round($ff.PrivateMemorySize64 / 1MB, 1); Cli = [math]::Round($pl.PrivateMemorySize64 / 1MB, 1); Ring = @(Get-ChildItem $ringL -Filter *.ts -ErrorAction SilentlyContinue).Count }
+}
+$pl.WaitForExit(60000) | Out-Null
+$mL = Get-MediaInfo $clipL
+$grow = $samples[-1].Ff - $samples[0].Ff
+$growCli = $samples[-1].Cli - $samples[0].Cli
+Add-Result "T20" "150 s Instant Replay: memory stays flat, ring stays bounded, save still works" ($grow -lt 30 -and $growCli -lt 10 -and ($samples | Measure-Object Ring -Maximum).Maximum -le 19 -and $mL -and -not $mL.DecodeErrors) ("ffmpeg private MB " + (($samples | ForEach-Object { "$($_.T)s=$($_.Ff)" }) -join " ") + " | host " + (($samples | ForEach-Object { $_.Cli }) -join "/") + " | ring max $(($samples | Measure-Object Ring -Maximum).Maximum)/19 | clip $($mL.Duration)s")
+
 "=== Repeated start/stop"
 $cycleOk = $true; $cycleDetail = @()
 for ($i = 1; $i -le 5; $i++) {

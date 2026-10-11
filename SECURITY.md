@@ -18,3 +18,15 @@ Please report security issues privately through GitHub: **Security › Report a 
 - **Local data only:** settings in `%APPDATA%\uRec`, and the replay buffer, thumbnails and logs in `%LOCALAPPDATA%\uRec`. Logs never contain screen or audio content.
 - **Deleting goes to the Recycle Bin:** the library never deletes recordings permanently.
 - **Dependency audit:** `cargo audit` runs on every release build. Results are in TESTING.md.
+
+## Code signing and SmartScreen
+
+uRec's installer and executables are **not code-signed yet**. Windows SmartScreen may show "Windows protected your PC" for new downloads of unsigned programs with little download history. Choose **More info › Run anyway** only if you downloaded uRec from https://github.com/u2alr/uRec/releases. You can also compare the file with `SHA256SUMS.txt` on the release page, for example with `Get-FileHash uRec-x.y.z-setup.exe` in PowerShell.
+
+Options being considered (none is in place today):
+
+- **A free signing service for open-source projects**, such as SignPath Foundation. Signing happens in CI with a key the project doesn't hold.
+- **Microsoft's cloud signing service** (Azure Trusted Signing). This is a paid subscription and requires identity validation.
+- **A traditional OV or EV code-signing certificate** from a certificate authority.
+
+A signature makes tampering detectable and shows a verified publisher. **It does not guarantee that SmartScreen warnings go away.** SmartScreen also weighs a file's reputation, which builds up over time with any certificate type. Once releases are signed, the updater will also check the signature before it installs anything, in addition to the SHA-256 checksum.

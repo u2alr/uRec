@@ -1,4 +1,5 @@
 # Instant Replay indicator tests on a real Windows desktop.
+# Layered (per-pixel alpha) windows are only captured with CAPTUREBLT.
 # The overlay is normally excluded from screen capture; UREC_OVERLAY_CAPTURABLE=1 lets these
 # tests film it. Frames are grabbed as fast as possible and the pill width is measured per frame.
 param([Parameter(Mandatory)][string]$Exe, [Parameter(Mandatory)][string]$Cli, [string]$Out = "screenshots")
@@ -11,7 +12,7 @@ using System; using System.Drawing; using System.Drawing.Imaging; using System.C
 public static class Cap {
     public static byte[] Grab(int x, int y, int w, int h) {
         using (var bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb)) {
-            using (var g = Graphics.FromImage(bmp)) g.CopyFromScreen(x, y, 0, 0, new Size(w, h));
+            using (var g = Graphics.FromImage(bmp)) g.CopyFromScreen(x, y, 0, 0, new Size(w, h), CopyPixelOperation.SourceCopy | CopyPixelOperation.CaptureBlt);
             var d = bmp.LockBits(new Rectangle(0, 0, w, h), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             var px = new byte[w * h * 4];
             System.Runtime.InteropServices.Marshal.Copy(d.Scan0, px, 0, px.Length);
