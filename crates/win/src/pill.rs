@@ -19,7 +19,7 @@ pub const SAVING_TIMEOUT: Duration = Duration::from_secs(90);
 pub const SUCCESS_TEXT: &str = "Instant Replay Saved";
 pub const FAILURE_TEXT: &str = "Instant Replay Failed";
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Kind {
     Success,
     Failure,
