@@ -87,6 +87,7 @@ pub struct App {
     applied_theme: Option<(bool, u32)>,
     pub startup_message: Option<String>,
     exit_requested: bool,
+    first_frame_logged: bool,
 }
 
 impl App {
@@ -127,6 +128,7 @@ impl App {
             applied_theme: None,
             startup_message,
             exit_requested: false,
+            first_frame_logged: false,
         };
         app.refresh_devices(true);
         app
@@ -376,6 +378,10 @@ impl App {
 impl eframe::App for App {
     fn ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         let ctx = ui.ctx().clone();
+        if !self.first_frame_logged {
+            self.first_frame_logged = true;
+            crate::controller::log("startup: first frame");
+        }
         self.apply_theme(&ctx);
         let st = self.ctl.snapshot();
         self.handle_close(&ctx, &st);

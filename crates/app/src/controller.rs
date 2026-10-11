@@ -229,6 +229,7 @@ struct Worker {
 impl Worker {
     fn new(ctl: Controller, s: Settings, rx: Receiver<Command>) -> Self {
         let tx = ctl.tx.clone();
+        log("controller: creating hotkeys");
         let hotkeys = urec_win::Hotkeys::new(move |i| {
             let cmd = match i {
                 0 => Command::ToggleRecording,
@@ -250,7 +251,12 @@ impl Worker {
             ring: None,
             recording: None,
             hotkeys,
-            overlay: urec_win::Overlay::new(),
+            overlay: {
+                log("controller: creating overlay");
+                let o = urec_win::Overlay::new();
+                log("controller: overlay ready");
+                o
+            },
             lag_since: None,
             lag_warned: false,
             last_disk_check: Instant::now() - Duration::from_secs(60),
@@ -293,6 +299,7 @@ impl Worker {
     // -------------------------------------------------------------- startup
 
     fn init(&mut self) {
+        log("controller: init");
         let ffmpeg = locate_ffmpeg();
         let version = ffmpeg.as_deref().and_then(probe::ffmpeg_version).unwrap_or_default();
         self.update(|s| {
@@ -310,7 +317,9 @@ impl Worker {
             return;
         }
         self.register_hotkeys();
+        log("controller: hotkeys registered");
         self.run_probe();
+        log("controller: probe done");
         if !self.s.first_run_done {
             self.recommend_defaults();
         }

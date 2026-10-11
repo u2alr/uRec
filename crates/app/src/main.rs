@@ -35,6 +35,7 @@ fn main() -> eframe::Result {
     let (settings, message) = Settings::load();
     controller::log(&format!("uRec {} starting", env!("CARGO_PKG_VERSION")));
     let ctl = Controller::start(settings.clone());
+    controller::log("startup: controller started");
 
     // Fit small screens (laptops at 1366×768, VMs at 1024×768).
     let (w, h) = urec_win::monitors()
@@ -55,17 +56,25 @@ fn main() -> eframe::Result {
     };
     // Development/CI: open a specific page, e.g. UREC_PAGE=settings:video
     let start_page = std::env::var("UREC_PAGE").ok();
-    eframe::run_native(
+    controller::log("startup: opening window");
+    let result = eframe::run_native(
         ui::WINDOW_TITLE,
         options,
         Box::new(move |cc| {
+            controller::log("startup: window created");
             #[cfg(windows)]
             tray::install(ctl.clone());
+            controller::log("startup: tray installed");
             let mut app = ui::App::new(cc, ctl, settings, message);
+            controller::log("startup: app ready");
             if let Some(p) = start_page {
                 app.open_page(&p);
             }
             Ok(Box::new(app))
         }),
-    )
+    );
+    if let Err(e) = &result {
+        controller::log(&format!("window error: {e}"));
+    }
+    result
 }
