@@ -1,4 +1,4 @@
-commit 8228d2f2cf1be545eef1b2d65c4b6cbab777401b run 38173314189
+commit 0a35f6040271db6d65aeca465fd16723a813f023 run 38173472606
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -77,9 +77,9 @@ error[E0560]: struct `controller::Notice` has no field named `action`
     = note: all struct fields are already assigned
 
 error[E0560]: struct `controller::Notice` has no field named `action`
-    --> crates\app\src\controller.rs:1171:21
+    --> crates\app\src\controller.rs:1176:21
      |
-1171 |                     action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
+1176 |                     action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
      |                     ^^^^^^ `controller::Notice` does not have this field
      |
      = note: all struct fields are already assigned
@@ -102,9 +102,9 @@ error[E0609]: no field `action` on type `&controller::Notice`
 
 Some errors have detailed explanations: E0119, E0277, E0560, E0609.
 For more information about an error, try `rustc --explain E0119`.
-error: could not compile `urec` (bin "uRec" test) due to 8 previous errors
-warning: build failed, waiting for other jobs to finish...
 error: could not compile `urec` (bin "uRec") due to 8 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `urec` (bin "uRec" test) due to 8 previous errors
 ## clippy FAILED
 ## test
    Compiling windows v0.62.2
@@ -181,9 +181,9 @@ error[E0560]: struct `Notice` has no field named `action`
     = note: all struct fields are already assigned
 
 error[E0560]: struct `Notice` has no field named `action`
-    --> crates\app\src\controller.rs:1171:21
+    --> crates\app\src\controller.rs:1176:21
      |
-1171 |                     action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
+1176 |                     action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
      |                     ^^^^^^ `Notice` does not have this field
      |
      = note: all struct fields are already assigned
@@ -283,9 +283,9 @@ error[E0560]: struct `Notice` has no field named `action`
     = note: all struct fields are already assigned
 
 error[E0560]: struct `Notice` has no field named `action`
-    --> crates\app\src\controller.rs:1171:21
+    --> crates\app\src\controller.rs:1176:21
      |
-1171 |                     action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
+1176 |                     action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
      |                     ^^^^^^ `Notice` does not have this field
      |
      = note: all struct fields are already assigned
