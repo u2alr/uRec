@@ -19,17 +19,18 @@ The results below are copied from those runs. Nothing is estimated.
 
 | Crate | Tests | Covers |
 |---|---|---|
-| `urec-engine` | 32 | Output sizing (never upscales, even sizes, aspect), validation limits, presets per machine, bitrate scaling, storage maths, encoder names and arguments, failure explanations, FFmpeg command lines (GPU/system paths, scaling, QSV mapping, regions, GDI, audio pipes, replay ring), progress parsing, replay CSV parsing and selection, ring sizing, file-name sanitizing and timestamps, unique names, hotkey parsing, formatting and conflicts, SHA-256 (standard test vectors incl. one million 'a'). **Replay saving:** 8 threads placing clips under the same name all get separate files and none replaces another; segments recycled at the front are dropped but a missing middle segment is an error; cleanup removes only uRec's temporary names; temp names are unique. **MP4 check:** complete, truncated, unfinished (no `moov`), garbage, empty and fragmented files. **Decode report** parsing (streams, frames, decoder errors). |
-| `urec` (app) | 13 | Settings round-trip, corrupt-file quarantine, partial/out-of-range values, v1 → v2 migration (existing users skip setup, choices kept, unknown values reset), UTF-8 byte-order mark accepted, conversions, library scan, `ffmpeg -i` metadata parsing, duration format, update version comparison (no downgrades or pre-releases), checksum-file parsing, release JSON parsing (only `github.com/u2alr/uRec` download URLs accepted), library diagnosis of unreadable/damaged/still-writing files, temp clips hidden from the library |
-| `urec-win` | 16 | App names, overlay dot round and symmetric, HTTPS-only URLs. **Indicator timeline:** success (180 ms open, 2 s hold, 180 ms close, then idle with nothing running), failure (2.5 s hold), repeated successes extend instead of duplicating, a newer failure replaces a success and a success waiting behind a failure is shown only afterwards, a result during the close regrows without a jump, the "saving" pulse stops on a result or after 90 s, reduced motion has no in-between states. **Indicator drawing:** closed pill is exactly the dot, the dot position is stable, the pill grows away from the screen edge, check and cross differ in shape (not only colour). **Notification links:** round trip with spaces and accents, malformed links refused, only existing videos inside the recordings folder, XML escaping. |
+| `urec-engine` | 33 | Output sizing (never upscales, even sizes, aspect), validation limits, presets per machine, bitrate scaling, storage maths, encoder names and arguments, failure explanations, FFmpeg command lines (GPU/system paths, scaling, QSV mapping, regions, GDI, audio pipes, replay ring), progress parsing, replay CSV parsing and selection, ring sizing, file-name sanitizing and timestamps, unique names, hotkey parsing, formatting and conflicts, SHA-256 (standard test vectors incl. one million 'a'). **Replay saving:** 8 threads placing clips under the same name all get separate files and none replaces another; segments recycled at the front are dropped but a missing middle segment is an error; cleanup removes only uRec's temporary names; temp names are unique. **MP4 check:** complete, truncated, unfinished (no `moov`), garbage, empty and fragmented files. **Decode report** parsing (streams, frames, decoder errors). **Constant quality:** quantizer per level and codec, ceiling-only bitrate, per-encoder arguments, regular keyframes in every mode. Push-to-talk key names (plain keys, Caps Lock, side mouse buttons). |
+| `urec` (app) | 15 | Settings round-trip, corrupt-file quarantine, partial/out-of-range values, v1 → v2 migration (existing users skip setup, choices kept, unknown values reset), UTF-8 byte-order mark accepted, conversions, library scan, `ffmpeg -i` metadata parsing, duration format, update version comparison (no downgrades or pre-releases), checksum-file parsing, release JSON parsing (only `github.com/u2alr/uRec` download URLs accepted), library diagnosis of unreadable/damaged/still-writing files, temp clips hidden from the library, **clean-up rule** (only old, unstarred, Instant Replay clips unless "all"; never recent files), **update signature rules** (no key → checksum-only; with a key a signature is required, must verify, malformed input refused, the verified hash is SHA-256 of the checksum file) |
+| `urec-win` | 16 | App names, overlay dot round and symmetric, HTTPS-only URLs. **Indicator timeline:** success (180 ms open, 2 s hold, 180 ms close, then idle with nothing running), failure (2.5 s hold), repeated successes extend instead of duplicating, a newer failure replaces a success and a success waiting behind a failure is shown only afterwards, a result during the close regrows without a jump, the "saving" pulse stops on a result or after 90 s, reduced motion has no in-between states. **Indicator drawing:** closed pill is exactly the dot, the dot position is stable, the pill grows away from the screen edge, no accent border (minimal design), check and cross differ in shape (not only colour). **Notification links:** round trip with spaces and accents, malformed links refused, only existing videos inside the recordings folder, XML escaping. |
 
 ## Integration tests on Windows (automated, real capture)
 
-`ci/integration.ps1` drives `urec-cli`, which uses the same engine and Windows layer as the app. Every output file is checked with ffprobe and fully decoded. Latest run: **20 passed, 0 failed.**
+`ci/integration.ps1` drives `urec-cli`, which uses the same engine and Windows layer as the app. Every output file is checked with ffprobe and fully decoded. Latest run: **23 passed, 0 failed.**
 
 | # | Test | Result |
 |---|---|---|
 | T01 | Encoder probe; every argument set uRec generates is accepted by FFmpeg | ✅ |
+| T01b | Constant-quality argument sets for every encoder (x264/x265 CRF, NVENC CQ, AMF CQP, QSV ICQ, Media Foundation quality) are accepted by FFmpeg | ✅ |
 | T02 | GDI capture, x264, 720p30 (960 × 720 from a 4:3 screen, aspect kept) | ✅ |
 | T03 | GDI capture, Windows Media Foundation encoder (CPU), native 30 FPS, with audio | ✅ |
 | T04 | Native 60 FPS | ✅ |
@@ -45,6 +46,8 @@ The results below are copied from those runs. Nothing is estimated.
 | T14 | Separate audio tracks: one track per working source | ✅ |
 | T15 | Microphone blocked by Windows privacy: recording continues, mic honestly reported as not recording, no fake track | ✅ |
 | T16 | Window capture (Notepad only, 754 × 512) | ✅ |
+| T21 | **Signed updates:** a throwaway P-256 key signs a checksum file; uRec's Windows CNG check accepts it and refuses a changed file, a changed signature and another key | ✅ |
+| T22 | **Constant quality vs VBR**, same mostly-still desktop, 720p30 x264, 8 s: VBR 6 Mbps 2.11 MB, constant quality (level 7) 0.66 MB, **69 % smaller**. SSIM between the two clips: 0.996 (visually near-identical). Fast-moving game footage saves less; that wasn't measured on CI | ✅ |
 | T17 | **A/V sync**: screen flashes white and a beep plays every 2 s; in the recording audio leads video by 6–55 ms (median 26–44 ms across runs, about one frame at 30 FPS; includes the test's own playback and GDI capture latency) | ✅ |
 | T18 | Show in folder / Open folder open the right Explorer folder (path with spaces) | ✅ |
 | T19 | **4 simultaneous Instant Replay saves to the same name** (real FFmpeg): 4 separate complete clips (`… Replay.mp4`, `(2)`, `(3)`, `(4)`), each decodes without errors, no temp files or staging folders left; 1.9 s for all four | ✅ |
@@ -65,9 +68,9 @@ The results below are copied from those runs. Nothing is estimated.
 
 | # | Check | Result |
 |---|---|---|
-| P01 | Success: the dot opens into "Instant Replay Saved" with a green check, holds, closes. Measured: visible 2327 ms (target ~2360), opening 142 ms, closing 111 ms after the message faded | ✅ |
+| P01 | Success: the dot opens into "Instant Replay Saved" with a thin green check, holds, closes. Measured (minimal design, 0.3.0): visible 2311 ms (target ~2360), opening 126 ms, closing 95 ms after the message faded | ✅ |
 | P02 | Back to the plain dot afterwards, nothing left on screen | ✅ |
-| P03 | Failure: red cross and "Instant Replay Failed", visible 2800 ms (target ~2860) | ✅ |
+| P03 | Failure: thin red cross and "Instant Replay Failed", visible 2768 ms (target ~2860) | ✅ |
 | P04 | While a save runs, the dot pulses (51 of 51 frames changed) and no message appears; the pill appears 67 ms after the result | ✅ |
 | P05 | Burst (success, failure 0.5 s later, success): the failure replaces the success, is shown for 2.4 s, then the later success appears | ✅ |
 | P06 | Reduced motion: message appears and disappears with no in-between frames | ✅ |
@@ -78,6 +81,8 @@ The results below are copied from those runs. Nothing is estimated.
 | P11 | **Real app, 4 rapid Alt+F10 presses:** 2 saves queued, 2 presses folded in, every clip complete, nothing overwritten | ✅ |
 | P12 | Overlay turned off: nothing is drawn on screen for a save | ✅ |
 | P13 | Overlay turned off: a Windows notification is shown instead | ✅ |
+
+The 0.3.0 design is minimal: a slim dark pill, a thin check or cross, no border or glow, and the message fades in place. The filmed frames were reviewed: the pill stays dark until the dot reappears, with no muddy in-between colours.
 
 In the real-app run (P10), the pill was measured as visible for about 1.95 s rather than 2.3 s. That run happens while x264 encodes Instant Replay on the same 2-vCPU machine, and the frames this test can capture under that load don't catch the first and last few frames of the animation. The standalone runs (P01, P03) are the timing reference.
 
@@ -157,6 +162,9 @@ GitHub's machine has no GPU and no microphone, so these are implemented but have
 - A real microphone, device unplugging and reconnecting, Windows 10 (only build 26100 tested), multiple monitors and high-DPI scaling.
 - Overlay hidden from recordings. CI only shows the opposite: with the exclusion turned off for the test, the overlay is captured.
 - The indicator at high-DPI scaling (125–200 %) and on a secondary monitor.
+- **Push-to-talk** with a real microphone. The key watching and muting logic is implemented, but CI has no microphone and no one to hold a key.
+- **Constant quality on GPU encoders** (NVENC CQ, AMF CQP, QSV ICQ). FFmpeg accepts the arguments (T01b), but only x264 was measured. Hardware encoders usually save less space than x264 does in constant-quality mode.
+- **"Use CPU encoder"** after a hardware encoder fails at start. CI has no hardware encoder that could fail.
 - Notification buttons ("Open clip", "Show in folder") clicked by a person. The links and their checks are unit-tested, and the notification was accepted by Windows, but no click was automated.
 - Low disk space behaviour (warning and automatic stop).
 - 1080p60 and above on real hardware, high-refresh capture (120–240 FPS), long recordings (1 h+).
@@ -167,10 +175,8 @@ GitHub's machine has no GPU and no microphone, so these are implemented but have
 - Mouse-click visualization.
 - HDR capture and encoding (8-bit SDR only).
 - A code-signed installer (no certificate).
-- Push-to-talk (the microphone mute hotkey exists).
-- Automatic retention rules for old recordings. uRec never deletes recordings by itself.
 - Hiding the overlay automatically in fullscreen apps. The overlay is meant for games, so it stays; it can be turned off or toggled with a hotkey.
-- Signature verification of updates. Only SHA-256 checksums are checked until releases are signed (see SECURITY.md).
+- Update signing is built and tested (T21), but **not switched on**: the project's key hasn't been created yet (one command, see SECURITY.md). Until then updates are checked by SHA-256 only.
 
 ## Manual checklist for real PCs
 
