@@ -1,23 +1,28 @@
-commit 339c5d92a95ce9c11d5d5bcc51eb1e121daa69ab run 38136007864
+commit d05b13d98b75fc73cb37bf1428a992cb7217cfb3 run 38136634922
+    Fetching advisory database from `https://github.com/RustSec/advisory-db.git`
+      Loaded 1296 security advisories (from C:\Users\runneradmin\.cargo\advisory-db)
+    Updating crates.io index
+    Scanning Cargo.lock for vulnerabilities (333 crate dependencies)
+audit exit code: 0
 185 crates listed
-uRec-0.1.0-portable.zip  43.5 MB  sha256 5EC13306935661C616FE2A5BBDC4EC0BB88CCA32A34FD9B43D920E64710454EB
-uRec-0.1.0-setup.exe  32.1 MB  sha256 B22F7C648CCF9FE864E321824156797CB46897E39BB66E37A9B17A531FF1F80B
+uRec-0.1.0-portable.zip  43.5 MB  sha256 B65F760701C078237281BCFED2A37F8B280003479B03F2B207ECE7E99458A88E
+uRec-0.1.0-setup.exe  32.1 MB  sha256 B8A0066297B349FDB423F119DA8F0D1F0BE783B27EE2BB45FF23356301BF4B01
 installer: uRec-0.1.0-setup.exe 32.1 MB
-I01 PASS Silent per-user install succeeds without admin prompt :: exit=0 in 6.5 s
+I01 PASS Silent per-user install succeeds without admin prompt :: exit=0 in 12.5 s
 I02 PASS Program files installed (uRec.exe, ffmpeg.exe, notices) :: C:\Users\runneradmin\AppData\Local\Programs\uRec
 installed footprint: 116.5 MB
 I03 PASS Start Menu shortcut created :: C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\uRec.lnk
 I04 PASS Optional desktop shortcut created when chosen :: C:\Users\runneradmin\Desktop\uRec.lnk
 I05 PASS Registered in Apps & features with name and icon :: name=uRec icon=C:\Users\runneradmin\AppData\Local\Programs\uRec\uRec.exe
 I06 PASS Does not start with Windows unless chosen :: run entry: 
-I07 PASS Installed app launches and stays running :: pid=5328
+I07 PASS Installed app launches and stays running :: pid=5484
 I08 PASS Idle with Instant Replay off: no capture or encoder process :: ffmpeg processes=0
-idle 10 s window: cpu=0% workingset=58.1 MB private=278.4 MB
-idle 10 s window: cpu=0% workingset=58.1 MB private=278.4 MB
-idle 10 s window: cpu=0% workingset=58 MB private=278.4 MB
-idle average over 30 s (after 15 s settle): cpu=0% workingset=58 MB private=278.4 MB
+idle 10 s window: cpu=0% workingset=57.4 MB private=277.9 MB
+idle 10 s window: cpu=0% workingset=57.4 MB private=277.9 MB
+idle 10 s window: cpu=0% workingset=57.4 MB private=277.9 MB
+idle average over 30 s (after 15 s settle): cpu=0% workingset=57.4 MB private=277.9 MB
 I09 PASS Idle CPU close to zero (< 1% of the machine) :: cpu=0%
-replay on (15 s buffer, x264 on this 2-vCPU VM): uRec cpu=66.86% ws=58.3 MB; ffmpeg cpu=6.41% ws=67.9 MB; buffer=12 files 1.4 MB
+replay on (15 s buffer, x264 on this 2-vCPU VM): uRec cpu=0% ws=57.9 MB; ffmpeg cpu=5.39% ws=59.8 MB; buffer=12 files 1.4 MB
 I10 PASS Instant Replay runs from the installed app with a bounded buffer :: segments=12 (limit 12 for 15 s) size=1.4 MB
 I11 PASS Killing the app also ends its FFmpeg (job object) :: ffmpeg left=0
 I12 PASS Silent uninstall succeeds :: exit=0
@@ -29,13 +34,13 @@ I16 PASS Temporary data (replay buffer, thumbnails, logs) removed ::
 
 Id  Check                                                            Result Detail
 --  -----                                                            ------ ------
-I01 Silent per-user install succeeds without admin prompt            PASS   exit=0 in 6.5 s
+I01 Silent per-user install succeeds without admin prompt            PASS   exit=0 in 12.5 s
 I02 Program files installed (uRec.exe, ffmpeg.exe, notices)          PASS   C:\Users\runneradmin\AppData\Local\Programs\uRec
 I03 Start Menu shortcut created                                      PASS   C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\uRec.lnk
 I04 Optional desktop shortcut created when chosen                    PASS   C:\Users\runneradmin\Desktop\uRec.lnk
 I05 Registered in Apps & features with name and icon                 PASS   name=uRec icon=C:\Users\runneradmin\AppData\Local\Programs\uRec\uRec.exe
 I06 Does not start with Windows unless chosen                        PASS   run entry: 
-I07 Installed app launches and stays running                         PASS   pid=5328
+I07 Installed app launches and stays running                         PASS   pid=5484
 I08 Idle with Instant Replay off: no capture or encoder process      PASS   ffmpeg processes=0
 I09 Idle CPU close to zero (< 1% of the machine)                     PASS   cpu=0%
 I10 Instant Replay runs from the installed app with a bounded buffer PASS   segments=12 (limit 12 for 15 s) size=1.4 MB
