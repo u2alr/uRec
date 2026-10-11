@@ -16,10 +16,12 @@ for ($try = 0; $try -lt 4; $try++) {
     Copy-Item $File (Join-Path $dir "$Name.txt") -Force
     Push-Location $dir
     git add -A
-    git commit --quiet -m "$Name: run $env:GITHUB_RUN_ID ($env:GITHUB_SHA)" 2>$null
+    git commit --quiet -m "${Name}: run $env:GITHUB_RUN_ID ($env:GITHUB_SHA)" 2>$null
     git push --quiet origin ci-results 2>$null
     $ok = $LASTEXITCODE -eq 0
     Pop-Location
-    if ($ok) { "published $Name.txt"; break }
+    if ($ok) { "published ${Name}.txt"; exit 0 }
     Start-Sleep -Seconds (3 + $try * 3)
 }
+Write-Host "could not publish results"
+exit 1
