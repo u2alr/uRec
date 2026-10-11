@@ -1,6 +1,6 @@
----- event 1000 10/11/2026 10:14:45
+---- event 1000 10/11/2026 10:21:10
 Performance counters for the WmiApRpl (WmiApRpl) service were loaded successfully. The Record Data in the data section contains the new index values assigned to this service.
----- event 1001 10/11/2026 10:14:45
+---- event 1001 10/11/2026 10:21:10
 Performance counters for the WmiApRpl (WmiApRpl) service were removed successfully. The Record Data contains the new values of the system Last Counter and Last Help registry entries.
 ---- event 1000 09/26/2026 02:53:15
 Performance counters for the WmiApRpl (WmiApRpl) service were loaded successfully. The Record Data in the data section contains the new index values assigned to this service.
