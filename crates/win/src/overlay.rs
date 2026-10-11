@@ -42,6 +42,11 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wp: WPARAM, lp: LPARAM) 
             let k = scale(&st);
             let mut ps = PAINTSTRUCT::default();
             let hdc = BeginPaint(hwnd, &mut ps);
+            if !st.visible || st.text.is_empty() {
+                // Nothing to show (Windows may paint the window before it's ever shown).
+                let _ = EndPaint(hwnd, &ps);
+                return LRESULT(0);
+            }
             let mut rc = RECT::default();
             let _ = windows::Win32::UI::WindowsAndMessaging::GetClientRect(hwnd, &mut rc);
             let bg = CreateSolidBrush(COLORREF(0x0016_1514));
@@ -86,7 +91,7 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wp: WPARAM, lp: LPARAM) 
             let mut text: Vec<u16> = st.text.encode_utf16().collect();
             let mut tr = RECT { left: x0 + d + (8.0 * k) as i32, ..rc };
             DrawTextW(hdc, &mut text, &mut tr, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
-            if !st.extra.is_empty() {
+            if st.extra.chars().any(|c| !c.is_whitespace()) {
                 SelectObject(hdc, HGDIOBJ(f_small.0));
                 SetTextColor(hdc, COLORREF(0x0041_A4D9));
                 let mut extra: Vec<u16> = st.extra.encode_utf16().collect();
