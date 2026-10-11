@@ -4,6 +4,15 @@ on:
   push:
     tags: ["v*"]
   workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish a GitHub release (creates the tag)"
+        type: boolean
+        default: false
+      tag:
+        description: "Tag for the release, e.g. v0.1.0"
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -46,9 +55,12 @@ jobs:
             dist/*.exe
             dist/*.zip
       - name: GitHub release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/') || inputs.publish
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.tag || github.ref_name }}
+          name: uRec ${{ inputs.tag || github.ref_name }}
+          target_commitish: ${{ github.sha }}
           files: |
             dist/*-setup.exe
             dist/*-portable.zip
