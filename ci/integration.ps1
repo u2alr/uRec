@@ -191,7 +191,12 @@ if ($hasOut -gt 0) {
 
 "=== Window capture"
 $np = Start-Process notepad -PassThru
-Start-Sleep -Seconds 2
+# Wait until Notepad's window really exists (it can take a few seconds on a cold runner).
+for ($i = 0; $i -lt 40; $i++) {
+    if (@(Get-Process notepad -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowHandle -ne 0 }).Count -gt 0) { break }
+    Start-Sleep -Milliseconds 250
+}
+Start-Sleep -Seconds 1
 $out = Join-Path $work "T16.mp4"
 $r = Invoke-Cli @("record", "--out", $out, "--window", "notepad", "--method", "gdi", "--encoder", "software", "--fps", "30", "--seconds", "3")
 $m = Get-MediaInfo $out
