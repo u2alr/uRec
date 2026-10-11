@@ -63,7 +63,8 @@ jobs:
         if: always()
         shell: pwsh
         run: |
-          if (Test-Path target/release/uRec.exe) { ./ci/indicator-test.ps1 -Exe target/release/uRec.exe -Cli target/release/urec-cli.exe -Out screenshots *>&1 | Tee-Object -FilePath indicator.txt }
+          $env:UREC_FFMPEG = (& ./ci/get-ffmpeg.ps1 | Select-Object -Last 1)
+          if (Test-Path target/release/uRec.exe) { powershell.exe -NoProfile -ExecutionPolicy Bypass -File ci/indicator-test.ps1 -Exe target/release/uRec.exe -Cli target/release/urec-cli.exe -Out screenshots *>&1 | Tee-Object -FilePath indicator.txt }
       - name: Publish results
         if: always()
         shell: pwsh

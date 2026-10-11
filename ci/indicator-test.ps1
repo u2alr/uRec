@@ -5,13 +5,10 @@
 param([Parameter(Mandatory)][string]$Exe, [Parameter(Mandatory)][string]$Cli, [string]$Out = "screenshots")
 $ErrorActionPreference = "Continue"
 New-Item -ItemType Directory -Force $Out | Out-Null
-$env:UREC_FFMPEG = (& "$PSScriptRoot\get-ffmpeg.ps1" | Select-Object -Last 1)
+if (-not $env:UREC_FFMPEG) { $env:UREC_FFMPEG = (& "$PSScriptRoot\get-ffmpeg.ps1" | Select-Object -Last 1) }
 Add-Type -AssemblyName System.Drawing, System.Windows.Forms
-# PowerShell 7: System.Drawing types are spread over several assemblies; reference what's loaded.
-$refs = @([System.Drawing.Bitmap].Assembly.Location, [System.Drawing.Point].Assembly.Location,
-    [System.Drawing.Color].Assembly.Location, [System.Collections.Generic.List[int]].Assembly.Location,
-    [System.Runtime.InteropServices.Marshal].Assembly.Location, [System.ComponentModel.Component].Assembly.Location) | Select-Object -Unique
-Add-Type -ReferencedAssemblies $refs -TypeDefinition @"
+# Runs in Windows PowerShell 5.1 (see ci.yml): System.Drawing is a single .NET Framework assembly there.
+Add-Type -ReferencedAssemblies System.Drawing -TypeDefinition @"
 using System; using System.Drawing; using System.Drawing.Imaging; using System.Collections.Generic;
 public static class Cap {
     public static byte[] Grab(int x, int y, int w, int h) {
@@ -100,7 +97,7 @@ function Save-Sheet($frames, $name, [int[]]$at) {
 
 $env:UREC_OVERLAY_CAPTURABLE = "1"
 
-# P01: success — expand, hold, collapse back to the dot.
+# P01: success - expand, hold, collapse back to the dot.
 $r = Film { Start-Process $Cli -ArgumentList "overlay", "--events", "saved@600", "--hold", "4" -PassThru -WindowStyle Hidden } 5200
 $s = Summarize $r.Frames 500
 $evT = 600
@@ -113,7 +110,7 @@ $last = $r.Frames[-1]
 Add-Result "P02" "Back to the plain dot afterwards (nothing left on screen)" ($last.Width -le 4) "residual width=$($last.Width)px"
 $r.Job | Wait-Process -Timeout 10 -ErrorAction SilentlyContinue
 
-# P03: failure — red cross, held ~2.5 s.
+# P03: failure - red cross, held ~2.5 s.
 $r = Film { Start-Process $Cli -ArgumentList "overlay", "--events", "failed@600", "--hold", "4" -PassThru -WindowStyle Hidden } 5600
 $s = Summarize $r.Frames 500
 if ($s) {
@@ -131,7 +128,7 @@ $s = Summarize $r.Frames 2300
 Add-Result "P04" "Saving: dot pulses, no 'Saved' before the result; pill only after it" ($wide -eq 0 -and $pulsing -gt 0 -and $s -and $s.Start -ge 2350) "frames_wide_while_saving=$wide pulse_frames=$pulsing/$($during.Count) pill_start=$($s.Start)ms (result at 2400)"
 $r.Job | Wait-Process -Timeout 10 -ErrorAction SilentlyContinue
 
-# P05: rapid results: success, then failure 500 ms later, then success — failure must not be hidden.
+# P05: rapid results: success, then failure 500 ms later, then success - failure must not be hidden.
 $r = Film { Start-Process $Cli -ArgumentList "overlay", "--events", "saved@400,failed@900,saved@1200", "--hold", "6" -PassThru -WindowStyle Hidden } 7600
 $redAt = @($r.Frames | Where-Object { $_.Acc[1] -gt 20 } | ForEach-Object { $_.T })
 $greenAfter = @($r.Frames | Where-Object { $_.Acc[0] -gt 20 -and $redAt.Count -and $_.T -gt $redAt[-1] } | ForEach-Object { $_.T })
@@ -161,7 +158,7 @@ $p2.Refresh(); $a1 = $p2.TotalProcessorTime.TotalMilliseconds
 Add-Result "P07" "Overlay uses no CPU at rest (timer stops after the animation)" (($c1 - $c0) -lt 60) "after animation: $([math]::Round($c1 - $c0))ms CPU in 5 s; while animating (pulse): $([math]::Round($a1 - $a0))ms CPU in 3 s"
 $p, $p2 | Wait-Process -Timeout 15 -ErrorAction SilentlyContinue
 
-# P08: left corner mirrors (grows to the right) — screenshot only.
+# P08: left corner mirrors (grows to the right) - screenshot only.
 $XL = $scr.Left; $XR = $X; $X = $XL
 $r = Film { Start-Process $Cli -ArgumentList "overlay", "--events", "saved@400", "--hold", "3", "--corner", "top_left" -PassThru -WindowStyle Hidden } 1600
 $s = Summarize $r.Frames 300
