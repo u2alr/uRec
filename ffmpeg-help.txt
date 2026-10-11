@@ -1,4 +1,4 @@
-source: https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip
+source: FFmpeg 9.0.2 essentials build from https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-9.0.2-essentials_build.zip
 sha256: 3256173F3F8BFFD7DF12227C68ADF68025EDB1832273A9530688A7BB1ED8EDEC
 HEAD https://www.gyan.dev/ffmpeg/builds/release-version -> 200 len=5
 HEAD https://www.gyan.dev/ffmpeg/builds/packages/ffmpeg-9.0.2-essentials_build.zip -> 200 len=114768076
