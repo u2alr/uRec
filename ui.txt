@@ -1,22 +1,60 @@
-home alive=False -> screenshots\home.png
-  exit code -1073740771
-library alive=False -> screenshots\library.png
-  exit code -1073740771
-settings:general alive=False -> screenshots\settings-general.png
-  exit code -1073740771
-settings:recording alive=False -> screenshots\settings-recording.png
-  exit code -1073740771
-settings:video alive=False -> screenshots\settings-video.png
-  exit code -1073740771
-settings:audio alive=False -> screenshots\settings-audio.png
-  exit code -1073740771
-settings:instantreplay alive=False -> screenshots\settings-instantreplay.png
-  exit code -1073740771
-settings:hotkeys alive=False -> screenshots\settings-hotkeys.png
-  exit code -1073740771
-settings:storage alive=False -> screenshots\settings-storage.png
-  exit code -1073740771
-settings:appearance alive=False -> screenshots\settings-appearance.png
-  exit code -1073740771
-settings:advanced alive=False -> screenshots\settings-advanced.png
-  exit code -1073740771
+      Adding windows_aarch64_msvc v0.52.6
+      Adding windows_aarch64_msvc v0.53.1
+      Adding windows_i686_gnu v0.52.6
+      Adding windows_i686_gnu v0.53.1
+      Adding windows_i686_gnullvm v0.52.6
+      Adding windows_i686_gnullvm v0.53.1
+      Adding windows_i686_msvc v0.52.6
+      Adding windows_i686_msvc v0.53.1
+      Adding windows_x86_64_gnu v0.52.6
+      Adding windows_x86_64_gnu v0.53.1
+      Adding windows_x86_64_gnullvm v0.52.6
+      Adding windows_x86_64_gnullvm v0.53.1
+      Adding windows_x86_64_msvc v0.52.6
+      Adding windows_x86_64_msvc v0.53.1
+      Adding winit v0.30.13
+      Adding winnow v1.0.4
+      Adding winreg v0.56.0
+      Adding x11rb v0.13.2
+      Adding x11rb-protocol v0.13.2
+      Adding xcursor v0.3.11
+      Adding xkbcommon-dl v0.4.2
+      Adding xkeysym v0.2.1
+      Adding xml-rs v0.8.29
+      Adding zerocopy v0.8.62
+      Adding zerocopy-derive v0.8.62
+      Adding zlib-rs v0.6.8
+      Adding zmij v1.0.23
+      Adding zune-core v0.5.3
+      Adding zune-jpeg v0.5.15
+ Downloading crates ...
+  Downloaded egui_glow v0.36.2
+  Downloaded glutin v0.32.3
+  Downloaded glutin-winit v0.5.0
+  Downloaded glutin_egl_sys v0.7.1
+   Compiling windows-sys v0.52.0
+   Compiling glutin_egl_sys v0.7.1
+   Compiling glutin v0.32.3
+   Compiling glutin-winit v0.5.0
+   Compiling winit v0.30.13
+   Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
+   Compiling egui_glow v0.36.2
+   Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
+   Compiling egui-wgpu v0.36.2
+   Compiling egui-winit v0.36.2
+   Compiling eframe v0.36.2
+   Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
+error[E0050]: method `on_exit` has 1 parameter but the declaration in trait `on_exit` has 2
+   --> crates\app\src\ui\mod.rs:419:16
+    |
+419 |     fn on_exit(&mut self) {
+    |                ^^^^^^^^^ expected 2 parameters, found 1
+    |
+    = note: `on_exit` from trait: `fn(&mut Self, std::option::Option<&eframe::glow::Context>)`
+help: add the missing parameter from the trait
+    |
+419 |     fn on_exit(&mut self, _gl: std::option::Option<&eframe::glow::Context>) {
+    |                         ++++++++++++++++++++++++++++++++++++++++++++++++++
+
+For more information about this error, try `rustc --explain E0050`.
+error: could not compile `urec` (bin "uRec") due to 1 previous error
