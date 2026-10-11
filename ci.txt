@@ -1,4 +1,4 @@
-commit d4f6f1a4cf4fd61e8fa1bfce5a8ac20d95829cf6 run 38128204184
+commit fe93bfaa3f6fe81d7d435f4dff5ec431fbc97ed4 run 38128794004
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -329,172 +329,172 @@ commit d4f6f1a4cf4fd61e8fa1bfce5a8ac20d95829cf6 run 38128204184
       Adding zune-core v0.5.3
       Adding zune-jpeg v0.5.15
  Downloading crates ...
-  Downloaded color v0.3.3
-  Downloaded dpi v0.1.2
-  Downloaded bytemuck v1.25.2
-  Downloaded ahash v0.8.12
-  Downloaded bitflags v2.13.2
-  Downloaded equivalent v1.0.2
-  Downloaded accesskit v0.24.1
-  Downloaded arboard v3.6.1
-  Downloaded ash v0.38.0+1.3.281
-  Downloaded bit-set v0.10.0
-  Downloaded cfg-if v1.0.5
   Downloaded byteorder-lite v0.1.0
-  Downloaded arrayvec v0.7.8
-  Downloaded bit-vec v0.9.1
-  Downloaded cfg_aliases v0.2.2
-  Downloaded crc32fast v1.5.2
-  Downloaded ecolor v0.36.2
-  Downloaded hashbrown v0.16.1
-  Downloaded cc v1.7.0
-  Downloaded cursor-icon v1.2.0
-  Downloaded allocator-api2 v0.2.21
-  Downloaded euclid v0.22.14
-  Downloaded fax v0.2.7
-  Downloaded bytemuck_derive v1.12.1
-  Downloaded codespan-reporting v0.13.1
-  Downloaded find-msvc-tools v0.1.14
-  Downloaded clipboard-win v5.4.1
-  Downloaded crossbeam-utils v0.8.23
   Downloaded adler2 v2.0.1
   Downloaded autocfg v1.5.1
-  Downloaded document-features v0.2.12
-  Downloaded flate2 v1.1.10
-  Downloaded foldhash v0.2.0
-  Downloaded font-types v0.12.6
-  Downloaded gl_generator v0.14.0
-  Downloaded harfrust v0.12.0
-  Downloaded presser v0.3.1
-  Downloaded glifo v0.2.0
-  Downloaded polycool v0.4.0
-  Downloaded fdeflate v0.3.7
+  Downloaded cfg_aliases v0.2.2
   Downloaded glutin_wgl_sys v0.6.1
-  Downloaded gpu-allocator v0.28.0
-  Downloaded guillotiere v0.7.0
-  Downloaded indexmap v2.14.2
-  Downloaded png v0.18.1
-  Downloaded naga-types v30.0.1
-  Downloaded lock_api v0.4.14
-  Downloaded miniz_oxide v0.8.9
-  Downloaded pollster v1.0.1
-  Downloaded linebender_resource_handle v0.1.1
-  Downloaded num-traits v0.2.19
-  Downloaded jobserver v0.1.35
-  Downloaded khronos-egl v6.0.0
-  Downloaded egui-wgpu v0.36.2
+  Downloaded arboard v3.6.1
+  Downloaded crc32fast v1.5.2
+  Downloaded allocator-api2 v0.2.21
+  Downloaded accesskit v0.24.1
+  Downloaded ahash v0.8.12
+  Downloaded bit-vec v0.9.1
+  Downloaded bytemuck v1.25.2
+  Downloaded arrayvec v0.7.8
+  Downloaded cc v1.7.0
+  Downloaded embed-resource v3.0.12
+  Downloaded ash v0.38.0+1.3.281
+  Downloaded bit-set v0.10.0
+  Downloaded bitflags v2.13.2
+  Downloaded bytemuck_derive v1.12.1
+  Downloaded cfg-if v1.0.5
+  Downloaded clipboard-win v5.4.1
+  Downloaded codespan-reporting v0.13.1
+  Downloaded color v0.3.3
+  Downloaded equivalent v1.0.2
+  Downloaded euclid v0.22.14
+  Downloaded epaint v0.36.2
+  Downloaded epaint_default_fonts v0.36.2
   Downloaded error-code v3.4.0
+  Downloaded jobserver v0.1.35
+  Downloaded emath v0.36.2
+  Downloaded fax v0.2.7
+  Downloaded find-msvc-tools v0.1.14
+  Downloaded lock_api v0.4.14
+  Downloaded num-traits v0.2.19
+  Downloaded naga-types v30.0.1
+  Downloaded cursor-icon v1.2.0
+  Downloaded guillotiere v0.7.0
   Downloaded nohash-hasher v0.2.0
+  Downloaded dpi v0.1.2
+  Downloaded linebender_resource_handle v0.1.1
+  Downloaded pollster v1.0.1
+  Downloaded document-features v0.2.12
+  Downloaded glifo v0.2.0
   Downloaded itoa v1.0.18
-  Downloaded libloading v0.8.9
-  Downloaded ordered-float v5.5.0
+  Downloaded parking_lot_core v0.9.12
   Downloaded peniko v0.6.1
   Downloaded pin-project-lite v0.2.17
   Downloaded pkg-config v0.3.34
-  Downloaded profiling v1.0.18
-  Downloaded quick-error v2.0.1
+  Downloaded presser v0.3.1
+  Downloaded ecolor v0.36.2
+  Downloaded egui-wgpu v0.36.2
   Downloaded either v1.19.0
-  Downloaded embed-resource v3.0.12
-  Downloaded once_cell v1.21.4
-  Downloaded parking_lot_core v0.9.12
-  Downloaded emath v0.36.2
+  Downloaded fdeflate v0.3.7
+  Downloaded foldhash v0.2.0
+  Downloaded font-types v0.12.6
+  Downloaded gl_generator v0.14.0
   Downloaded half v2.7.1
-  Downloaded miniz_oxide v0.9.1
-  Downloaded parking_lot v0.12.5
-  Downloaded egui-winit v0.36.2
-  Downloaded getrandom v0.4.3
-  Downloaded libm v0.2.16
+  Downloaded khronos-egl v6.0.0
   Downloaded litrs v1.0.0
   Downloaded log v0.4.34
-  Downloaded memchr v2.8.3
-  Downloaded crossbeam-channel v0.5.17
+  Downloaded once_cell v1.21.4
+  Downloaded ordered-float v5.5.0
+  Downloaded parking_lot v0.12.5
+  Downloaded polycool v0.4.0
+  Downloaded crossbeam-utils v0.8.23
+  Downloaded getrandom v0.4.3
+  Downloaded gpu-allocator v0.28.0
   Downloaded keyboard-types v0.8.3
+  Downloaded libloading v0.8.9
+  Downloaded miniz_oxide v0.8.9
+  Downloaded egui-winit v0.36.2
+  Downloaded miniz_oxide v0.9.1
+  Downloaded profiling v1.0.18
+  Downloaded quick-error v2.0.1
+  Downloaded crossbeam-channel v0.5.17
+  Downloaded flate2 v1.1.10
+  Downloaded hashbrown v0.16.1
+  Downloaded indexmap v2.14.2
+  Downloaded memchr v2.8.3
+  Downloaded glow v0.17.0
   Downloaded itertools v0.15.0
   Downloaded eframe v0.36.2
-  Downloaded epaint v0.36.2
-  Downloaded glow v0.17.0
+  Downloaded fearless_simd v0.4.1
   Downloaded muda v0.21.2
+  Downloaded png v0.18.1
   Downloaded hashbrown v0.17.1
+  Downloaded libm v0.2.16
   Downloaded kurbo v0.13.1
   Downloaded moxcms v0.8.1
-  Downloaded fearless_simd v0.4.1
   Downloaded image v0.25.10
+  Downloaded harfrust v0.12.0
   Downloaded egui v0.36.2
+  Downloaded libc v0.2.190
   Downloaded khronos_api v3.1.0
-  Downloaded epaint_default_fonts v0.36.2
   Downloaded naga v30.0.1
   Downloaded pxfm v0.1.30
-  Downloaded libc v0.2.190
   Downloaded range-alloc v0.1.5
-  Downloaded raw-window-handle v0.6.2
-  Downloaded renderdoc-sys v1.1.0
-  Downloaded rustc-hash v1.1.0
-  Downloaded rustc_version v0.4.1
-  Downloaded self_cell v1.3.0
-  Downloaded semver v1.0.28
-  Downloaded simd-adler32 v0.3.10
-  Downloaded serde_derive v1.0.229
-  Downloaded scopeguard v1.2.0
-  Downloaded serde v1.0.229
-  Downloaded serde_spanned v1.1.2
-  Downloaded shlex v2.0.1
-  Downloaded smol_str v0.2.2
-  Downloaded static_assertions v1.1.0
   Downloaded rustc-hash v2.1.3
-  Downloaded serde_core v1.0.229
-  Downloaded spirv v0.4.0+sdk-1.4.341.0
-  Downloaded smallvec v1.16.3
   Downloaded serde_json v1.0.152
+  Downloaded self_cell v1.3.0
+  Downloaded serde_core v1.0.229
+  Downloaded rustc_version v0.4.1
+  Downloaded renderdoc-sys v1.1.0
+  Downloaded smol_str v0.2.2
+  Downloaded serde_derive v1.0.229
+  Downloaded smallvec v1.16.3
+  Downloaded raw-window-handle v0.6.2
+  Downloaded semver v1.0.28
+  Downloaded rustc-hash v1.1.0
+  Downloaded serde_spanned v1.1.2
+  Downloaded spirv v0.4.0+sdk-1.4.341.0
+  Downloaded static_assertions v1.1.0
+  Downloaded serde v1.0.229
+  Downloaded shlex v2.0.1
+  Downloaded simd-adler32 v0.3.10
   Downloaded skrifa v0.44.0
+  Downloaded scopeguard v1.2.0
   Downloaded read-fonts v0.41.0
   Downloaded syn v3.0.7
+  Downloaded toml_datetime v1.1.2+spec-1.1.0
+  Downloaded toml v1.1.8+spec-1.1.0
+  Downloaded toml_parser v1.1.5+spec-1.1.0
+  Downloaded type-map v0.5.1
+  Downloaded unicode-general-category v1.1.0
   Downloaded termcolor v1.4.1
-  Downloaded toml_writer v1.1.3+spec-1.1.0
   Downloaded thiserror v2.0.21
   Downloaded thiserror-impl v2.0.21
+  Downloaded toml_writer v1.1.3+spec-1.1.0
   Downloaded tiff v0.11.3
-  Downloaded toml v1.1.8+spec-1.1.0
-  Downloaded type-map v0.5.1
-  Downloaded toml_parser v1.1.5+spec-1.1.0
   Downloaded tray-icon v0.26.1
-  Downloaded unicode-general-category v1.1.0
-  Downloaded toml_datetime v1.1.2+spec-1.1.0
-  Downloaded tracing-core v0.1.36
   Downloaded tracing v0.1.44
+  Downloaded tracing-core v0.1.36
   Downloaded unicode-segmentation v1.13.3
-  Downloaded unicode-width v0.2.2
-  Downloaded vswhom v0.1.0
   Downloaded version_check v0.9.5
-  Downloaded web-time v1.1.0
-  Downloaded wgpu-core-deps-windows-linux-android v30.0.1
-  Downloaded wgpu-types v30.0.1
-  Downloaded uuid v1.28.0
+  Downloaded vswhom v0.1.0
   Downloaded vswhom-sys v0.1.3
-  Downloaded winapi-util v0.1.11
+  Downloaded uuid v1.28.0
   Downloaded wgpu-naga-bridge v30.0.1
-  Downloaded vello_cpu v0.1.0
-  Downloaded weezl v0.1.12
+  Downloaded winapi-util v0.1.11
+  Downloaded wgpu-core-deps-windows-linux-android v30.0.1
+  Downloaded web-time v1.1.0
   Downloaded vello_common v0.1.0
+  Downloaded weezl v0.1.12
+  Downloaded vello_cpu v0.1.0
+  Downloaded unicode-width v0.2.2
+  Downloaded wgpu-types v30.0.1
   Downloaded wgpu v30.0.1
   Downloaded wgpu-core v30.0.1
   Downloaded wgpu-hal v30.0.1
   Downloaded windows-targets v0.52.6
   Downloaded windows-targets v0.53.5
-  Downloaded windows-sys v0.52.0
   Downloaded winreg v0.56.0
-  Downloaded winnow v1.0.4
-  Downloaded xml-rs v0.8.29
   Downloaded zmij v1.0.23
   Downloaded zune-core v0.5.3
-  Downloaded zune-jpeg v0.5.15
-  Downloaded windows_x86_64_msvc v0.52.6
+  Downloaded xml-rs v0.8.29
+  Downloaded winnow v1.0.4
   Downloaded zerocopy-derive v0.8.62
+  Downloaded zune-jpeg v0.5.15
   Downloaded zlib-rs v0.6.8
   Downloaded zerocopy v0.8.62
   Downloaded winit v0.30.13
-  Downloaded windows_x86_64_msvc v0.53.1
   Downloaded windows-sys v0.60.2
+  Downloaded windows_x86_64_msvc v0.52.6
+  Downloaded windows_x86_64_msvc v0.53.1
   Downloaded windows-sys v0.61.2
+  Downloaded windows-sys v0.52.0
    Compiling proc-macro2 v1.0.107
    Compiling quote v1.0.47
    Compiling libm v0.2.16
@@ -506,8 +506,8 @@ commit d4f6f1a4cf4fd61e8fa1bfce5a8ac20d95829cf6 run 38128204184
    Compiling libc v0.2.190
    Compiling parking_lot_core v0.9.12
     Checking bitflags v2.13.2
-    Checking cfg-if v1.0.5
    Compiling khronos_api v3.1.0
+    Checking cfg-if v1.0.5
    Compiling syn v3.0.7
    Compiling syn v2.0.119
    Compiling naga v30.0.1
@@ -515,52 +515,52 @@ commit d4f6f1a4cf4fd61e8fa1bfce5a8ac20d95829cf6 run 38128204184
     Checking foldhash v0.2.0
    Compiling log v0.4.34
    Compiling xml-rs v0.8.29
-    Checking smallvec v1.16.3
    Compiling crc32fast v1.5.2
+    Checking smallvec v1.16.3
    Compiling gl_generator v0.14.0
-    Checking arrayvec v0.7.8
-   Compiling glutin_wgl_sys v0.6.1
-   Compiling windows_x86_64_msvc v0.52.6
    Compiling bytemuck_derive v1.12.1
    Compiling thiserror-impl v2.0.21
+   Compiling glutin_wgl_sys v0.6.1
     Checking once_cell v1.21.4
+   Compiling windows_x86_64_msvc v0.52.6
    Compiling khronos-egl v6.0.0
    Compiling windows-interface v0.59.3
    Compiling windows-implement v0.60.2
    Compiling zerocopy-derive v0.8.62
     Checking bytemuck v1.25.2
+    Checking arrayvec v0.7.8
     Checking hashbrown v0.17.1
    Compiling version_check v0.9.5
    Compiling ahash v0.8.12
     Checking windows-core v0.62.2
    Compiling wgpu-hal v30.0.1
-   Compiling unicode-general-category v1.1.0
    Compiling windows_x86_64_msvc v0.53.1
+   Compiling unicode-general-category v1.1.0
     Checking equivalent v1.0.2
     Checking windows-future v0.3.2
-    Checking windows-numerics v0.3.1
     Checking windows-collections v0.3.2
+    Checking windows-numerics v0.3.1
     Checking scopeguard v1.2.0
     Checking lock_api v0.4.14
     Checking windows v0.62.2
     Checking indexmap v2.14.2
-   Compiling wgpu-core v30.0.1
    Compiling winit v0.30.13
+   Compiling wgpu-core v30.0.1
     Checking raw-window-handle v0.6.2
-   Compiling crossbeam-utils v0.8.23
     Checking rustc-hash v1.1.0
+   Compiling crossbeam-utils v0.8.23
    Compiling litrs v1.0.0
     Checking naga-types v30.0.1
     Checking parking_lot v0.12.5
     Checking polycool v0.4.0
    Compiling document-features v0.2.12
     Checking libloading v0.8.9
-    Checking profiling v1.0.18
-   Compiling serde_core v1.0.229
     Checking unicode-width v0.2.2
     Checking bit-vec v0.9.1
     Checking simd-adler32 v0.3.10
    Compiling find-msvc-tools v0.1.14
+   Compiling serde_core v1.0.229
+    Checking profiling v1.0.18
    Compiling shlex v2.0.1
     Checking bit-set v0.10.0
    Compiling cc v1.7.0
@@ -572,75 +572,75 @@ commit d4f6f1a4cf4fd61e8fa1bfce5a8ac20d95829cf6 run 38128204184
     Checking euclid v0.22.14
     Checking spirv v0.4.0+sdk-1.4.341.0
    Compiling wgpu v30.0.1
+    Checking static_assertions v1.1.0
+    Checking linebender_resource_handle v0.1.1
+    Checking unicode-ident v1.0.26
     Checking allocator-api2 v0.2.21
     Checking adler2 v2.0.1
-    Checking unicode-ident v1.0.26
-    Checking linebender_resource_handle v0.1.1
-    Checking static_assertions v1.1.0
-    Checking hashbrown v0.16.1
     Checking wgpu-types v30.0.1
+    Checking hashbrown v0.16.1
     Checking peniko v0.6.1
     Checking guillotiere v0.7.0
     Checking read-fonts v0.41.0
    Compiling vswhom-sys v0.1.3
-    Checking fearless_simd v0.4.1
     Checking presser v0.3.1
+    Checking fearless_simd v0.4.1
     Checking vello_common v0.1.0
     Checking wgpu-naga-bridge v30.0.1
     Checking miniz_oxide v0.9.1
     Checking emath v0.36.2
-    Checking gpu-allocator v0.28.0
     Checking ordered-float v5.5.0
-   Compiling muda v0.21.2
-    Checking dpi v0.1.2
-   Compiling winnow v1.0.4
     Checking range-alloc v0.1.5
-    Checking glow v0.17.0
-    Checking unicode-segmentation v1.13.3
+   Compiling muda v0.21.2
     Checking renderdoc-sys v1.1.0
+    Checking glow v0.17.0
    Compiling windows-link v0.2.1
+    Checking unicode-segmentation v1.13.3
+   Compiling winnow v1.0.4
+    Checking gpu-allocator v0.28.0
+    Checking dpi v0.1.2
    Compiling zmij v1.0.23
-   Compiling windows-sys v0.61.2
    Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling windows-sys v0.61.2
     Checking ecolor v0.36.2
     Checking windows-targets v0.52.6
     Checking flate2 v1.1.10
     Checking vello_cpu v0.1.0
-    Checking skrifa v0.44.0
-    Checking harfrust v0.12.0
    Compiling toml_datetime v1.1.2+spec-1.1.0
    Compiling serde_spanned v1.1.2
+    Checking harfrust v0.12.0
+    Checking skrifa v0.44.0
     Checking miniz_oxide v0.8.9
     Checking fdeflate v0.3.7
-    Checking uuid v1.28.0
-    Checking self_cell v1.3.0
-    Checking nohash-hasher v0.2.0
-    Checking tracing-core v0.1.36
     Checking either v1.19.0
     Checking epaint_default_fonts v0.36.2
-   Compiling toml_writer v1.1.3+spec-1.1.0
+    Checking self_cell v1.3.0
+    Checking uuid v1.28.0
     Checking pin-project-lite v0.2.17
-    Checking pxfm v0.1.30
    Compiling semver v1.0.28
-    Checking tracing v0.1.44
-    Checking itertools v0.15.0
-    Checking accesskit v0.24.1
-   Compiling rustc_version v0.4.1
+    Checking pxfm v0.1.30
+    Checking nohash-hasher v0.2.0
+    Checking tracing-core v0.1.36
+   Compiling toml_writer v1.1.3+spec-1.1.0
     Checking epaint v0.36.2
+    Checking tracing v0.1.44
    Compiling toml v1.1.8+spec-1.1.0
+    Checking accesskit v0.24.1
     Checking moxcms v0.8.1
+   Compiling rustc_version v0.4.1
+    Checking itertools v0.15.0
    Compiling winreg v0.56.0
     Checking windows-targets v0.53.5
     Checking png v0.18.1
     Checking wgpu-core-deps-windows-linux-android v30.0.1
     Checking windows-sys v0.52.0
    Compiling vswhom v0.1.0
-   Compiling tray-icon v0.26.1
-   Compiling serde_json v1.0.152
-    Checking error-code v3.4.0
-    Checking byteorder-lite v0.1.0
-    Checking cursor-icon v1.2.0
     Checking smol_str v0.2.2
+   Compiling serde_json v1.0.152
+    Checking cursor-icon v1.2.0
+    Checking byteorder-lite v0.1.0
+   Compiling tray-icon v0.26.1
+    Checking error-code v3.4.0
    Compiling serde v1.0.229
     Checking image v0.25.10
     Checking clipboard-win v5.4.1
@@ -659,150 +659,27 @@ commit d4f6f1a4cf4fd61e8fa1bfce5a8ac20d95829cf6 run 38128204184
     Checking egui-wgpu v0.36.2
     Checking urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
     Checking egui-winit v0.36.2
-    Checking itoa v1.0.18
-    Checking memchr v2.8.3
     Checking pollster v1.0.1
+    Checking memchr v2.8.3
+    Checking itoa v1.0.18
     Checking eframe v0.36.2
     Checking urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-error: variants `StartRecording` and `StopRecording` are never constructed
-  --> crates\app\src\controller.rs:30:5
-   |
-28 | pub enum Command {
-   |          ------- variants in this enum
-29 |     ToggleRecording,
-30 |     StartRecording,
-   |     ^^^^^^^^^^^^^^
-31 |     StopRecording,
-   |     ^^^^^^^^^^^^^
-   |
-   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
-
 error: field `app` is never read
-  --> crates\app\src\controller.rs:74:9
+  --> crates\app\src\controller.rs:72:9
    |
-71 | pub struct Recording {
+69 | pub struct Recording {
    |            --------- field in this struct
 ...
-74 |     pub app: String,
+72 |     pub app: String,
    |         ^^^
    |
    = note: `Recording` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-error: very complex type used. Consider factoring parts into `type` definitions
-   --> crates\app\src\controller.rs:127:14
-    |
-127 |     repaint: Arc<Mutex<Option<Box<dyn Fn() + Send + Sync>>>>,
-    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#type_complexity
-    = note: `-D clippy::type-complexity` implied by `-D warnings`
-    = help: to override `-D warnings` add `#[allow(clippy::type_complexity)]`
-
-error: manual implementation of `.is_multiple_of()`
-    --> crates\app\src\controller.rs:1113:15
-     |
-1113 |     } else if s % 60 == 0 {
-     |               ^^^^^^^^^^^ help: replace with: `s.is_multiple_of(60)`
-     |
-     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#manual_is_multiple_of
-     = note: `-D clippy::manual-is-multiple-of` implied by `-D warnings`
-     = help: to override `-D warnings` add `#[allow(clippy::manual_is_multiple_of)]`
-
-error: consider using `sort_by_key`
-   --> crates\app\src\library.rs:208:5
-    |
-208 |     out.sort_by(|a, b| b.modified.cmp(&a.modified));
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_sort_by
-    = note: `-D clippy::unnecessary-sort-by` implied by `-D warnings`
-    = help: to override `-D warnings` add `#[allow(clippy::unnecessary_sort_by)]`
-help: try
-    |
-208 -     out.sort_by(|a, b| b.modified.cmp(&a.modified));
-208 +     out.sort_by_key(|a| std::cmp::Reverse(a.modified));
-    |
-
-error: consider using `sort_by_key`
-   --> crates\app\src\ui\library_page.rs:111:25
-    |
-111 |         Sort::Newest => items.sort_by(|a, b| b.modified.cmp(&a.modified)),
-    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_sort_by
-help: try
-    |
-111 -         Sort::Newest => items.sort_by(|a, b| b.modified.cmp(&a.modified)),
-111 +         Sort::Newest => items.sort_by_key(|a| std::cmp::Reverse(a.modified)),
-    |
-
-error: consider using `sort_by_key`
-   --> crates\app\src\ui\library_page.rs:112:25
-    |
-112 |         Sort::Oldest => items.sort_by(|a, b| a.modified.cmp(&b.modified)),
-    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_sort_by
-help: try
-    |
-112 -         Sort::Oldest => items.sort_by(|a, b| a.modified.cmp(&b.modified)),
-112 +         Sort::Oldest => items.sort_by_key(|a| a.modified),
-    |
-
-error: consider using `sort_by_key`
-   --> crates\app\src\ui\library_page.rs:113:26
-    |
-113 |         Sort::Largest => items.sort_by(|a, b| b.size.cmp(&a.size)),
-    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_sort_by
-help: try
-    |
-113 -         Sort::Largest => items.sort_by(|a, b| b.size.cmp(&a.size)),
-113 +         Sort::Largest => items.sort_by_key(|a| std::cmp::Reverse(a.size)),
-    |
-
-error: the loop variable `i` is used to index `ACTIONS`
-   --> crates\app\src\ui\settings_page.rs:712:14
-    |
-712 |     for i in 0..ACTIONS.len() {
-    |              ^^^^^^^^^^^^^^^^
-    |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#needless_range_loop
-    = note: `-D clippy::needless-range-loop` implied by `-D warnings`
-    = help: to override `-D warnings` add `#[allow(clippy::needless_range_loop)]`
-help: consider using an iterator and enumerate()
-    |
-712 -     for i in 0..ACTIONS.len() {
-712 +     for (i, <item>) in ACTIONS.iter().enumerate() {
-    |
-
-error: this `if` has identical blocks
-   --> crates\app\src\ui\mod.rs:404:93
-    |
-404 |           if st.recording.is_some() || st.finishing || st.starting || st.probing || !st.ready {
-    |  _____________________________________________________________________________________________^
-405 | |             ctx.request_repaint_after(every);
-406 | |         } else if st.replay == ReplayState::On && self.page == Page::Home {
-    | |_________^
-    |
-note: same as this
-   --> crates\app\src\ui\mod.rs:406:75
-    |
-406 |           } else if st.replay == ReplayState::On && self.page == Page::Home {
-    |  ___________________________________________________________________________^
-407 | |             ctx.request_repaint_after(every);
-408 | |         }
-    | |_________^
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#if_same_then_else
-    = note: `-D clippy::if-same-then-else` implied by `-D warnings`
-    = help: to override `-D warnings` add `#[allow(clippy::if_same_then_else)]`
-
-error: could not compile `urec` (bin "uRec") due to 10 previous errors
+error: could not compile `urec` (bin "uRec") due to 1 previous error
 warning: build failed, waiting for other jobs to finish...
-error: could not compile `urec` (bin "uRec" test) due to 10 previous errors
+error: could not compile `urec` (bin "uRec" test) due to 1 previous error
 ## clippy FAILED
 ## test
    Compiling bitflags v2.13.2
@@ -811,10 +688,10 @@ error: could not compile `urec` (bin "uRec" test) due to 10 previous errors
    Compiling cfg-if v1.0.5
    Compiling thiserror v2.0.21
    Compiling foldhash v0.2.0
-   Compiling smallvec v1.16.3
-   Compiling arrayvec v0.7.8
-   Compiling log v0.4.34
    Compiling once_cell v1.21.4
+   Compiling arrayvec v0.7.8
+   Compiling smallvec v1.16.3
+   Compiling log v0.4.34
    Compiling windows-core v0.62.2
    Compiling hashbrown v0.17.1
    Compiling zerocopy v0.8.62
@@ -823,8 +700,8 @@ error: could not compile `urec` (bin "uRec" test) due to 10 previous errors
    Compiling windows-future v0.3.2
    Compiling windows-numerics v0.3.1
    Compiling windows-collections v0.3.2
-   Compiling scopeguard v1.2.0
    Compiling windows v0.62.2
+   Compiling scopeguard v1.2.0
    Compiling lock_api v0.4.14
    Compiling parking_lot_core v0.9.12
    Compiling indexmap v2.14.2
@@ -834,10 +711,10 @@ error: could not compile `urec` (bin "uRec" test) due to 10 previous errors
    Compiling naga-types v30.0.1
    Compiling polycool v0.4.0
    Compiling libloading v0.8.9
-   Compiling bit-vec v0.9.1
+   Compiling profiling v1.0.18
    Compiling unicode-width v0.2.2
    Compiling simd-adler32 v0.3.10
-   Compiling profiling v1.0.18
+   Compiling bit-vec v0.9.1
    Compiling codespan-reporting v0.13.1
    Compiling bit-set v0.10.0
    Compiling kurbo v0.13.1
@@ -846,15 +723,15 @@ error: could not compile `urec` (bin "uRec" test) due to 10 previous errors
    Compiling color v0.3.3
    Compiling font-types v0.12.6
    Compiling spirv v0.4.0+sdk-1.4.341.0
+   Compiling linebender_resource_handle v0.1.1
+   Compiling adler2 v2.0.1
    Compiling unicode-ident v1.0.26
    Compiling static_assertions v1.1.0
-   Compiling adler2 v2.0.1
    Compiling allocator-api2 v0.2.21
-   Compiling linebender_resource_handle v0.1.1
-   Compiling peniko v0.6.1
-   Compiling hashbrown v0.16.1
    Compiling wgpu-types v30.0.1
+   Compiling hashbrown v0.16.1
    Compiling naga v30.0.1
+   Compiling peniko v0.6.1
    Compiling read-fonts v0.41.0
    Compiling guillotiere v0.7.0
    Compiling libc v0.2.190
@@ -872,13 +749,13 @@ error: could not compile `urec` (bin "uRec" test) due to 10 previous errors
    Compiling ordered-float v5.5.0
    Compiling emath v0.36.2
    Compiling glow v0.17.0
-   Compiling unicode-segmentation v1.13.3
    Compiling range-alloc v0.1.5
-   Compiling renderdoc-sys v1.1.0
+   Compiling unicode-segmentation v1.13.3
    Compiling dpi v0.1.2
+   Compiling renderdoc-sys v1.1.0
    Compiling ecolor v0.36.2
-   Compiling flate2 v1.1.10
    Compiling wgpu-hal v30.0.1
+   Compiling flate2 v1.1.10
    Compiling windows-targets v0.52.6
    Compiling ahash v0.8.12
    Compiling vello_cpu v0.1.0
@@ -888,38 +765,38 @@ error: could not compile `urec` (bin "uRec" test) due to 10 previous errors
    Compiling skrifa v0.44.0
    Compiling miniz_oxide v0.8.9
    Compiling fdeflate v0.3.7
-   Compiling pxfm v0.1.30
-   Compiling nohash-hasher v0.2.0
-   Compiling self_cell v1.3.0
-   Compiling either v1.19.0
-   Compiling pin-project-lite v0.2.17
    Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
+   Compiling either v1.19.0
    Compiling uuid v1.28.0
+   Compiling self_cell v1.3.0
+   Compiling pin-project-lite v0.2.17
    Compiling tracing-core v0.1.36
    Compiling epaint_default_fonts v0.36.2
+   Compiling nohash-hasher v0.2.0
+   Compiling pxfm v0.1.30
    Compiling epaint v0.36.2
    Compiling tracing v0.1.44
+   Compiling moxcms v0.8.1
    Compiling accesskit v0.24.1
    Compiling itertools v0.15.0
-   Compiling moxcms v0.8.1
    Compiling png v0.18.1
    Compiling wgpu-core-deps-windows-linux-android v30.0.1
    Compiling windows-targets v0.53.5
    Compiling windows-sys v0.52.0
-   Compiling byteorder-lite v0.1.0
    Compiling cursor-icon v1.2.0
-   Compiling error-code v3.4.0
    Compiling smol_str v0.2.2
-   Compiling clipboard-win v5.4.1
-   Compiling winit v0.30.13
+   Compiling error-code v3.4.0
+   Compiling byteorder-lite v0.1.0
    Compiling image v0.25.10
+   Compiling winit v0.30.13
+   Compiling clipboard-win v5.4.1
    Compiling windows-sys v0.60.2
    Compiling wgpu-core v30.0.1
    Compiling egui v0.36.2
    Compiling crossbeam-utils v0.8.23
    Compiling windows-sys v0.61.2
-   Compiling web-time v1.1.0
    Compiling rustc-hash v2.1.3
+   Compiling web-time v1.1.0
    Compiling type-map v0.5.1
    Compiling crossbeam-channel v0.5.17
    Compiling wgpu v30.0.1
@@ -932,41 +809,28 @@ error: could not compile `urec` (bin "uRec" test) due to 10 previous errors
    Compiling egui-wgpu v0.36.2
    Compiling egui-winit v0.36.2
    Compiling zmij v1.0.23
-   Compiling memchr v2.8.3
-   Compiling itoa v1.0.18
    Compiling pollster v1.0.1
-   Compiling eframe v0.36.2
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
    Compiling serde_json v1.0.152
+   Compiling eframe v0.36.2
    Compiling serde v1.0.229
    Compiling tray-icon v0.26.1
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-error: variants `StartRecording` and `StopRecording` are never constructed
-  --> crates\app\src\controller.rs:30:5
-   |
-28 | pub enum Command {
-   |          ------- variants in this enum
-29 |     ToggleRecording,
-30 |     StartRecording,
-   |     ^^^^^^^^^^^^^^
-31 |     StopRecording,
-   |     ^^^^^^^^^^^^^
-   |
-   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
-
 error: field `app` is never read
-  --> crates\app\src\controller.rs:74:9
+  --> crates\app\src\controller.rs:72:9
    |
-71 | pub struct Recording {
+69 | pub struct Recording {
    |            --------- field in this struct
 ...
-74 |     pub app: String,
+72 |     pub app: String,
    |         ^^^
    |
    = note: `Recording` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-error: could not compile `urec` (bin "uRec" test) due to 2 previous errors
+error: could not compile `urec` (bin "uRec" test) due to 1 previous error
 warning: build failed, waiting for other jobs to finish...
 ## test FAILED
 ## build
@@ -976,10 +840,10 @@ warning: build failed, waiting for other jobs to finish...
    Compiling bytemuck v1.25.2
    Compiling thiserror v2.0.21
    Compiling foldhash v0.2.0
-   Compiling log v0.4.34
-   Compiling arrayvec v0.7.8
    Compiling smallvec v1.16.3
+   Compiling log v0.4.34
    Compiling once_cell v1.21.4
+   Compiling arrayvec v0.7.8
    Compiling hashbrown v0.17.1
    Compiling windows-core v0.62.2
    Compiling zerocopy v0.8.62
@@ -990,36 +854,36 @@ warning: build failed, waiting for other jobs to finish...
    Compiling windows-future v0.3.2
    Compiling parking_lot_core v0.9.12
    Compiling indexmap v2.14.2
-   Compiling windows-numerics v0.3.1
    Compiling windows-collections v0.3.2
+   Compiling windows-numerics v0.3.1
    Compiling rustc-hash v1.1.0
    Compiling raw-window-handle v0.6.2
-   Compiling parking_lot v0.12.5
    Compiling windows v0.62.2
    Compiling naga-types v30.0.1
+   Compiling parking_lot v0.12.5
    Compiling polycool v0.4.0
    Compiling libloading v0.8.9
-   Compiling simd-adler32 v0.3.10
    Compiling unicode-width v0.2.2
-   Compiling bit-vec v0.9.1
    Compiling profiling v1.0.18
-   Compiling codespan-reporting v0.13.1
+   Compiling bit-vec v0.9.1
+   Compiling simd-adler32 v0.3.10
    Compiling bit-set v0.10.0
+   Compiling codespan-reporting v0.13.1
    Compiling kurbo v0.13.1
    Compiling euclid v0.22.14
    Compiling half v2.7.1
-   Compiling color v0.3.3
    Compiling font-types v0.12.6
+   Compiling color v0.3.3
    Compiling spirv v0.4.0+sdk-1.4.341.0
-   Compiling static_assertions v1.1.0
+   Compiling adler2 v2.0.1
    Compiling linebender_resource_handle v0.1.1
    Compiling unicode-ident v1.0.26
-   Compiling adler2 v2.0.1
+   Compiling static_assertions v1.1.0
    Compiling allocator-api2 v0.2.21
-   Compiling peniko v0.6.1
-   Compiling hashbrown v0.16.1
    Compiling wgpu-types v30.0.1
+   Compiling hashbrown v0.16.1
    Compiling naga v30.0.1
+   Compiling peniko v0.6.1
    Compiling read-fonts v0.41.0
    Compiling libc v0.2.190
    Compiling guillotiere v0.7.0
@@ -1035,45 +899,45 @@ warning: build failed, waiting for other jobs to finish...
    Compiling miniz_oxide v0.9.1
    Compiling ordered-float v5.5.0
    Compiling emath v0.36.2
-   Compiling dpi v0.1.2
+   Compiling gpu-allocator v0.28.0
    Compiling range-alloc v0.1.5
    Compiling glow v0.17.0
-   Compiling gpu-allocator v0.28.0
    Compiling renderdoc-sys v1.1.0
+   Compiling dpi v0.1.2
    Compiling unicode-segmentation v1.13.3
    Compiling wgpu-hal v30.0.1
    Compiling ecolor v0.36.2
    Compiling flate2 v1.1.10
    Compiling windows-targets v0.52.6
    Compiling ahash v0.8.12
-   Compiling vello_cpu v0.1.0
-   Compiling unicode-general-category v1.1.0
    Compiling windows_x86_64_msvc v0.53.1
+   Compiling unicode-general-category v1.1.0
+   Compiling vello_cpu v0.1.0
    Compiling harfrust v0.12.0
    Compiling skrifa v0.44.0
    Compiling miniz_oxide v0.8.9
    Compiling fdeflate v0.3.7
    Compiling uuid v1.28.0
-   Compiling tracing-core v0.1.36
-   Compiling pin-project-lite v0.2.17
-   Compiling either v1.19.0
-   Compiling self_cell v1.3.0
-   Compiling pxfm v0.1.30
    Compiling epaint_default_fonts v0.36.2
    Compiling nohash-hasher v0.2.0
+   Compiling either v1.19.0
+   Compiling pxfm v0.1.30
+   Compiling pin-project-lite v0.2.17
+   Compiling tracing-core v0.1.36
+   Compiling self_cell v1.3.0
    Compiling epaint v0.36.2
+   Compiling tracing v0.1.44
    Compiling moxcms v0.8.1
    Compiling itertools v0.15.0
-   Compiling tracing v0.1.44
    Compiling accesskit v0.24.1
    Compiling png v0.18.1
    Compiling wgpu-core-deps-windows-linux-android v30.0.1
    Compiling windows-targets v0.53.5
    Compiling windows-sys v0.52.0
-   Compiling smol_str v0.2.2
    Compiling byteorder-lite v0.1.0
    Compiling error-code v3.4.0
    Compiling cursor-icon v1.2.0
+   Compiling smol_str v0.2.2
    Compiling clipboard-win v5.4.1
    Compiling image v0.25.10
    Compiling winit v0.30.13
@@ -1082,8 +946,8 @@ warning: build failed, waiting for other jobs to finish...
    Compiling egui v0.36.2
    Compiling crossbeam-utils v0.8.23
    Compiling windows-sys v0.61.2
-   Compiling web-time v1.1.0
    Compiling rustc-hash v2.1.3
+   Compiling web-time v1.1.0
    Compiling type-map v0.5.1
    Compiling crossbeam-channel v0.5.17
    Compiling wgpu v30.0.1
@@ -1096,40 +960,27 @@ warning: build failed, waiting for other jobs to finish...
    Compiling egui-wgpu v0.36.2
    Compiling egui-winit v0.36.2
    Compiling zmij v1.0.23
+   Compiling pollster v1.0.1
    Compiling memchr v2.8.3
    Compiling itoa v1.0.18
-   Compiling pollster v1.0.1
    Compiling eframe v0.36.2
    Compiling serde_json v1.0.152
    Compiling serde v1.0.229
    Compiling tray-icon v0.26.1
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
-error: variants `StartRecording` and `StopRecording` are never constructed
-  --> crates\app\src\controller.rs:30:5
-   |
-28 | pub enum Command {
-   |          ------- variants in this enum
-29 |     ToggleRecording,
-30 |     StartRecording,
-   |     ^^^^^^^^^^^^^^
-31 |     StopRecording,
-   |     ^^^^^^^^^^^^^
-   |
-   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
-
 error: field `app` is never read
-  --> crates\app\src\controller.rs:74:9
+  --> crates\app\src\controller.rs:72:9
    |
-71 | pub struct Recording {
+69 | pub struct Recording {
    |            --------- field in this struct
 ...
-74 |     pub app: String,
+72 |     pub app: String,
    |         ^^^
    |
    = note: `Recording` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-error: could not compile `urec` (bin "uRec") due to 2 previous errors
+error: could not compile `urec` (bin "uRec") due to 1 previous error
 ## build FAILED
