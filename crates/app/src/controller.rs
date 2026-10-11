@@ -1302,7 +1302,7 @@ impl Worker {
                 ))
             });
         }
-        let finalized = match (&result, urec_engine::mp4check::check(&out)) {
+        let finalized = match (&result, &urec_engine::mp4check::check(&out)) {
             (Ok(_), Ok(info)) => {
                 let d = format!(
                     "{} written{}",

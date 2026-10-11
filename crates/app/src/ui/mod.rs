@@ -162,6 +162,10 @@ impl App {
             "settings" => Page::Settings,
             _ => Page::Home,
         };
+        if self.page == Page::Setup {
+            self.setup_step = section.parse().unwrap_or(0);
+            return;
+        }
         if let Some(s) =
             Section::ALL.into_iter().find(|s| s.label().to_lowercase().replace(' ', "") == section.replace(' ', ""))
         {

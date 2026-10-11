@@ -367,6 +367,10 @@ fn test(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     ui.add_space(12.0);
     let report = st.test.clone();
     let running = report.as_ref().is_some_and(|t| t.running);
+    // CI: start the test by itself once uRec is ready (UREC_SETUP_AUTOTEST=1).
+    if report.is_none() && st.ready && !st.probing && std::env::var_os("UREC_SETUP_AUTOTEST").is_some() {
+        app.ctl.send(Command::TestRecording);
+    }
     ui.horizontal(|ui| {
         let label = if report.as_ref().is_some_and(|t| !t.running) { "Test again" } else { "Record test" };
         let r = ui.add_enabled_ui(!running && st.ready && !st.probing, |ui| theme::primary_button(ui, &p, label)).inner;

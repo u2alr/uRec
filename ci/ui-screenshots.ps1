@@ -43,6 +43,26 @@ $new = $after | Sort-Object LastWriteTime | Select-Object -Last 1
 if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force } else { "app exited: $($proc.ExitCode)" }
 Start-Sleep -Seconds 2
 
+# First-run setup: every step, then the real 5-second test recording started by itself.
+foreach ($step in 0, 1, 2) {
+    $env:UREC_PAGE = "setup:$step"
+    $proc = Start-Process $Exe -PassThru
+    Start-Sleep -Seconds 7
+    Shot "setup-$step"
+    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+    Start-Sleep -Seconds 1
+}
+$env:UREC_PAGE = "setup:3"
+$env:UREC_SETUP_AUTOTEST = "1"
+$proc = Start-Process $Exe -PassThru
+Start-Sleep -Seconds 30
+Shot "setup-3-test"
+if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+Remove-Item env:UREC_SETUP_AUTOTEST
+Start-Sleep -Seconds 1
+$log = Join-Path $env:LOCALAPPDATA "uRec\logs\urec.log"
+Select-String -Path $log -Pattern "setup test:" | Select-Object -Last 10 | ForEach-Object { "setup test log: " + ($_.Line -replace '^\S+ \S+ ', '') }
+
 $pages = "home", "library", "settings:general", "settings:recording", "settings:video", "settings:audio", "settings:instantreplay", "settings:hotkeys", "settings:storage", "settings:appearance", "settings:advanced"
 foreach ($theme in "light", "dark") {
     $env:UREC_THEME = $theme
