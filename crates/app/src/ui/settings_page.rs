@@ -709,16 +709,17 @@ fn hotkeys(app: &mut App, ui: &mut egui::Ui, st: &Status) {
         (0..ACTIONS.len()).map(|i| (ACTIONS[i], hotkey_field(&mut app.s, i).clone())).collect();
     let pairs: Vec<(&str, &str)> = bindings.iter().map(|(a, k)| (*a, k.as_str())).collect();
     let conflicts = hotkey::conflicts(&pairs);
-    for i in 0..ACTIONS.len() {
+    for (i, action) in ACTIONS.iter().enumerate() {
+        let action = *action;
         let value = hotkey_field(&mut app.s, i).clone();
         let mut help = String::new();
-        if let Some((a, b)) = conflicts.iter().find(|(a, b)| *a == ACTIONS[i] || *b == ACTIONS[i]) {
-            let other = if *a == ACTIONS[i] { b } else { a };
+        if let Some((a, b)) = conflicts.iter().find(|(a, b)| *a == action || *b == action) {
+            let other = if *a == action { b } else { a };
             help = format!("Also used for \"{other}\". Pick a different shortcut.");
         } else if st.hotkey_failures.iter().any(|f| f.starts_with(short_name(i))) {
             help = "Another app is already using this shortcut.".into();
         }
-        theme::row(ui, &p, ACTIONS[i], &help, |ui| {
+        theme::row(ui, &p, action, &help, |ui| {
             let listening = app.listening == Some(i);
             let label = if listening {
                 "Press keys, Esc to cancel".to_string()

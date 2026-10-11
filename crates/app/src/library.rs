@@ -205,7 +205,7 @@ pub fn scan(dir: &Path) -> Vec<Item> {
         }
         visit(&s, &app);
     }
-    out.sort_by(|a, b| b.modified.cmp(&a.modified));
+    out.sort_by_key(|i| std::cmp::Reverse(i.modified));
     out
 }
 

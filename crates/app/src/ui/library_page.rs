@@ -108,9 +108,9 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, _st: &Status) {
         items.retain(|i| i.name.to_lowercase().contains(&q) || i.app.to_lowercase().contains(&q));
     }
     match app.lib.sort {
-        Sort::Newest => items.sort_by(|a, b| b.modified.cmp(&a.modified)),
-        Sort::Oldest => items.sort_by(|a, b| a.modified.cmp(&b.modified)),
-        Sort::Largest => items.sort_by(|a, b| b.size.cmp(&a.size)),
+        Sort::Newest => items.sort_by_key(|i| std::cmp::Reverse(i.modified)),
+        Sort::Oldest => items.sort_by_key(|i| i.modified),
+        Sort::Largest => items.sort_by_key(|i| std::cmp::Reverse(i.size)),
         Sort::Longest => items.sort_by(|a, b| {
             let d = |i: &Item| i.meta.as_ref().map(|m| m.duration).unwrap_or(0.0);
             d(b).total_cmp(&d(a))

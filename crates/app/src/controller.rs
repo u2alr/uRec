@@ -27,8 +27,6 @@ const SEGMENT_SECONDS: u32 = 2;
 #[derive(Clone, Debug)]
 pub enum Command {
     ToggleRecording,
-    StartRecording,
-    StopRecording,
     SetReplay(bool),
     ToggleReplay,
     SaveReplay,
@@ -117,6 +115,8 @@ impl Status {
     }
 }
 
+type RepaintFn = Arc<Mutex<Option<Box<dyn Fn() + Send + Sync>>>>;
+
 /// Handle used by the UI and hotkeys.
 #[derive(Clone)]
 pub struct Controller {
@@ -124,7 +124,7 @@ pub struct Controller {
     pub status: Arc<Mutex<Status>>,
     /// True while capturing; background work (thumbnails) waits for this to clear.
     pub capturing: Arc<AtomicBool>,
-    repaint: Arc<Mutex<Option<Box<dyn Fn() + Send + Sync>>>>,
+    repaint: RepaintFn,
     /// Set when the controller thread has shut down cleanly.
     pub finished: Arc<AtomicBool>,
 }
@@ -396,8 +396,6 @@ impl Worker {
                     self.start_recording()
                 }
             }
-            Command::StartRecording => self.start_recording(),
-            Command::StopRecording => self.stop_recording(),
             Command::SetReplay(on) => self.set_replay(on),
             Command::ToggleReplay => self.set_replay(!self.s.replay.enabled),
             Command::SaveReplay => self.save_replay(),
@@ -1110,7 +1108,7 @@ fn last_line(s: &str) -> String {
 pub fn format_secs(s: u32) -> String {
     if s < 60 {
         format!("{s} s")
-    } else if s % 60 == 0 {
+    } else if s.is_multiple_of(60) {
         format!("{} min", s / 60)
     } else {
         format!("{}:{:02} min", s / 60, s % 60)
