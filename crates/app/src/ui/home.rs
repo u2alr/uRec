@@ -17,7 +17,7 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     app.refresh_devices(false);
     let p = app.p;
     egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
-        ui.set_max_width(ui.available_width().min(760.0));
+        ui.set_max_width((ui.available_width() - 16.0).min(760.0));
         hero(app, ui, st);
         ui.add_space(26.0);
         replay_row(app, ui, st);

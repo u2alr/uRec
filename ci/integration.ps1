@@ -154,6 +154,37 @@ $micState = "$($r.Kv['audio_mic_state'])"
 $consistent = ($micState -like "Active*" -and $m.AudioTracks -eq 1) -or ($micState -like "Failed*" -and $m.AudioTracks -eq 0)
 Add-Result "T15" "Microphone: recorded only if it really initialized; recording works either way" ($r.Code -eq 0 -and $consistent -and -not $m.DecodeErrors) "mic=$micState tracks=$($m.AudioTracks)"
 
+"=== Audio/video sync"
+if ($hasOut -gt 0) {
+    $flash = Start-Process pwsh -ArgumentList "-NoProfile", "-STA", "-File", "$PSScriptRoot\av-flash.ps1", "-Seconds", "16" -PassThru
+    Start-Sleep -Seconds 2
+    $out = Join-Path $work "T17.mp4"
+    $r = Invoke-Cli @("record", "--out", $out, "--source", $src, "--method", "gdi", "--encoder", "software", "--res", "720", "--fps", "30", "--seconds", "11", "--audio", "system")
+    $flash | Wait-Process -Timeout 25 -ErrorAction SilentlyContinue
+    # Video onsets: frames where average brightness jumps from dark to bright.
+    $yfile = Join-Path $work "yavg.txt"
+    & $ff -hide_banner -v error -i $out -vf "signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=$($yfile -replace '\\','/' -replace ':','\:')" -f null - 2>&1 | Out-Null
+    $vOn = @(); $prevBright = $false; $t = 0.0
+    foreach ($l in (Get-Content $yfile -ErrorAction SilentlyContinue)) {
+        if ($l -match "pts_time:([\d.]+)") { $t = [double]$Matches[1] }
+        if ($l -match "YAVG=([\d.]+)") { $bright = [double]$Matches[1] -gt 128; if ($bright -and -not $prevBright) { $vOn += $t }; $prevBright = $bright }
+    }
+    # Audio onsets: ends of silence.
+    $sd = & $ff -hide_banner -i $out -map 0:a:0 -af "silencedetect=n=-35dB:d=0.3" -f null - 2>&1 | Out-String
+    $aOn = @([regex]::Matches($sd, "silence_end: ([\d.]+)") | ForEach-Object { [double]$_.Groups[1].Value })
+    $offs = @()
+    foreach ($v in $vOn) {
+        $near = $aOn | Sort-Object { [math]::Abs($_ - $v) } | Select-Object -First 1
+        if ($near -ne $null -and [math]::Abs($near - $v) -lt 0.8) { $offs += [math]::Round(($near - $v) * 1000) }
+    }
+    $sorted = $offs | Sort-Object
+    $median = if ($sorted.Count) { $sorted[[int][math]::Floor($sorted.Count / 2)] } else { $null }
+    $ok = $sorted.Count -ge 3 -and [math]::Abs($median) -le 100
+    Add-Result "T17" "Audio/video sync: flash + beep every 2 s, audio offset within 100 ms" $ok "pairs=$($sorted.Count) offsets_ms=[$($offs -join ', ')] median=$median ms (positive = audio later)"
+} else {
+    Add-Result "T17" "Audio/video sync" $false "no audio output device"
+}
+
 "=== Window capture"
 $np = Start-Process notepad -PassThru
 Start-Sleep -Seconds 2

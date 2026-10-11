@@ -1,0 +1,58 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  package:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: release
+      - name: Build
+        shell: pwsh
+        run: |
+          ./ci/get-ffmpeg.ps1 | Out-Null
+          cargo build --release --locked -p urec -p urec-cli
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Installer and portable zip
+        shell: pwsh
+        run: ./ci/build-installer.ps1 *>&1 | Tee-Object -FilePath package.txt
+      - name: Install / uninstall test
+        shell: pwsh
+        run: |
+          $setup = (Get-ChildItem dist -Filter "*-setup.exe" | Select-Object -First 1).FullName
+          ./ci/install-test.ps1 -Setup $setup *>&1 | Tee-Object -FilePath install.txt
+          if (Select-String -Path install.txt -Pattern 'install passed=\d+ failed=0' -Quiet) { exit 0 } else { exit 1 }
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: uRec-windows-x64
+          path: |
+            dist/*.exe
+            dist/*.zip
+      - name: GitHub release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*-setup.exe
+            dist/*-portable.zip
+          body_path: CHANGELOG.md
+      - name: Publish report
+        if: always()
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          "commit $env:GITHUB_SHA run $env:GITHUB_RUN_ID" | Out-File release.txt
+          foreach ($f in "package.txt", "install.txt") { if (Test-Path $f) { Get-Content $f | Out-File -Append release.txt } }
+          ./ci/publish-results.ps1 -Name release -File release.txt

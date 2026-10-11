@@ -39,7 +39,7 @@ jobs:
               @("fmt", "cargo", "fmt", "--all", "--", "--check"),
               @("clippy", "cargo", "clippy", "--workspace", "--all-targets", "--release", "--", "-D", "warnings"),
               @("test", "cargo", "test", "--workspace", "--release"),
-              @("build", "cargo", "build", "--workspace", "--release"))) {
+              @("build", "cargo", "build", "--workspace", "--release", "--locked"))) {
             "## $($step[0])" | Tee-Object -Append $log
             & $step[1] $step[2..($step.Length - 1)] *>&1 | Tee-Object -Append $log
             if ($LASTEXITCODE -ne 0) { "## $($step[0]) FAILED" | Tee-Object -Append $log; $failed++ }
