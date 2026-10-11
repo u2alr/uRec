@@ -80,16 +80,15 @@ foreach ($theme in "light", "dark") {
 Remove-Item env:UREC_THEME
 
 # Long window title in Settings > Recording (must be shortened, not overlap the label).
-$longName = Join-Path $env:TEMP "A very long document name that keeps going and going for testing the window picker.txt"
-"x" | Out-File $longName
-$np = Start-Process notepad.exe -ArgumentList "`"$longName`"" -PassThru
-Start-Sleep -Seconds 3
-$title = (Get-Process -Id $np.Id).MainWindowTitle
+$longTitle = "A very long window title that keeps going and going, for testing the window picker in uRec"
+$np = Start-Process powershell.exe -ArgumentList "-NoProfile", "-Command", "Add-Type -AssemblyName System.Windows.Forms; `$f = New-Object System.Windows.Forms.Form; `$f.Text = '$longTitle'; `$f.ShowDialog()" -PassThru
+$title = $null
+foreach ($i in 1..20) { Start-Sleep -Milliseconds 500; $title = (Get-Process -Id $np.Id -ErrorAction SilentlyContinue).MainWindowTitle; if ($title) { break } }
 $settingsPath = Join-Path $env:APPDATA "uRec\settings.json"
 if ((Test-Path $settingsPath) -and $title) {
     $backup = Get-Content $settingsPath -Raw
     $sj = $backup | ConvertFrom-Json
-    $sj.capture.kind = "window"; $sj.capture.window_title = $title; $sj.capture.window_exe = "notepad.exe"
+    $sj.capture.kind = "window"; $sj.capture.window_title = $title; $sj.capture.window_exe = "powershell.exe"
     [IO.File]::WriteAllText($settingsPath, ($sj | ConvertTo-Json -Depth 8))
     foreach ($pg in "settings:recording", "home") {
         $env:UREC_PAGE = $pg
