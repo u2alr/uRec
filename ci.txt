@@ -1,4 +1,4 @@
-commit 996fbec58a38e6376d206f66a89f9d04864641bd run 38155375145
+commit 7034d119ca639e0bff6abb54f37203d98ea217f8 run 38161470239
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -7,183 +7,164 @@ commit 996fbec58a38e6376d206f66a89f9d04864641bd run 38155375145
    Compiling urec v0.1.2 (D:\a\uRec\uRec\crates\app)
     Checking urec-win v0.1.2 (D:\a\uRec\uRec\crates\win)
     Checking urec-cli v0.1.2 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 27.10s
+error: field `0` is never read
+  --> crates\app\src\controller.rs:40:23
+   |
+40 |     ReplaySaveStarted(u64),
+   |     ----------------- ^^^
+   |     |
+   |     field in this variant
+   |
+   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+40 -     ReplaySaveStarted(u64),
+40 +     ReplaySaveStarted(()),
+   |
+
+error: field `0` is never read
+   --> crates\app\src\controller.rs:208:11
+    |
+208 |     Saved(SavedClip),
+    |     ----- ^^^^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `SaveFeedback` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+208 -     Saved(SavedClip),
+208 +     Saved(()),
+    |
+
+error: field `0` is never read
+   --> crates\app\src\controller.rs:209:12
+    |
+209 |     Failed(String),
+    |     ------ ^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `SaveFeedback` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+209 -     Failed(String),
+209 +     Failed(()),
+    |
+
+error: could not compile `urec` (bin "uRec" test) due to 3 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `urec` (bin "uRec") due to 3 previous errors
+## clippy FAILED
 ## test
    Compiling urec-engine v0.1.2 (D:\a\uRec\uRec\crates\engine)
    Compiling urec v0.1.2 (D:\a\uRec\uRec\crates\app)
    Compiling urec-win v0.1.2 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.1.2 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 31.94s
-     Running unittests src\main.rs (target\release\deps\uRec-cddc51cb466362bd.exe)
+error: field `0` is never read
+  --> crates\app\src\controller.rs:40:23
+   |
+40 |     ReplaySaveStarted(u64),
+   |     ----------------- ^^^
+   |     |
+   |     field in this variant
+   |
+   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+40 -     ReplaySaveStarted(u64),
+40 +     ReplaySaveStarted(()),
+   |
 
-running 10 tests
-test library::tests::durations ... ok
-test library::tests::parses_ffmpeg_info ... ok
-test settings::tests::partial_and_out_of_range_values ... ok
-test library::tests::scans_nested_and_skips_partials ... ok
-test settings::tests::video_conversion_roundtrip ... ok
-test update::tests::release_json ... ok
-test update::tests::sums ... ok
-test settings::tests::corrupt_file_is_quarantined ... ok
-test update::tests::versions ... ok
-test settings::tests::roundtrip_and_defaults ... ok
+error: field `0` is never read
+   --> crates\app\src\controller.rs:208:11
+    |
+208 |     Saved(SavedClip),
+    |     ----- ^^^^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `SaveFeedback` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+208 -     Saved(SavedClip),
+208 +     Saved(()),
+    |
 
-test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+error: field `0` is never read
+   --> crates\app\src\controller.rs:209:12
+    |
+209 |     Failed(String),
+    |     ------ ^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `SaveFeedback` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+209 -     Failed(String),
+209 +     Failed(()),
+    |
 
-     Running unittests src\main.rs (target\release\deps\urec_cli-f74a11d16a363c08.exe)
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
-     Running unittests src\lib.rs (target\release\deps\urec_engine-b123f1f73da01477.exe)
-
-running 22 tests
-test encoder::tests::names_and_candidates ... ok
-test encoder::tests::failure_messages ... ok
-test encoder::tests::args_have_rate_and_keyframes ... ok
-test hotkey::tests::finds_conflicts ... ok
-test hotkey::tests::roundtrip ... ok
-test naming::tests::sanitizes ... ok
-test naming::tests::stamps ... ok
-test pipeline::tests::audio_and_replay_output ... ok
-test pipeline::tests::gpu_scaling_stays_on_gpu ... ok
-test pipeline::tests::region_crops ... ok
-test pipeline::tests::system_path_downloads_once ... ok
-test pipeline::tests::zero_copy_native_has_no_filters ... ok
-test process::tests::parses_progress_blocks ... ok
-test replay::tests::parses_and_selects ... ok
-test replay::tests::ring_math ... ok
-test naming::tests::unique_names ... ok
-test video::tests::bitrate_scales ... ok
-test video::tests::bytes_formatting ... ok
-test video::tests::output_size_never_upscales ... ok
-test video::tests::presets_respect_machine ... ok
-test video::tests::validate_catches_limits ... ok
-test sha256::tests::known_vectors ... ok
-
-test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
-
-     Running unittests src\lib.rs (target\release\deps\urec_win-2314c5971d1b6a8a.exe)
-
-running 3 tests
-test http::tests::urls ... ok
-test overlay::tests::dot_is_round_and_symmetric ... ok
-test tests::app_names ... ok
-
-test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
-   Doc-tests urec_engine
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
-   Doc-tests urec_win
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
+error: could not compile `urec` (bin "uRec" test) due to 3 previous errors
+warning: build failed, waiting for other jobs to finish...
+## test FAILED
 ## build
    Compiling urec-engine v0.1.2 (D:\a\uRec\uRec\crates\engine)
    Compiling urec-win v0.1.2 (D:\a\uRec\uRec\crates\win)
    Compiling urec v0.1.2 (D:\a\uRec\uRec\crates\app)
    Compiling urec-cli v0.1.2 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 1m 23s
-Screen: 1024x768
-=== Probe
-  ffmpeg=ffmpeg version 9.0.2-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
-  encoder=h264_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=h264_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=h264_qsv     ok=false ms=103   arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=h264_mf      ok=false ms=102   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
-  encoder=libx264      ok=true ms=62    arg_error=false reason=
-  encoder=h264_mf      ok=true ms=144   arg_error=false reason=
-  encoder=hevc_nvenc   ok=false ms=63    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=hevc_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=hevc_qsv     ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=hevc_mf      ok=false ms=63    arg_error=false reason=Windows has no hardware encoder for H.265 (HEVC) on this PC.
-  encoder=libx265      ok=true ms=102   arg_error=false reason=
-  encoder=hevc_mf      ok=false ms=62    arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
-  encoder=av1_nvenc    ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=av1_amf      ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=av1_qsv      ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=av1_mf       ok=false ms=62    arg_error=false reason=Windows has no hardware encoder for AV1 on this PC.
-  best_h264=CPU (x264/x265) (H.264 (AVC))
-  best_hevc=CPU (x264/x265) (H.265 (HEVC))
-  best_av1=none
-T01 PASS Encoder probe: every generated argument set is accepted by FFmpeg :: best h264: 
-=== Recordings
-  fallbacks: fallback_from=wgc/System: Error opening input files: Unknown error occurred | fallback_from=dda/System: Error opening input files: Unknown error occurred
-=== Invalid settings are rejected
-T09 PASS Oversized H.264 resolution is refused with a clear message :: error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
-=== Instant replay
-T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1895ms ring_files=9/9 
-=== Repeated start/stop
-T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.13s, 3.13s, 3.13s, 3.13s, 3.13s leftover=0
-=== Devices
-  windows_build=Some(26100) wgc=true
-  monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
-  window: 'C:\ProgramData\GitHub\HostedComputeAgent\hosted-compute-agent' exe=WindowsTerminal app=WindowsTerminal Rect { x: 25, y: 26, width: 1030, height: 628 }
-  audio_out: Speakers (VB-Audio Virtual Cable) default=true
-  audio_in: CABLE Output (VB-Audio Virtual Cable) default=true
-  disk_free=154 GB of 161 GB
-T12 PASS Monitor enumeration finds the primary screen at its real size :: monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
-  audio outputs=1 inputs=1
-=== Audio
-T13 PASS Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone :: state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.3 dB dur=7.3s
-T14 PASS Separate tracks: one per working source (mic present: False) :: tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
-T15 PASS Microphone: recorded only if it really initialized; recording works either way :: mic=Failed { reason: "Access is denied." } tracks=0
-=== Audio/video sync
-  video flash onsets: 1.633333, 3.633333, 5.633333, 7.633333, 9.633333, 11.633333
-  audio beep onsets:  1.627437, 3.600708, 5.596854, 7.598333, 9.594, 11.615021, 12.184
-T17 PASS Audio/video sync: flash + beep every 2 s, audio offset within 100 ms :: pairs=6 offsets_ms=[-6, -33, -36, -35, -39, -18] median=-33 ms (positive = audio later)
-=== Window capture
-T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=129 output=D:\a\_temp\urec-it\T16.mp4
-=== Show in folder / Open folder
-T18 PASS Show in folder (path with spaces) and Open folder open the right Explorer folder :: explorer windows: D:\a\_temp\urec-it\Folder With Spaces | D:\a\_temp\urec-it\ring
-=== Summary
+error: field `0` is never read
+  --> crates\app\src\controller.rs:40:23
+   |
+40 |     ReplaySaveStarted(u64),
+   |     ----------------- ^^^
+   |     |
+   |     field in this variant
+   |
+   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+   |
+40 -     ReplaySaveStarted(u64),
+40 +     ReplaySaveStarted(()),
+   |
 
-Id  Test                                                                              Result Detail
---  ----                                                                              ------ ------
-T01 Encoder probe: every generated argument set is accepted by FFmpeg                 PASS   best h264: 
-T02 GDI capture, x264, 720p30                                                         PASS   libx264 via gdi/System -> 960x720@30 6.23s 1.53MB audio=0 | 152 drop=0 dup=0 speed=0.88 startup=1210ms stop=203ms
-T03 GDI capture, Media Foundation (CPU), native 30fps, audio                          PASS   h264_mf via gdi/System -> 1024x768@30 6.1s 0.9MB audio=1 | 151 drop=1 dup=3 speed=1.02 startup=657ms stop=203ms
-T04 GDI capture, x264, native 60fps                                                   PASS   libx264 via gdi/System -> 1024x768@60 5.73s 1.73MB audio=0 | 291 drop=3 dup=84 speed=0.93 startup=657ms stop=235ms
-T05 Automatic capture fallback (WGC -> DDA -> GDI)                                    PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.2MB audio=0 | 120 drop=0 dup=0 speed=0.85 startup=1435ms stop=203ms
-T06 MKV container                                                                     PASS   libx264 via gdi/System -> 1024x768@30 5.17s 1.2MB audio=0 | 120 drop=0 dup=0 speed=0.85 startup=1158ms stop=165ms
-T07 HEVC via x265, 720p30                                                             PASS   libx265 via gdi/System -> 960x720@30 5.2s 0.86MB audio=0 | 116 drop=0 dup=0 speed=0.82 startup=1165ms stop=284ms
-T08 Custom 800x600 output (letterboxed)                                               PASS   libx264 via gdi/System -> 800x600@24 5.21s 0.89MB audio=0 | 93 drop=0 dup=0 speed=0.82 startup=1210ms stop=152ms
-T09 Oversized H.264 resolution is refused with a clear message                        PASS   error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
-T10 Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) PASS   clip=10.28s audio=1 save=1895ms ring_files=9/9 
-T11 5 start/stop cycles, no leftover ffmpeg processes                                 PASS   durations 3.13s, 3.13s, 3.13s, 3.13s, 3.13s leftover=0
-T12 Monitor enumeration finds the primary screen at its real size                     PASS   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0)
-                                                                                             dda=true
-T13 Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone                PASS   state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.3 dB
-                                                                                             dur=7.3s
-T14 Separate tracks: one per working source (mic present: False)                      PASS   tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
-T15 Microphone: recorded only if it really initialized; recording works either way    PASS   mic=Failed { reason: "Access is denied." } tracks=0
-T17 Audio/video sync: flash + beep every 2 s, audio offset within 100 ms              PASS   pairs=6 offsets_ms=[-6, -33, -36, -35, -39, -18] median=-33 ms (positive = audio later)
-T16 Window capture (Notepad) records just that window                                 PASS   754x512 via gdi stop_ms=129 output=D:\a\_temp\urec-it\T16.mp4
-T18 Show in folder (path with spaces) and Open folder open the right Explorer folder  PASS   explorer windows: D:\a\_temp\urec-it\Folder With Spaces | D:\a\_temp\urec-it\ring
+error: field `0` is never read
+   --> crates\app\src\controller.rs:208:11
+    |
+208 |     Saved(SavedClip),
+    |     ----- ^^^^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `SaveFeedback` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+208 -     Saved(SavedClip),
+208 +     Saved(()),
+    |
 
+error: field `0` is never read
+   --> crates\app\src\controller.rs:209:12
+    |
+209 |     Failed(String),
+    |     ------ ^^^^^^
+    |     |
+    |     field in this variant
+    |
+    = note: `SaveFeedback` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+help: consider changing the field to be of unit type to suppress this warning while preserving the field numbering, or remove the field
+    |
+209 -     Failed(String),
+209 +     Failed(()),
+    |
 
-passed=18 failed=0
-sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 16.31.17.mp4 size=619468
-light home alive=True
-light library alive=True
-light settings:general alive=True
-light settings:recording alive=True
-light settings:video alive=True
-light settings:audio alive=True
-light settings:instantreplay alive=True
-light settings:hotkeys alive=True
-light settings:storage alive=True
-light settings:appearance alive=True
-light settings:advanced alive=True
-dark home alive=True
-dark library alive=True
-dark settings:video alive=True
-dark settings:audio alive=True
+error: could not compile `urec` (bin "uRec") due to 3 previous errors
+warning: build failed, waiting for other jobs to finish...
+## build FAILED
