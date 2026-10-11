@@ -1,4 +1,4 @@
-commit 767840ff488754772be3c253554ccfcbe27db3a3 run 38173502731
+commit 17de5e20d0dd2afb546681d2575b5abb27c148ba run 38174075418
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -25,9 +25,9 @@ error: very complex type used. Consider factoring parts into `type` definitions
     = note: `-D clippy::type-complexity` implied by `-D warnings`
     = help: to override `-D warnings` add `#[allow(clippy::type_complexity)]`
 
-error: could not compile `urec` (bin "uRec") due to 1 previous error
-warning: build failed, waiting for other jobs to finish...
 error: could not compile `urec` (bin "uRec" test) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `urec` (bin "uRec") due to 1 previous error
 ## clippy FAILED
 ## test
    Compiling windows v0.62.2
@@ -42,7 +42,7 @@ error: could not compile `urec` (bin "uRec" test) due to 1 previous error
    Compiling wgpu v30.0.1
    Compiling egui-wgpu v0.36.2
    Compiling eframe v0.36.2
-    Finished `release` profile [optimized] target(s) in 1m 45s
+    Finished `release` profile [optimized] target(s) in 1m 50s
      Running unittests src\main.rs (target\release\deps\uRec-0a29258d1143e4ba.exe)
 
 running 15 tests
@@ -50,16 +50,16 @@ test library::tests::durations ... ok
 test library::tests::parses_ffmpeg_info ... ok
 test library::tests::retention_picks_only_old_unstarred_clips ... ok
 test library::tests::diagnoses_unreadable_files ... ok
-test library::tests::scans_nested_and_skips_partials ... ok
 test settings::tests::accepts_a_byte_order_mark ... ok
+test library::tests::scans_nested_and_skips_partials ... ok
 test settings::tests::corrupt_file_is_quarantined ... ok
 test settings::tests::video_conversion_roundtrip ... ok
-test update::tests::release_json ... ok
-test update::tests::signature_rules ... ok
-test update::tests::sums ... ok
-test update::tests::versions ... ok
-test settings::tests::partial_and_out_of_range_values ... ok
 test settings::tests::migrates_v1_to_v2_without_nagging_existing_users ... ok
+test settings::tests::partial_and_out_of_range_values ... ok
+test update::tests::release_json ... ok
+test update::tests::sums ... ok
+test update::tests::signature_rules ... ok
+test update::tests::versions ... ok
 test settings::tests::roundtrip_and_defaults ... ok
 
 test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
@@ -73,8 +73,8 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
      Running unittests src\lib.rs (target\release\deps\urec_engine-fd4df31186b3e707.exe)
 
 running 33 tests
-test encoder::tests::failure_messages ... ok
 test encoder::tests::args_have_rate_and_keyframes ... ok
+test encoder::tests::failure_messages ... ok
 test encoder::tests::constant_quality_args ... ok
 test encoder::tests::names_and_candidates ... ok
 test hotkey::tests::finds_conflicts ... ok
@@ -107,24 +107,24 @@ test replay::tests::cleanup_touches_only_temp_files ... ok
 test replay::tests::copy_drops_recycled_head_but_not_holes ... ok
 test replay::tests::concurrent_placement_never_overwrites ... ok
 
-test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.06s
+test result: ok. 33 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
 
      Running unittests src\lib.rs (target\release\deps\urec_win-0b6860065c5a4811.exe)
 
 running 16 tests
-test notify::tests::uri_round_trip ... ok
 test http::tests::urls ... ok
 test notify::tests::rejects_malformed_links ... ok
-test overlay::tests::dot_is_round_and_symmetric ... ok
+test notify::tests::uri_round_trip ... ok
 test notify::tests::xml_is_escaped_and_has_actions ... ok
-test pill::tests::failure_holds_longer ... ok
-test pill::tests::newer_failure_replaces_success_and_older_success_never_hides_failure ... ok
-test pill::tests::check_and_cross_differ_in_shape ... ok
-test notify::tests::only_videos_inside_the_recordings_folder ... ok
+test overlay::tests::dot_is_round_and_symmetric ... ok
 test pill::tests::closed_pill_is_the_dot_and_open_pill_has_message ... ok
+test notify::tests::only_videos_inside_the_recordings_folder ... ok
+test pill::tests::failure_holds_longer ... ok
+test pill::tests::check_and_cross_differ_in_shape ... ok
+test pill::tests::newer_failure_replaces_success_and_older_success_never_hides_failure ... ok
 test pill::tests::reduced_motion_jumps_between_states ... ok
-test pill::tests::result_during_collapse_regrows_smoothly ... ok
 test pill::tests::repeated_successes_extend_instead_of_duplicating ... ok
+test pill::tests::result_during_collapse_regrows_smoothly ... ok
 test pill::tests::saving_breathes_then_stops ... ok
 test pill::tests::success_timeline ... ok
 test tests::app_names ... ok
@@ -156,15 +156,15 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
    Compiling egui-wgpu v0.36.2
    Compiling eframe v0.36.2
    Compiling urec v0.2.0 (D:\a\uRec\uRec\crates\app)
-    Finished `release` profile [optimized] target(s) in 2m 44s
+    Finished `release` profile [optimized] target(s) in 2m 47s
 sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 20.52.51.mp4 size=756161
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 21.00.17.mp4 size=798123
 setup test log: setup test: Capture and encoder start = Some(true) (CPU (x264/x265), H.264 (AVC) via GDI (compatibility), 960×720 at 30 FPS)
 setup test log: setup test: Game and desktop sound = Some(false) (The device wasn't found. It may be unplugged or disabled.)
 setup test log: setup test: Microphone = None (Turned off in Settings › Audio.)
-setup test log: setup test: Recording ran for 5 seconds = Some(true) (149 frames encoded, 3 frames dropped)
-setup test log: setup test: File saved and finalized = Some(true) (513 KB written, crash-safe MP4)
-setup test log: setup test: Video plays back = Some(true) (173 frames of h264 960×720 decoded without errors (5.8 s))
+setup test log: setup test: Recording ran for 5 seconds = Some(true) (153 frames encoded, 2 frames dropped)
+setup test log: setup test: File saved and finalized = Some(true) (496 KB written, crash-safe MP4)
+setup test log: setup test: Video plays back = Some(true) (176 frames of h264 960×720 decoded without errors (5.9 s))
 light home alive=True
 light library alive=True
 light settings:general alive=True
@@ -180,32 +180,32 @@ dark home alive=True
 dark library alive=True
 dark settings:video alive=True
 dark settings:audio alive=True
-P01 FAIL Success pill: expands, shows the green check message, holds ~2 s, collapses (total ~2.4 s) :: visible=2225ms (spec 2360) expand=40ms full=2105ms collapse=80ms width=171px green_px=19 capture=42fps
+P01 FAIL Success pill: expands, shows the green check message, holds ~2 s, collapses (total ~2.4 s) :: visible=2311ms (spec 2360) expand=126ms full=2090ms collapse=95ms width=171px green_px=19 capture=46fps
 P02 PASS Back to the plain dot afterwards (nothing left on screen) :: residual width=0px
-P03 FAIL Failure pill: red cross + 'Instant Replay Failed', held ~2.5 s :: visible=2803ms (spec 2860) red_px=13 green_px=0
-P04 PASS Saving: dot pulses, no 'Saved' before the result; pill only after it :: frames_wide_while_saving=0 pulse_frames=49/49 pill_start=2489ms (result at 2400)
+P03 FAIL Failure pill: red cross + 'Instant Replay Failed', held ~2.5 s :: visible=2768ms (spec 2860) red_px=13 green_px=0
+P04 PASS Saving: dot pulses, no 'Saved' before the result; pill only after it :: frames_wide_while_saving=0 pulse_frames=49/49 pill_start=2484ms (result at 2400)
 P05 FAIL Burst: a failure replaces a showing success, is shown in full, then the later success follows :: red shown 0ms from ms; green after it from ms
-P06 PASS Reduced motion: message appears and disappears without in-between frames :: visible=1964ms partial_frames=0
-P07 PASS Overlay uses no CPU at rest (timer stops after the animation) :: after animation: 0ms CPU in 5 s; while animating (pulse): 62ms CPU in 3 s
+P06 PASS Reduced motion: message appears and disappears without in-between frames :: visible=1994ms partial_frames=0
+P07 PASS Overlay uses no CPU at rest (timer stops after the animation) :: after animation: 0ms CPU in 5 s; while animating (pulse): 31ms CPU in 3 s
 P08 PASS Top-left corner: pill grows away from the screen edge :: width=171px
 toast: registered=true | shown=true error= | toast_history=1
 P09 PASS Windows notification is accepted by Windows (Action Center history) :: shown=True history=1
-P10 FAIL Real save (Alt+F10): clip written, then the success pill (only after saving) :: clips 0 -> 1 (Desktop 2026-10-11 20.57.12 Replay.mp4, 1.1 MB); pill from 396ms for 1968ms
+P10 FAIL Real save (Alt+F10): clip written, then the success pill (only after saving) :: clips 0 -> 1 (Desktop 2026-10-11 21.04.34 Replay.mp4, 1.2 MB); pill from 1696ms for 1977ms
 P11 PASS 4 rapid presses: at most 2 saves queued, rest folded in, every clip complete, nothing overwritten :: new clips=2 folded=2 total ok saves=3
 P12 PASS Overlay off: nothing drawn on screen for the save :: corner change: none
 P13 PASS Overlay off: a Windows notification is shown instead :: uRec notifications in Action Center: 1 -> 2
-log: 2026-10-11 20:57:21 replay save #2 queued (0 pending before)
-log: 2026-10-11 20:57:21 replay save #2 started
-log: 2026-10-11 20:57:21 replay save #3 queued (1 pending before)
-log: 2026-10-11 20:57:21 replay save: press folded into the save already waiting
-log: 2026-10-11 20:57:22 replay save: press folded into the save already waiting
-log: 2026-10-11 20:57:22 replay save #2 ok in 1071 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-11 20.57.21 Replay.mp4 (16.0 s, 1230974 bytes)
-log: 2026-10-11 20:57:22 Success: Instant Replay saved (16 s).
-log: 2026-10-11 20:57:22 replay save #3 started
-log: 2026-10-11 20:57:24 replay save #3 ok in 2051 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-11 20.57.21 Replay (2).mp4 (16.0 s, 1275211 bytes)
-log: 2026-10-11 20:57:24 Success: Instant Replay saved (16 s).
-log: 2026-10-11 20:57:52 replay save #1 queued (0 pending before)
-log: 2026-10-11 20:57:52 replay save #1 started
-log: 2026-10-11 20:57:52 replay save #1 ok in 429 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-11 20.57.52 Replay.mp4 (12.0 s, 1226942 bytes)
-log: 2026-10-11 20:57:52 Success: Instant Replay saved (12 s).
+log: 2026-10-11 21:04:50 replay save #2 queued (0 pending before)
+log: 2026-10-11 21:04:50 replay save #2 started
+log: 2026-10-11 21:04:50 replay save #3 queued (1 pending before)
+log: 2026-10-11 21:04:50 replay save: press folded into the save already waiting
+log: 2026-10-11 21:04:50 replay save: press folded into the save already waiting
+log: 2026-10-11 21:04:51 replay save #2 ok in 1011 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-11 21.04.50 Replay.mp4 (16.0 s, 1227375 bytes)
+log: 2026-10-11 21:04:51 Success: Instant Replay saved (16 s).
+log: 2026-10-11 21:04:51 replay save #3 started
+log: 2026-10-11 21:04:52 replay save #3 ok in 1183 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-11 21.04.50 Replay (2).mp4 (16.0 s, 1310906 bytes)
+log: 2026-10-11 21:04:52 Success: Instant Replay saved (16 s).
+log: 2026-10-11 21:05:20 replay save #1 queued (0 pending before)
+log: 2026-10-11 21:05:20 replay save #1 started
+log: 2026-10-11 21:05:22 replay save #1 ok in 1898 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-11 21.05.20 Replay.mp4 (12.0 s, 1237018 bytes)
+log: 2026-10-11 21:05:22 Success: Instant Replay saved (12 s).
 indicator passed=9 failed=4
