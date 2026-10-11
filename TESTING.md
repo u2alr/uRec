@@ -5,7 +5,7 @@ Every push to `main` runs these on a real Windows machine (GitHub Actions `windo
 - formatting, clippy (warnings are errors) and unit tests
 - real screen-capture integration tests (`ci/integration.ps1`)
 - the UI smoke test (`ci/ui-screenshots.ps1`)
-- on release, the installer test (`ci/install-test.ps1`) and `cargo audit`
+- on release, the installer test (`ci/install-test.ps1`) and `cargo audit`, then the automatic update test (`ci/update-test.ps1`) against the release that was just published
 
 The results below are copied from those runs. Nothing is estimated.
 
@@ -18,9 +18,9 @@ The results below are copied from those runs. Nothing is estimated.
 
 | Crate | Tests | Covers |
 |---|---|---|
-| `urec-engine` | 21 | Output sizing (never upscales, even sizes, aspect), validation limits, presets per machine, bitrate scaling, storage maths, encoder names and arguments, failure explanations, FFmpeg command lines (GPU/system paths, scaling, QSV mapping, regions, GDI, audio pipes, replay ring), progress parsing, replay CSV parsing and selection, ring sizing, file-name sanitizing and timestamps, unique names, hotkey parsing, formatting and conflicts |
-| `urec` (app) | 8 | Settings round-trip, corrupt-file quarantine, partial/out-of-range values, conversions, library scan, `ffmpeg -i` metadata parsing, duration format |
-| `urec-win` | 1 | App names from window titles/executables |
+| `urec-engine` | 22 | Output sizing (never upscales, even sizes, aspect), validation limits, presets per machine, bitrate scaling, storage maths, encoder names and arguments, failure explanations, FFmpeg command lines (GPU/system paths, scaling, QSV mapping, regions, GDI, audio pipes, replay ring), progress parsing, replay CSV parsing and selection, ring sizing, file-name sanitizing and timestamps, unique names, hotkey parsing, formatting and conflicts, SHA-256 (standard test vectors incl. one million 'a') |
+| `urec` (app) | 10 | Settings round-trip, corrupt-file quarantine, partial/out-of-range values, conversions, library scan, `ffmpeg -i` metadata parsing, duration format, update version comparison (no downgrades or pre-releases), checksum-file parsing, release JSON parsing (only `github.com/u2alr/uRec` download URLs accepted) |
+| `urec-win` | 3 | App names from window titles/executables, overlay dot is round and symmetric, HTTPS-only URL handling |
 
 ## Integration tests on Windows (automated, real capture)
 
@@ -74,6 +74,21 @@ The results below are copied from those runs. Nothing is estimated.
 | I14 | Recordings kept | ✅ |
 | I15 | Settings kept | ✅ |
 | I16 | Temporary data (replay buffer, thumbnails, logs) removed | ✅ |
+
+## Automatic update tests (automated, every release)
+
+These run against the real GitHub release that the pipeline has just published (first run: v0.1.2). An older version is simulated with `UREC_FAKE_VERSION=0.0.1`.
+
+| # | Check | Result |
+|---|---|---|
+| U01 | The current build reports "up to date" (one check: 0.02 s CPU, 0.4 s) | ✅ |
+| U02 | An older version finds the release, downloads the 32 MB installer and verifies it (0.27 s CPU, 3 s) | ✅ |
+| U03 | The downloaded installer matches the published SHA-256 | ✅ |
+| U04 | A corrupted download is rejected and deleted, and nothing is queued to install | ✅ |
+| U05 | The queued update installs silently when uRec starts | ✅ |
+| U06 | uRec starts again by itself after updating (5 s) and its exe was replaced | ✅ |
+
+Not tested on CI 🟡: **Restart now** and install-on-quit from the tray (same installer call as U05, different trigger), all-users installs (these need an admin prompt), and behaviour behind a corporate proxy.
 
 Security audit: `cargo audit` found **0 vulnerabilities in 333 crates**.
 
