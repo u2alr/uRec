@@ -5,48 +5,30 @@
    Compiling gpu-allocator v0.28.0
    Compiling urec-win v0.1.2 (D:\a\uRec\uRec\crates\win)
    Compiling wgpu-hal v30.0.1
-error[E0599]: the method `entry` exists for struct `HashMap<(Kind, u32), TextMask>`, but its trait bounds were not satisfied
-   --> crates\win\src\overlay.rs:250:28
-    |
-250 |                 anim.masks.entry((kind, key)).or_insert_with(|| text_mask(kind.text(), (13.5 * k).round() as i32));
-    |                            ^^^^^ method cannot be called on `HashMap<(Kind, u32), TextMask>` due to unsatisfied trait bounds
-    |
-   ::: crates\win\src\pill.rs:23:1
-    |
- 23 | pub enum Kind {
-    | ------------- doesn't satisfy `Kind: Hash`
-    |
-    = note: the following trait bounds were not satisfied:
-            `Kind: Hash`
-            which is required by `(Kind, u32): Hash`
-help: consider annotating `Kind` with `#[derive(Hash)]`
-   --> crates\win\src\pill.rs:23:1
-    |
- 23 + #[derive(Hash)]
- 24 | pub enum Kind {
-    |
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling wgpu-core v30.0.1
+   Compiling urec-cli v0.1.2 (D:\a\uRec\uRec\crates\cli)
+   Compiling wgpu v30.0.1
+   Compiling egui-wgpu v0.36.2
+   Compiling eframe v0.36.2
+error[E0308]: mismatched types
+    --> crates\app\src\controller.rs:1315:39
+     |
+1305 |         let finalized = match (&result, urec_engine::mp4check::check(&out)) {
+     |                               --------------------------------------------- this expression has type `(&Result<Option<PathBuf>, String>, Result<Mp4Info, String>)`
+...
+1315 |             (Err(e), _) | (Ok(_), Err(e)) => {
+     |                  -                    ^ expected `&String`, found `String`
+     |                  |
+     |                  first introduced with type `&std::string::String` here
+     |
+     = note: in the same arm, a binding must have the same type in all alternatives
+     = note: the full name for the type has been written to 'D:\a\uRec\uRec\target\release\deps\uRec.long-type-10176694292415463010.txt'
+     = note: consider using `--verbose` to print the full type name to the console
+help: consider adding `ref`
+     |
+1315 |             (Err(e), _) | (Ok(_), Err(ref e)) => {
+     |                                       +++
 
-error[E0599]: the method `get` exists for reference `&HashMap<(Kind, u32), TextMask>`, but its trait bounds were not satisfied
-   --> crates\win\src\overlay.rs:253:47
-    |
-253 |             let mask_for = |kind: Kind| masks.get(&(kind, key)).cloned().unwrap_or_default();
-    |                                               ^^^ method cannot be called on `&HashMap<(Kind, u32), TextMask>` due to unsatisfied trait bounds
-    |
-   ::: crates\win\src\pill.rs:23:1
-    |
- 23 | pub enum Kind {
-    | ------------- doesn't satisfy `Kind: Hash`
-    |
-    = note: the following trait bounds were not satisfied:
-            `Kind: Hash`
-            which is required by `(Kind, u32): Hash`
-help: consider annotating `Kind` with `#[derive(Hash)]`
-   --> crates\win\src\pill.rs:23:1
-    |
- 23 + #[derive(Hash)]
- 24 | pub enum Kind {
-    |
-
-For more information about this error, try `rustc --explain E0599`.
-error: could not compile `urec-win` (lib) due to 2 previous errors
-warning: build failed, waiting for other jobs to finish...
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `urec` (bin "uRec") due to 1 previous error
