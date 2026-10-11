@@ -1,30 +1,6 @@
----- event 1000 10/11/2026 10:37:53
-Faulting application name: uRec.exe, version: 0.1.0.0, time stamp: 0x6acb66ff
-Faulting module name: USER32.dll, version: 10.0.26100.33438, time stamp: 0x00acfda3
-Exception code: 0xc000041d
-Fault offset: 0x000000000002ffb2
-Faulting process id: 0x1828
-Faulting application start time: 0x1DD596C91433858
-Faulting application path: D:\a\uRec\uRec\target\release\uRec.exe
-Faulting module path: C:\Windows\System32\USER32.dll
-Report Id: da72a5c0-d0dc-4cfa-8614-c86236a6ebf7
-Faulting package full name: 
-Faulting package-relative application ID: 
----- event 1000 10/11/2026 10:37:52
-Faulting application name: uRec.exe, version: 0.1.0.0, time stamp: 0x6acb66ff
-Faulting module name: USER32.dll, version: 10.0.26100.33438, time stamp: 0x00acfda3
-Exception code: 0xc0000005
-Fault offset: 0x000000000002ffb2
-Faulting process id: 0x1828
-Faulting application start time: 0x1DD596C91433858
-Faulting application path: D:\a\uRec\uRec\target\release\uRec.exe
-Faulting module path: C:\Windows\System32\USER32.dll
-Report Id: 703a9991-642a-467d-bb40-16eec3c7c7db
-Faulting package full name: 
-Faulting package-relative application ID: 
----- event 1000 10/11/2026 10:33:21
+---- event 1000 10/11/2026 10:40:28
 Performance counters for the WmiApRpl (WmiApRpl) service were loaded successfully. The Record Data in the data section contains the new index values assigned to this service.
----- event 1001 10/11/2026 10:33:21
+---- event 1001 10/11/2026 10:40:28
 Performance counters for the WmiApRpl (WmiApRpl) service were removed successfully. The Record Data contains the new values of the system Last Counter and Last Help registry entries.
 ---- event 1000 09/26/2026 02:53:15
 Performance counters for the WmiApRpl (WmiApRpl) service were loaded successfully. The Record Data in the data section contains the new index values assigned to this service.
