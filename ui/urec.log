@@ -1,52 +1,90 @@
-2026-10-11 10:21:10 uRec 0.1.0 starting
-2026-10-11 10:21:10 startup: controller started
-2026-10-11 10:21:10 controller: creating hotkeys
-2026-10-11 10:21:10 controller: creating overlay
-2026-10-11 10:21:10 controller: overlay ready
-2026-10-11 10:21:20 uRec 0.1.0 starting
-2026-10-11 10:21:20 2026startup: controller started
--10-11 10:21:20 controller: creating hotkeys
-2026-10-11 10:21:20 controller: creating overlay
-2026-10-11 10:2026-10-11 10:21:26 uRec 0.1.0 starting
-2026-10-11 10:21:26 startup: controller started
-2026-10-11 10:21:26 controller: creating hotkeys
-2026-10-11 10:21:26 controller: creating overlay
-2026-10-11 102026-10-11 10:21:32 uRec 0.1.0 starting
-2026-10-11 10:212026:-3210 -startup: controller started11 
-10:21:32 controller: creating hotkeys
-2026-10-11 10:21:32 controller: creating overlay
-20262026-10-11 10:21:38 uRec 0.1.0 starting
-2026-10-11 10:21:38 startup: controller started
-2026-10-11 10:21:38 startup: opening window
-2026-10-11 10:21:38 controller: creating hotkeys
-2026-10-11 10:21:38 controller: creating overlay
-20262026-10-11 10:21:44 uRec 0.1.0 starting
-2026-10-11 10:21:44 startup: controller started
-2026-10-11 10:21:44 controller: creating hotkeys
-2026-10-11 10:21:44 controller: creating overlay
-2026-10-11 10:21:44 controller: overlay ready
-2026-10-11 10:21:50 uRec 0.1.0 starting
-2026-10-11 10:21:50 startup: controller started
-2026-10-11 10:21:50 controller: creating hotkeys
-2026-10-11 10:21:50 controller: creating overlay
-2026-10-11 10:21:50 controller: overlay ready
-2026-10-11 10:21:56 uRec 0.1.0 starting
-2026-10-11 10:212026:-5610 -startup: controller started11
- 10:21:56 controller: creating hotkeys
-2026-10-11 10:21:56 controller: creating overlay
-2026-10-11 10:21:56 controller: overlay ready
-2026-10-11 10:22:02 uRec 0.1.0 starting
-2026-10-11 10:22:02 startup: controller started
-2026-10-11 10:22:02 controller: creating hotkeys
-2026-10-11 10:22:02 controller: creating overlay
-2026-10-11 10:22:02 controller: overlay ready
-2026-10-11 10:22:08 uRec 0.1.0 starting
-2026-10-11 10:22:20260-810 -startup: controller started11
- 10:22:08 controller: creating hotkeys
-2026-10-11 10:22:08 controller: creating overlay
-2026-10-11 10:22:08 controller: overlay ready
-2026-10-11 10:22:14 uRec 0.1.0 starting
-2026-10-11 10:22:14 startup: controller started2026
--10-11 10:22:14 controller: creating hotkeys
-2026-10-11 10:22:14 controller: creating overlay
-2026
+2026-10-11 10:28:35 uRec 0.1.0 starting
+2026-10-11 10:28:35 startup: controller started
+2026-10-11 10:28:35 controller: creating hotkeys
+2026-10-11 10:28:35 controller: creating overlay
+2026-10-11 10:28:35 controller: overlay ready
+2026-10-11 10:28:35 controller: init
+2026-10-11 10:28:35 startup: opening window
+2026-10-11 10:28:35 controller: hotkeys registered
+2026-10-11 10:28:36 startup: window created
+2026-10-11 10:28:36 startup: tray installed
+2026-10-11 10:28:36 startup: app ready
+2026-10-11 10:28:36 startup: first frame
+2026-10-11 10:28:37 probe h264_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 10:28:37 probe h264_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 10:28:37 probe h264_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 10:28:37 probe h264_mf: ok=false Windows has no hardware encoder for H.264 (AVC) on this PC.
+2026-10-11 10:28:37 probe libx264: ok=true 
+2026-10-11 10:28:37 probe h264_mf: ok=true 
+2026-10-11 10:28:37 probe hevc_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 10:28:37 probe hevc_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 10:28:37 probe hevc_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 10:28:37 probe hevc_mf: ok=false Windows has no hardware encoder for H.265 (HEVC) on this PC.
+2026-10-11 10:28:37 probe libx265: ok=true 
+2026-10-11 10:28:37 probe hevc_mf: ok=false Windows has no built-in encoder for H.265 (HEVC) on this PC.
+2026-10-11 10:28:37 probe av1_nvenc: ok=false No NVIDIA NVENC hardware or driver found.
+2026-10-11 10:28:37 probe av1_amf: ok=false No AMD AMF hardware or driver found.
+2026-10-11 10:28:37 probe av1_qsv: ok=false No Intel Quick Sync hardware or driver found.
+2026-10-11 10:28:37 probe av1_mf: ok=false Windows has no hardware encoder for AV1 on this PC.
+2026-10-11 10:28:37 controller: probe done
+2026-10-11 10:28:37 first run: preset LowEnd, hw=false
+2026-10-11 10:28:44 uRec 0.1.0 starting
+2026-10-11 10:28:44 startup: controller started
+2026-10-11 10:28:44 controller: creating hotkeys
+2026-10-11 10:28:44 controller: creating overlay
+2026-10-11 10:28:44 controller: overlay ready
+2026-10-11 10:28:53 uRec 0.1.0 starting
+2026-10-11 10:28:53 startup: controller started
+2026-10-11 10:28:53 controller: creating hotkeys
+2026-10-11 10:28:53 controller: creating overlay
+2026-10-11 10:28:53 controller: overlay ready
+2026-10-11 10:29:03 uRec 0.1.0 starting
+2026-10-11 10:29:03 startup: controller started
+2026-10-11 10:29:03 controller: creating hotkeys
+2026-10-11 10:29:03 controller: creating overlay
+2026-10-11 10:29:03 controller: overlay ready
+2026-10-11 10:29:10 uRec 0.1.0 starting
+2026-10-11 10:29:10 startup: controller started
+2026-10-11 10:29:10 controller: creating hotkeys
+2026-10-11 10:29:10 controller: creating overlay
+2026-10-11 10:29:10 controller: overlay ready
+2026-10-11 10:29:16 uRec 0.1.0 starting
+2026-10-11 10:29:16 startup: controller started
+2026-10-11 10:29:16 controller: creating hotkeys
+2026-10-11 10:29:16 controller: creating overlay
+2026-10-11 10:29:16 controller: overlay ready
+2026-10-11 10:29:22 uRec 0.1.0 starting
+2026-10-11 10:29:22 startup: controller started
+2026-10-11 10:29:22 controller: creating hotkeys
+2026-10-11 10:29:22 controller: creating overlay
+2026-10-11 10:29:22 controller: overlay ready
+2026-10-11 10:29:28 uRec 0.1.0 starting
+2026-10-11 10:29:28 startup: controller started
+2026-10-11 10:29:28 controller: creating hotkeys
+2026-10-11 10:29:28 controller: creating overlay
+2026-10-11 10:29:28 controller: overlay ready
+2026-10-11 10:29:34 uRec 0.1.0 starting
+2026-10-11 10:29:34 startup: controller started
+2026-10-11 10:29:34 controller: creating hotkeys
+2026-10-11 10:29:34 controller: creating overlay
+2026-10-11 10:29:34 controller: overlay ready
+2026-10-11 10:29:40 uRec 0.1.0 starting
+2026-10-11 10:29:40 startup: controller started
+2026-10-11 10:29:40 controller: creating hotkeys
+2026-10-11 10:29:40 controller: creating overlay
+2026-10-11 10:29:40 controller: overlay ready
+2026-10-11 10:29:46 uRec 0.1.0 starting
+2026-10-11 10:29:46 startup: controller started
+2026-10-11 10:29:46 controller: creating hotkeys
+2026-10-11 10:29:46 controller: creating overlay
+2026-10-11 10:29:46 controller: overlay ready
+2026-10-11 10:29:52 uRec 0.1.0 starting
+2026-10-11 10:29:52 startup: controller started
+2026-10-11 10:29:52 controller: creating hotkeys
+2026-10-11 10:29:52 controller: creating overlay
+2026-10-11 10:29:52 controller: overlay ready
+2026-10-11 10:29:58 uRec 0.1.0 starting
+2026-10-11 10:29:58 startup: controller started
+2026-10-11 10:29:58 controller: creating hotkeys
+2026-10-11 10:29:58 controller: creating overlay
+2026-10-11 10:29:58 controller: overlay ready
