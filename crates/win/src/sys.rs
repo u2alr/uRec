@@ -246,7 +246,7 @@ pub fn local_time() -> (i32, u32, u32, u32, u32, u32) {
 /// Short confirmation sound (the Windows "notification" sound).
 pub fn play_ding() {
     unsafe {
-        let _ = windows::Win32::UI::WindowsAndMessaging::MessageBeep(
+        let _ = windows::Win32::System::Diagnostics::Debug::MessageBeep(
             windows::Win32::UI::WindowsAndMessaging::MB_ICONASTERISK,
         );
     }
