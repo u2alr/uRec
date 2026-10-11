@@ -26,8 +26,16 @@ impl Drop for Handle {
 }
 
 fn last_error(what: &str) -> String {
-    let e = windows::core::Error::from_win32();
-    format!("{what} failed: {}", e.message().trim())
+    let code = unsafe { windows::Win32::Foundation::GetLastError() }.0;
+    // WinHTTP's own codes (12001-12192) have no system message text.
+    let text = match code {
+        12002 => "the connection timed out".to_string(),
+        12007 => "the server name couldn't be resolved (offline?)".to_string(),
+        12029 | 12030 => "couldn't connect".to_string(),
+        12175 | 12038 | 12044 | 12045 | 12057 => "the secure connection couldn't be verified".to_string(),
+        _ => windows::core::HRESULT::from_win32(code).message().trim().to_string(),
+    };
+    format!("{what} failed: {text} (error {code})")
 }
 
 /// Split "https://host/path?query" into (host, path).
