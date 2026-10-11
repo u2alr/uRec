@@ -36,6 +36,12 @@ impl Win32Ok for windows::core::HRESULT {
     }
 }
 
+impl Win32Ok for windows::Win32::Foundation::WIN32_ERROR {
+    fn succeeded(self) -> bool {
+        self.0 == 0
+    }
+}
+
 impl<T> Win32Ok for windows::core::Result<T> {
     fn succeeded(self) -> bool {
         self.is_ok()
