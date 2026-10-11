@@ -10,7 +10,6 @@ function Check($id, $name, $ok, $detail) {
 function Measure-Proc([string]$name, [int]$seconds) {
     $p = Get-Process $name -ErrorAction SilentlyContinue
     if (-not $p) { return $null }
-    $t0 = ($p | Measure-Object TotalProcessorTime -Sum).Sum
     $t0 = ($p | ForEach-Object { $_.TotalProcessorTime.TotalMilliseconds } | Measure-Object -Sum).Sum
     Start-Sleep -Seconds $seconds
     $p = Get-Process $name -ErrorAction SilentlyContinue
@@ -35,7 +34,7 @@ $videos = Join-Path $env:USERPROFILE "Videos\uRec"
 $sw = [Diagnostics.Stopwatch]::StartNew()
 $p = Start-Process $Setup -ArgumentList "/VERYSILENT", "/SUPPRESSMSGBOXES", "/CURRENTUSER", "/NORESTART", "/TASKS=desktopicon" -PassThru -Wait
 Check "I01" "Silent per-user install succeeds without admin prompt" ($p.ExitCode -eq 0) "exit=$($p.ExitCode) in $([math]::Round($sw.Elapsed.TotalSeconds,1)) s"
-Check "I02" "Program files installed (uRec.exe, ffmpeg.exe, ffprobe.exe, notices)" ((Test-Path "$app\uRec.exe") -and (Test-Path "$app\ffmpeg.exe") -and (Test-Path "$app\ffprobe.exe") -and (Test-Path "$app\THIRD-PARTY-NOTICES.txt")) $app
+Check "I02" "Program files installed (uRec.exe, ffmpeg.exe, notices)" ((Test-Path "$app\uRec.exe") -and (Test-Path "$app\ffmpeg.exe") -and (Test-Path "$app\THIRD-PARTY-NOTICES.txt")) $app
 $footprint = [math]::Round(((Get-ChildItem $app -Recurse | Measure-Object Length -Sum).Sum) / 1MB, 1)
 "installed footprint: $footprint MB"
 Check "I03" "Start Menu shortcut created" (Test-Path $startMenu) $startMenu
@@ -53,8 +52,10 @@ $alive = -not $proc.HasExited
 Check "I07" "Installed app launches and stays running" $alive "pid=$($proc.Id)"
 $ffIdle = @(Get-Process ffmpeg -ErrorAction SilentlyContinue).Count
 Check "I08" "Idle with Instant Replay off: no capture or encoder process" ($ffIdle -eq 0) "ffmpeg processes=$ffIdle"
-$idle = Measure-Proc "uRec" 30
-"idle (30 s window, after 15 s settle): cpu=$($idle.CpuPercent)% workingset=$($idle.WorkingSetMB) MB private=$($idle.PrivateMB) MB"
+$samples = @(1..3 | ForEach-Object { Measure-Proc "uRec" 10 })
+$samples | ForEach-Object { "idle 10 s window: cpu=$($_.CpuPercent)% workingset=$($_.WorkingSetMB) MB private=$($_.PrivateMB) MB" }
+$idle = [pscustomobject]@{ CpuPercent = [math]::Round(($samples | Measure-Object CpuPercent -Average).Average, 2); WorkingSetMB = $samples[-1].WorkingSetMB; PrivateMB = $samples[-1].PrivateMB }
+"idle average over 30 s (after 15 s settle): cpu=$($idle.CpuPercent)% workingset=$($idle.WorkingSetMB) MB private=$($idle.PrivateMB) MB"
 Check "I09" "Idle CPU close to zero (< 1% of the machine)" ($idle -and $idle.CpuPercent -lt 1.0) "cpu=$($idle.CpuPercent)%"
 Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
 Start-Sleep -Seconds 2
@@ -67,11 +68,11 @@ $s | ConvertTo-Json -Depth 8 | Out-File -Encoding utf8 $settings
 $proc = Start-Process "$app\uRec.exe" -PassThru
 Start-Sleep -Seconds 25
 $appM = Measure-Proc "uRec" 20
-$ffM = Measure-Proc "ffmpeg" 1
+$ffM = Measure-Proc "ffmpeg" 10
 $buf = Join-Path $env:LOCALAPPDATA "uRec\replay"
 $segs = @(Get-ChildItem $buf -Filter *.ts -ErrorAction SilentlyContinue)
 $bufMB = [math]::Round((($segs | Measure-Object Length -Sum).Sum) / 1MB, 1)
-"replay on (15 s, CPU x264 on this VM): app cpu=$($appM.CpuPercent)% ws=$($appM.WorkingSetMB) MB; ffmpeg ws=$($ffM.WorkingSetMB) MB; buffer=$($segs.Count) files $bufMB MB"
+"replay on (15 s buffer, x264 on this 2-vCPU VM): uRec cpu=$($appM.CpuPercent)% ws=$($appM.WorkingSetMB) MB; ffmpeg cpu=$($ffM.CpuPercent)% ws=$($ffM.WorkingSetMB) MB; buffer=$($segs.Count) files $bufMB MB"
 Check "I10" "Instant Replay runs from the installed app with a bounded buffer" ($segs.Count -gt 0 -and $segs.Count -le 12) "segments=$($segs.Count) (limit 12 for 15 s) size=$bufMB MB"
 Stop-Process -Id $proc.Id -Force -ErrorAction SilentlyContinue
 Start-Sleep -Seconds 2

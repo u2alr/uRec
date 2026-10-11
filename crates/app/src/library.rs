@@ -77,18 +77,16 @@ impl Library {
                 let cache_path = cache_dir().join("metadata.json");
                 let mut cache: Cache =
                     std::fs::read(&cache_path).ok().and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default();
-                let ffprobe =
-                    ffmpeg.as_ref().map(|f| f.with_file_name(if cfg!(windows) { "ffprobe.exe" } else { "ffprobe" }));
                 while let Ok(Job::Refresh(dir)) = rx.recv() {
                     sc.store(true, Ordering::Relaxed);
                     let mut found = scan(&dir);
-                    // Metadata: cheap, from cache or ffprobe.
+                    // Metadata: cheap, from the cache or `ffmpeg -i`.
                     for item in found.iter_mut() {
                         let k = key(&item.path, item.size, item.modified);
                         if let Some(m) = cache.entries.get(&k) {
                             item.meta = Some(m.clone());
-                        } else if let Some(fp) = ffprobe.as_deref().filter(|p| p.exists()) {
-                            if let Some(m) = probe_meta(fp, &item.path) {
+                        } else if let Some(ff) = ffmpeg.as_deref() {
+                            if let Some(m) = probe_meta(ff, &item.path) {
                                 cache.entries.insert(k.clone(), m.clone());
                                 item.meta = Some(m);
                             }
@@ -209,38 +207,39 @@ pub fn scan(dir: &Path) -> Vec<Item> {
     out
 }
 
-fn probe_meta(ffprobe: &Path, file: &Path) -> Option<Meta> {
-    let out = quiet_command(ffprobe)
-        .args([
-            "-v",
-            "error",
-            "-select_streams",
-            "v:0",
-            "-show_entries",
-            "stream=width,height,avg_frame_rate:format=duration",
-            "-of",
-            "default=noprint_wrappers=1",
-        ])
-        .arg(file)
-        .output()
-        .ok()?;
-    let text = String::from_utf8_lossy(&out.stdout);
+/// Read duration, size and frame rate from `ffmpeg -i` output (no ffprobe needed).
+fn probe_meta(ffmpeg: &Path, file: &Path) -> Option<Meta> {
+    let out = quiet_command(ffmpeg).args(["-hide_banner", "-nostdin", "-i"]).arg(file).output().ok()?;
+    parse_meta(&String::from_utf8_lossy(&out.stderr))
+}
+
+pub fn parse_meta(text: &str) -> Option<Meta> {
     let mut m = Meta::default();
     for line in text.lines() {
-        let Some((k, v)) = line.split_once('=') else { continue };
-        match k {
-            "width" => m.width = v.parse().unwrap_or(0),
-            "height" => m.height = v.parse().unwrap_or(0),
-            "duration" => m.duration = v.parse().unwrap_or(0.0),
-            "avg_frame_rate" => {
-                if let Some((n, d)) = v.split_once('/') {
-                    let (n, d): (f64, f64) = (n.parse().unwrap_or(0.0), d.parse().unwrap_or(1.0));
-                    if d > 0.0 {
-                        m.fps = (n / d * 100.0).round() / 100.0;
+        let l = line.trim();
+        if let Some(rest) = l.strip_prefix("Duration: ") {
+            let d = rest.split(',').next().unwrap_or("");
+            let parts: Vec<f64> = d.split(':').filter_map(|x| x.trim().parse().ok()).collect();
+            if parts.len() == 3 {
+                m.duration = parts[0] * 3600.0 + parts[1] * 60.0 + parts[2];
+            }
+        } else if l.starts_with("Stream #") && l.contains("Video:") && m.width == 0 {
+            for tok in l.split([',', ' ']) {
+                if let Some((w, h)) = tok.split_once('x') {
+                    if let (Ok(w), Ok(h)) = (w.parse::<u32>(), h.trim_end_matches(']').parse::<u32>()) {
+                        if w >= 16 && h >= 16 && m.width == 0 {
+                            m.width = w;
+                            m.height = h;
+                        }
                     }
                 }
             }
-            _ => {}
+            let segs: Vec<&str> = l.split(',').map(str::trim).collect();
+            for s in segs {
+                if let Some(v) = s.strip_suffix(" fps") {
+                    m.fps = v.trim().parse().unwrap_or(0.0);
+                }
+            }
         }
     }
     (m.width > 0).then_some(m)
@@ -311,6 +310,15 @@ mod tests {
         names.sort();
         assert_eq!(names, vec!["/a", "VALORANT/b"]);
         std::fs::remove_dir_all(&d).unwrap();
+    }
+
+    #[test]
+    fn parses_ffmpeg_info() {
+        let text = "Input #0, mov,mp4,m4a,3gp,3g2,mj2, from 'a.mp4':\n  Duration: 00:01:05.20, start: 0.000000, bitrate: 2036 kb/s\n  Stream #0:0[0x1](und): Video: h264 (High) (avc1 / 0x31637661), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 1990 kb/s, 59.94 fps, 60 tbr, 15360 tbn (default)\n  Stream #0:1[0x2](und): Audio: aac (LC), 48000 Hz, stereo, fltp, 160 kb/s";
+        let m = parse_meta(text).unwrap();
+        assert_eq!((m.width, m.height), (1920, 1080));
+        assert!((m.duration - 65.2).abs() < 1e-6);
+        assert!((m.fps - 59.94).abs() < 1e-6);
     }
 
     #[test]

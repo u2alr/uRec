@@ -412,10 +412,16 @@ impl eframe::App for App {
         self.notices(&ctx, &st);
 
         // Idle: no repaints at all. Active: refresh the timer and meters.
-        let every = Duration::from_millis(if self.s.general.performance_mode { 1000 } else { 250 });
-        let active = st.recording.is_some() || st.finishing || st.starting || st.probing || !st.ready;
-        if active || (st.replay == ReplayState::On && self.page == Page::Home) {
-            ctx.request_repaint_after(every);
+        // Idle: no repaints at all. Busy states: 1×/s for the timer. Live audio meters on the
+        // Home page: 4×/s (1×/s in performance mode).
+        let meters = self.page == Page::Home
+            && !self.s.general.performance_mode
+            && matches!(st.audio.0, Some(urec_win::SourceState::Active { .. }))
+                | matches!(st.audio.1, Some(urec_win::SourceState::Active { .. }));
+        if st.capture.is_some() && meters {
+            ctx.request_repaint_after(Duration::from_millis(250));
+        } else if st.recording.is_some() || st.finishing || st.starting || st.probing || !st.ready {
+            ctx.request_repaint_after(Duration::from_secs(1));
         }
         if self.exit_requested {
             ctx.send_viewport_cmd(egui::ViewportCommand::Close);

@@ -11,7 +11,7 @@ $dist = "dist\uRec"
 if (Test-Path dist) { Remove-Item dist -Recurse -Force }
 New-Item -ItemType Directory $dist | Out-Null
 Copy-Item target\release\uRec.exe $dist
-Copy-Item (Join-Path $ffDir "ffmpeg.exe"), (Join-Path $ffDir "ffprobe.exe") $dist
+Copy-Item (Join-Path $ffDir "ffmpeg.exe") $dist
 Copy-Item LICENSE $dist\LICENSE.txt
 Copy-Item (Join-Path $ffDir "LICENSE.txt") $dist\FFMPEG-LICENSE.txt
 
@@ -21,7 +21,7 @@ $resolved = @{}
 foreach ($n in $meta.resolve.nodes) { $resolved[$n.id] = $true }
 $crates = $meta.packages | Where-Object { $resolved.ContainsKey($_.id) -and $_.source } | Sort-Object name, version
 $notice = @("uRec $Version third-party components", "",
-    "FFmpeg 9.0.2 (ffmpeg.exe, ffprobe.exe): GPL version 3. Build by gyan.dev (essentials).",
+    "FFmpeg 9.0.2 (ffmpeg.exe): GPL version 3. Build by gyan.dev (essentials).",
     "  Source code: https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz",
     "  Build details: https://www.gyan.dev/ffmpeg/builds/",
     "  The FFmpeg programs are separate executables run by uRec; their license text is in FFMPEG-LICENSE.txt.",

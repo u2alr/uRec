@@ -219,6 +219,8 @@ struct Worker {
     recording: Option<Recording>,
     hotkeys: urec_win::Hotkeys,
     overlay: urec_win::Overlay,
+    /// Primary monitor rectangle for the overlay, refreshed with the disk check (not every tick).
+    overlay_monitor: (i32, i32, u32, u32),
     lag_since: Option<Instant>,
     lag_warned: bool,
     last_disk_check: Instant,
@@ -261,6 +263,7 @@ impl Worker {
                 log("controller: overlay ready");
                 o
             },
+            overlay_monitor: (0, 0, 1920, 1080),
             lag_since: None,
             lag_warned: false,
             last_disk_check: Instant::now() - Duration::from_secs(60),
@@ -288,7 +291,8 @@ impl Worker {
     fn run(mut self) {
         self.init();
         loop {
-            let tick = if self.s.general.performance_mode { 1000 } else { 250 };
+            // Idle: wake once a second. Capturing: 4×/s for stats and meters (1×/s in performance mode).
+            let tick = if self.live.is_none() || self.s.general.performance_mode { 1000 } else { 250 };
             match self.rx.recv_timeout(Duration::from_millis(tick)) {
                 Ok(Command::Shutdown) | Err(RecvTimeoutError::Disconnected) => break,
                 Ok(cmd) => self.handle(cmd),
@@ -994,6 +998,9 @@ impl Worker {
         if self.last_disk_check.elapsed() > Duration::from_secs(10) {
             self.last_disk_check = Instant::now();
             self.check_disk();
+            if let Some(m) = urec_win::monitors().into_iter().find(|m| m.primary) {
+                self.overlay_monitor = (m.bounds.x, m.bounds.y, m.bounds.width, m.bounds.height);
+            }
         }
         self.update_overlay();
     }
@@ -1005,9 +1012,7 @@ impl Worker {
         let mut o =
             urec_win::OverlayState { visible, corner: self.s.appearance.overlay_corner.clone(), ..Default::default() };
         if visible {
-            if let Some(m) = urec_win::monitors().into_iter().find(|m| m.primary) {
-                o.monitor = (m.bounds.x, m.bounds.y, m.bounds.width, m.bounds.height);
-            }
+            o.monitor = self.overlay_monitor;
             if let Some(r) = &self.recording {
                 let s = r.started.elapsed().as_secs();
                 o.dot = (229, 72, 77);
@@ -1082,7 +1087,15 @@ impl Worker {
 
     fn check_disk(&mut self) {
         let free = urec_win::disk_space(&self.s.output_dir()).map(|(f, _)| f);
-        self.update(|s| s.disk_free = free);
+        let old = self.ctl.status.lock().ok().and_then(|s| s.disk_free);
+        // Only wake the UI when the number shown would change noticeably.
+        let changed = match (old, free) {
+            (Some(a), Some(b)) => a.abs_diff(b) > 100_000_000,
+            (a, b) => a != b,
+        };
+        if changed {
+            self.update(|s| s.disk_free = free);
+        }
         let Some(free) = free else { return };
         if self.recording.is_some() {
             if free < HARD_MIN_FREE {
