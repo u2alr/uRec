@@ -1,35 +1,17 @@
-    Updating crates.io index
-   Compiling windows v0.62.2
-   Compiling urec-engine v0.1.1 (D:\a\uRec\uRec\crates\engine)
-   Compiling urec v0.1.1 (D:\a\uRec\uRec\crates\app)
-   Compiling gpu-allocator v0.28.0
-   Compiling urec-win v0.1.1 (D:\a\uRec\uRec\crates\win)
-   Compiling wgpu-hal v30.0.1
-error[E0599]: no associated function or constant named `from_win32` found for struct `windows_result::error::Error` in the current scope
-   --> crates\win\src\http.rs:29:35
-    |
- 29 |     let e = windows::core::Error::from_win32();
-    |                                   ^^^^^^^^^^ associated function or constant not found in `windows_result::error::Error`
-    |
-note: if you're trying to build a new `windows_result::error::Error` consider using one of the following associated functions:
-      windows_result::error::Error::empty
-      windows_result::error::Error::new
-      windows_result::error::Error::from_hresult
-      windows_result::error::Error::from_thread
-   --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-result-0.4.1\src\error.rs:82:5
-    |
- 82 |     pub const fn empty() -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
- 91 |     pub fn new<T: AsRef<str>>(code: HRESULT, message: T) -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-110 |     pub fn from_hresult(code: HRESULT) -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-118 |     pub fn from_thread() -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-For more information about this error, try `rustc --explain E0599`.
-error: could not compile `urec-win` (lib) due to 1 previous error
-warning: build failed, waiting for other jobs to finish...
+sample recording: True
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 16.00.35.mp4 size=705920
+light home alive=True
+light library alive=True
+light settings:general alive=True
+light settings:recording alive=True
+light settings:video alive=True
+light settings:audio alive=True
+light settings:instantreplay alive=True
+light settings:hotkeys alive=True
+light settings:storage alive=True
+light settings:appearance alive=True
+light settings:advanced alive=True
+dark home alive=True
+dark library alive=True
+dark settings:video alive=True
+dark settings:audio alive=True
