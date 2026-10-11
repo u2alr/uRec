@@ -84,6 +84,7 @@ pub fn local_time() -> (i32, u32, u32, u32, u32, u32) {
     (s.year, s.month, s.day, s.hour, s.minute, s.second)
 }
 pub fn play_ding() {}
+pub fn play_error() {}
 pub fn recycle(path: &Path) -> bool {
     std::fs::remove_file(path).is_ok()
 }

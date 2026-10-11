@@ -1028,6 +1028,89 @@ fn storage(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     );
 }
 
+/// Summary for bug reports and hardware testing: what this PC can do and how uRec is set up.
+/// No paths, window titles or file names.
+fn diagnostics(app: &App, st: &Status) -> String {
+    let mut d = String::new();
+    let mut line = |k: &str, v: String| d.push_str(&format!("{k}: {v}\n"));
+    line("uRec", env!("CARGO_PKG_VERSION").into());
+    line("Windows build", urec_win::windows_build().map(|b| b.to_string()).unwrap_or_else(|| "unknown".into()));
+    line("FFmpeg", st.ffmpeg_version.clone());
+    line("Logical CPUs", urec_engine::probe::logical_cpus().to_string());
+    line("Windows Graphics Capture", urec_win::supports_wgc().to_string());
+    for (i, m) in app.monitors.iter().enumerate() {
+        line(
+            &format!("Display {}", i + 1),
+            format!(
+                "{}x{} {}Hz primary={} desktop_duplication={}",
+                m.bounds.width,
+                m.bounds.height,
+                m.refresh_hz.map(|h| h.to_string()).unwrap_or("?".into()),
+                m.primary,
+                m.dda_capable()
+            ),
+        );
+    }
+    for r in &st.probe {
+        line(
+            &format!("Encoder {}", r.encoder.ffmpeg_name().unwrap_or("?")),
+            if r.ok { format!("works ({} ms)", r.millis) } else { format!("no: {}", r.reason) },
+        );
+    }
+    if let Some(c) = &st.capture {
+        line(
+            "Capturing now",
+            format!(
+                "{} via {} ({}) {}x{}@{}",
+                c.encoder,
+                c.method.label(),
+                if c.gpu_path { "GPU frames" } else { "system memory" },
+                c.width,
+                c.height,
+                c.fps
+            ),
+        );
+        line(
+            "Frames",
+            format!("{} encoded, {} dropped, speed {:.2}", st.stats.frame, st.stats.drop_frames, st.stats.speed),
+        );
+    }
+    line("Sound outputs", app.speakers.len().to_string());
+    line("Microphones", app.mics.len().to_string());
+    let v = &app.s.video;
+    line(
+        "Video",
+        format!(
+            "preset={} codec={} encoder={} height={} fps={} rate={} quality={} bitrate={}k effort={} container={}",
+            v.preset,
+            v.codec,
+            v.encoder,
+            v.height,
+            v.fps,
+            v.rate_control,
+            v.quality,
+            v.bitrate_kbps,
+            v.effort,
+            v.container
+        ),
+    );
+    let a = &app.s.audio;
+    line(
+        "Audio",
+        format!("system={} mic={} mode={} layout={} {}k", a.system, a.mic, a.mic_mode, a.layout, a.bitrate_kbps),
+    );
+    line("Capture", format!("{} method={} cursor={}", app.s.capture.kind, app.s.capture.method, app.s.capture.cursor));
+    line("Instant Replay", format!("{} {}s", app.s.replay.enabled, app.s.replay.seconds));
+    line(
+        "Overlay",
+        format!("{} {} motion={}", app.s.appearance.overlay, app.s.appearance.overlay_corner, app.s.appearance.motion),
+    );
+    if !st.hotkey_failures.is_empty() {
+        line("Hotkeys not registered", st.hotkey_failures.len().to_string());
+    }
+    d
+}
+
 fn hours(secs: u64) -> String {
     if secs >= 3600 {
         format!("{} hours", secs / 3600)
@@ -1205,6 +1288,16 @@ fn advanced(app: &mut App, ui: &mut egui::Ui, st: &Status) {
         }
         if theme::quiet_button(ui, &p, "Open settings folder").clicked() {
             urec_win::reveal_in_explorer(&crate::settings::data_dir());
+        }
+        if theme::quiet_button(ui, &p, "Copy diagnostics")
+            .on_hover_text(
+                "A plain-text summary of this PC and uRec's settings, for bug reports. No file names or recordings.",
+            )
+            .clicked()
+        {
+            let text = diagnostics(app, st);
+            ui.ctx().copy_text(text);
+            app.push_notice(Level::Info, "Diagnostics copied. Paste them into a bug report.".into());
         }
     });
     ui.add_space(6.0);

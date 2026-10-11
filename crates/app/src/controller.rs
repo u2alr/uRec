@@ -1251,6 +1251,9 @@ impl Worker {
                 self.save_feedback(SaveFeedback::Saved(clip));
             }
             Err(e) => {
+                if self.s.general.sound_on_save {
+                    urec_win::play_error();
+                }
                 self.notice(Level::Error, format!("Instant Replay couldn't be saved: {e}"), None);
                 self.save_feedback(SaveFeedback::Failed(e));
             }

@@ -342,6 +342,15 @@ pub fn play_ding() {
     }
 }
 
+/// The Windows error sound (for a failed save).
+pub fn play_error() {
+    unsafe {
+        let _ = windows::Win32::System::Diagnostics::Debug::MessageBeep(
+            windows::Win32::UI::WindowsAndMessaging::MB_ICONHAND,
+        );
+    }
+}
+
 /// Move a file to the Recycle Bin (never deletes permanently).
 pub fn recycle(path: &Path) -> bool {
     use windows::Win32::UI::Shell::{
