@@ -1,60 +1,23 @@
-help: consider annotating `Notice` with `#[derive(Clone)]`
-    |
- 94 + #[derive(Clone)]
- 95 | pub struct Notice {
-    |
-
-error[E0277]: `Notice` doesn't implement `std::fmt::Debug`
-   --> crates\app\src\controller.rs:145:5
-    |
-128 | #[derive(Clone, Debug, Default)]
-    |                 ----- in this derive macro expansion
-...
-145 |     pub notices: VecDeque<Notice>,
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `std::fmt::Debug` is not implemented for `Notice`
-    |
-help: the trait `std::fmt::Debug` is conditionally implemented for `VecDeque<T, A>`
-   --> /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\alloc\src\collections\vec_deque\mod.rs:3913:8
-    |
-    = note: unsatisfied requirement introduced here: `Notice: std::fmt::Debug`
-help: consider annotating `Notice` with `#[derive(Debug)]`
-    |
- 94 + #[derive(Debug)]
- 95 | pub struct Notice {
-    |
-
-error[E0560]: struct `Notice` has no field named `action`
-   --> crates\app\src\controller.rs:432:82
-    |
-432 |             s.notices.push_front(Notice { level, text, at: Instant::now(), file, action: None });
-    |                                                                                  ^^^^^^ `Notice` does not have this field
-    |
-    = note: all struct fields are already assigned
-
-error[E0560]: struct `Notice` has no field named `action`
-    --> crates\app\src\controller.rs:1176:21
-     |
-1176 |                     action: Some(NoticeAction::UseCpuEncoder { retry_replay }),
-     |                     ^^^^^^ `Notice` does not have this field
-     |
-     = note: all struct fields are already assigned
-
-error[E0560]: struct `Notice` has no field named `action`
-   --> crates\app\src\ui\mod.rs:219:17
-    |
-219 |                 action: None,
-    |                 ^^^^^^ `Notice` does not have this field
-    |
-    = note: all struct fields are already assigned
-
-error[E0609]: no field `action` on type `&Notice`
-   --> crates\app\src\ui\mod.rs:409:61
-    |
-409 | ...                   if let Some(a) = &n.action {
-    |                                           ^^^^^^ unknown field
-    |
-    = note: available fields are: `level`, `text`, `at`, `file`
-
-Some errors have detailed explanations: E0119, E0277, E0560, E0609.
-For more information about an error, try `rustc --explain E0119`.
-error: could not compile `urec` (bin "uRec") due to 8 previous errors
+sample recording: True
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 20.49.20.mp4 size=806528
+setup test log: setup test: Capture and encoder start = Some(true) (CPU (x264/x265), H.264 (AVC) via GDI (compatibility), 960×720 at 30 FPS)
+setup test log: setup test: Game and desktop sound = Some(false) (The device wasn't found. It may be unplugged or disabled.)
+setup test log: setup test: Microphone = None (Turned off in Settings › Audio.)
+setup test log: setup test: Recording ran for 5 seconds = Some(true) (152 frames encoded, 16 frames dropped)
+setup test log: setup test: File saved and finalized = Some(true) (502 KB written, crash-safe MP4)
+setup test log: setup test: Video plays back = Some(true) (175 frames of h264 960×720 decoded without errors (5.8 s))
+light home alive=True
+light library alive=True
+light settings:general alive=True
+light settings:recording alive=True
+light settings:video alive=True
+light settings:audio alive=True
+light settings:instantreplay alive=True
+light settings:hotkeys alive=True
+light settings:storage alive=True
+light settings:appearance alive=True
+light settings:advanced alive=True
+dark home alive=True
+dark library alive=True
+dark settings:video alive=True
+dark settings:audio alive=True
