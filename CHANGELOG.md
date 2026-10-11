@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.1.1
+
+Fixes from first testing:
+
+- **Folders:** Open folder and Show in folder now open the right folder, including paths with spaces. They used to land in another folder. The default save location now follows your real Videos folder, even if Windows or OneDrive moved it.
+- **Buttons:** every button now shows hover and pressed states. Save replay looks disabled while Instant Replay is off, with a tip explaining why.
+- **Library:** the Refresh spinner no longer spins forever while Instant Replay is on, and Refresh responds immediately.
+- **Overlay:** now a small, perfectly round dot (anti-aliased), red while recording and amber while Instant Replay is on.
+
 ## 0.1.0 — first release
 
 **Recording**
