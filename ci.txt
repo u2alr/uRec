@@ -1,103 +1,264 @@
-commit 50eda7b1f5975ea773d653b5391dbba494f4a333 run 38124156899
+commit 333f8134b449f19d21065e8234ebd6f671a14ba5 run 38124574803
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
+    Updating crates.io index
+     Locking 15 packages to latest compatible versions
+      Adding proc-macro2 v1.0.107
+      Adding quote v1.0.47
+      Adding syn v2.0.119
+      Adding unicode-ident v1.0.26
+      Adding windows v0.62.2
+      Adding windows-collections v0.3.2
+      Adding windows-core v0.62.2
+      Adding windows-future v0.3.2
+      Adding windows-implement v0.60.2
+      Adding windows-interface v0.59.3
+      Adding windows-link v0.2.1
+      Adding windows-numerics v0.3.1
+      Adding windows-result v0.4.1
+      Adding windows-strings v0.5.1
+      Adding windows-threading v0.2.1
+ Downloading crates ...
+  Downloaded windows-core v0.62.2
+  Downloaded windows-future v0.3.2
+  Downloaded windows-implement v0.60.2
+  Downloaded windows-numerics v0.3.1
+  Downloaded windows-strings v0.5.1
+  Downloaded windows-threading v0.2.1
+  Downloaded windows-collections v0.3.2
+  Downloaded windows-interface v0.59.3
+  Downloaded windows-link v0.2.1
+  Downloaded windows-result v0.4.1
+  Downloaded quote v1.0.47
+  Downloaded unicode-ident v1.0.26
+  Downloaded proc-macro2 v1.0.107
+  Downloaded syn v2.0.119
+  Downloaded windows v0.62.2
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+    Checking windows-link v0.2.1
+    Checking windows-result v0.4.1
+    Checking windows-strings v0.5.1
+    Checking windows-threading v0.2.1
     Checking urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
-    Checking urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 9.71s
+   Compiling syn v2.0.119
+   Compiling windows-interface v0.59.3
+   Compiling windows-implement v0.60.2
+    Checking windows-core v0.62.2
+    Checking windows-future v0.3.2
+    Checking windows-collections v0.3.2
+    Checking windows-numerics v0.3.1
+    Checking windows v0.62.2
+    Checking urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
+error[E0599]: no method named `GetDesc` found for struct `windows::Win32::Graphics::Dxgi::IDXGIOutput` in the current scope
+  --> crates\win\src\display.rs:43:42
+   |
+43 |                 if let Ok(desc) = output.GetDesc() {
+   |                                          ^^^^^^^ method not found in `windows::Win32::Graphics::Dxgi::IDXGIOutput`
+
+error[E0599]: no method named `succeeded` found for struct `windows::Win32::Foundation::WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:106:11
+    |
+106 |     if !r.succeeded() {
+    |           ^^^^^^^^^ method not found in `windows::Win32::Foundation::WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `sys::Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `succeeded` found for struct `windows::Win32::Foundation::WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:189:109
+    |
+189 |                 if !RegOpenKeyExW(HKEY_CURRENT_USER, PCWSTR(key_w.as_ptr()), None, KEY_SET_VALUE, &mut key).succeeded()
+    |                                                                                                             ^^^^^^^^^ method not found in `windows::Win32::Foundation::WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `sys::Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `succeeded` found for struct `windows::Win32::Foundation::WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:195:98
+    |
+195 |                 let ok = RegSetValueExW(key, PCWSTR(name_w.as_ptr()), None, REG_SZ, Some(bytes)).succeeded();
+    |                                                                                                  ^^^^^^^^^ method not found in `windows::Win32::Foundation::WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `sys::Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `succeeded` found for struct `windows::Win32::Foundation::WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:200:104
+    |
+200 |                 RegDeleteKeyValueW(HKEY_CURRENT_USER, PCWSTR(key_w.as_ptr()), PCWSTR(name_w.as_ptr())).succeeded()
+    |                                                                                                        ^^^^^^^^^ method not found in `windows::Win32::Foundation::WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `sys::Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `urec-win` (lib) due to 5 previous errors
+warning: build failed, waiting for other jobs to finish...
+## clippy FAILED
 ## test
+   Compiling windows-link v0.2.1
    Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
-   Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 15.68s
-     Running unittests src\main.rs (target\release\deps\urec_cli-6131b02f3e0065cd.exe)
+   Compiling windows-result v0.4.1
+   Compiling windows-strings v0.5.1
+   Compiling windows-core v0.62.2
+   Compiling windows-threading v0.2.1
+   Compiling windows-collections v0.3.2
+   Compiling windows-future v0.3.2
+   Compiling windows-numerics v0.3.1
+   Compiling windows v0.62.2
+   Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
+error[E0599]: no method named `GetDesc` found for struct `IDXGIOutput` in the current scope
+  --> crates\win\src\display.rs:43:42
+   |
+43 |                 if let Ok(desc) = output.GetDesc() {
+   |                                          ^^^^^^^ method not found in `IDXGIOutput`
 
-running 0 tests
+error[E0599]: no method named `succeeded` found for struct `WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:106:11
+    |
+106 |     if !r.succeeded() {
+    |           ^^^^^^^^^ method not found in `WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+error[E0599]: no method named `succeeded` found for struct `WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:189:109
+    |
+189 |                 if !RegOpenKeyExW(HKEY_CURRENT_USER, PCWSTR(key_w.as_ptr()), None, KEY_SET_VALUE, &mut key).succeeded()
+    |                                                                                                             ^^^^^^^^^ method not found in `WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
 
-     Running unittests src\lib.rs (target\release\deps\urec_engine-7b56bc09cc9d8a35.exe)
+error[E0599]: no method named `succeeded` found for struct `WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:195:98
+    |
+195 |                 let ok = RegSetValueExW(key, PCWSTR(name_w.as_ptr()), None, REG_SZ, Some(bytes)).succeeded();
+    |                                                                                                  ^^^^^^^^^ method not found in `WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
 
-running 21 tests
-test encoder::tests::names_and_candidates ... ok
-test encoder::tests::failure_messages ... ok
-test encoder::tests::args_have_rate_and_keyframes ... ok
-test hotkey::tests::finds_conflicts ... ok
-test hotkey::tests::roundtrip ... ok
-test naming::tests::sanitizes ... ok
-test naming::tests::stamps ... ok
-test pipeline::tests::audio_and_replay_output ... ok
-test pipeline::tests::gpu_scaling_stays_on_gpu ... ok
-test pipeline::tests::region_crops ... ok
-test pipeline::tests::system_path_downloads_once ... ok
-test pipeline::tests::zero_copy_native_has_no_filters ... ok
-test naming::tests::unique_names ... ok
-test process::tests::parses_progress_blocks ... ok
-test replay::tests::parses_and_selects ... ok
-test replay::tests::ring_math ... ok
-test video::tests::bitrate_scales ... ok
-test video::tests::bytes_formatting ... ok
-test video::tests::output_size_never_upscales ... ok
-test video::tests::presets_respect_machine ... ok
-test video::tests::validate_catches_limits ... ok
+error[E0599]: no method named `succeeded` found for struct `WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:200:104
+    |
+200 |                 RegDeleteKeyValueW(HKEY_CURRENT_USER, PCWSTR(key_w.as_ptr()), PCWSTR(name_w.as_ptr())).succeeded()
+    |                                                                                                        ^^^^^^^^^ method not found in `WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
 
-test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
-
-   Doc-tests urec_engine
-
-running 0 tests
-
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
-
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `urec-win` (lib) due to 5 previous errors
+warning: build failed, waiting for other jobs to finish...
+## test FAILED
 ## build
+   Compiling windows-link v0.2.1
    Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
-   Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 7.10s
-Screen: 1024x768
-=== Probe
-  ffmpeg=ffmpeg version 9.0.2-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
-  encoder=h264_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=h264_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=h264_qsv     ok=false ms=104   arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=h264_mf      ok=false ms=123   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
-  encoder=libx264      ok=true ms=62    arg_error=false reason=
-  encoder=h264_mf      ok=true ms=143   arg_error=false reason=
-  encoder=hevc_nvenc   ok=false ms=63    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=hevc_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=hevc_qsv     ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=hevc_mf      ok=false ms=62    arg_error=false reason=Windows has no hardware encoder for H.265 (HEVC) on this PC.
-  encoder=libx265      ok=true ms=103   arg_error=false reason=
-  encoder=hevc_mf      ok=false ms=63    arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
-  encoder=av1_nvenc    ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=av1_amf      ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=av1_qsv      ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=av1_mf       ok=false ms=63    arg_error=false reason=Windows has no hardware encoder for AV1 on this PC.
-  best_h264=CPU (x264/x265) · H.264 (AVC)
-  best_hevc=CPU (x264/x265) · H.265 (HEVC)
-  best_av1=none
-T01 PASS Encoder probe: every generated argument set is accepted by FFmpeg :: best h264: 
-=== Recordings
-  fallbacks: fallback_from=wgc/System: Error opening input files: Unknown error occurred | fallback_from=dda/System: Error opening input files: Unknown error occurred
-=== Invalid settings are rejected
-T09 PASS Oversized H.264 resolution is refused with a clear message :: error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
-=== Instant replay
-T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1824ms ring_files=9/9 
-=== Repeated start/stop
-T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.13s, 3.17s, 3.13s, 3.1s, 3.17s leftover=0
-=== Summary
+   Compiling windows-result v0.4.1
+   Compiling windows-strings v0.5.1
+   Compiling windows-threading v0.2.1
+   Compiling windows-core v0.62.2
+   Compiling windows-numerics v0.3.1
+   Compiling windows-collections v0.3.2
+   Compiling windows-future v0.3.2
+   Compiling windows v0.62.2
+   Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
+error[E0599]: no method named `GetDesc` found for struct `IDXGIOutput` in the current scope
+  --> crates\win\src\display.rs:43:42
+   |
+43 |                 if let Ok(desc) = output.GetDesc() {
+   |                                          ^^^^^^^ method not found in `IDXGIOutput`
 
-Id  Test                                                                              Result Detail
---  ----                                                                              ------ ------
-T01 Encoder probe: every generated argument set is accepted by FFmpeg                 PASS   best h264: 
-T02 GDI capture, x264, 720p30                                                         PASS   libx264 via gdi/System -> 960x720@30 6.27s 1.53MB audio=0 | 152 drop=0 dup=0 speed=0.88 startup=1210ms stop=202ms
-T03 GDI capture, Media Foundation (CPU), native 30fps, audio                          PASS   h264_mf via gdi/System -> 1024x768@30 5.93s 0.89MB audio=1 | 151 drop=0 dup=1 speed=1.00 startup=656ms stop=177ms
-T04 GDI capture, x264, native 60fps                                                   PASS   libx264 via gdi/System -> 1024x768@60 5.7s 1.71MB audio=0 | 290 drop=3 dup=98 speed=0.93 startup=657ms stop=181ms
-T05 Automatic capture fallback (WGC -> DDA -> GDI)                                    PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.21MB audio=0 | 122 drop=0 dup=1 speed=0.86 startup=1315ms stop=202ms
-T06 MKV container                                                                     PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.21MB audio=0 | 121 drop=0 dup=1 speed=0.85 startup=1159ms stop=205ms
-T07 HEVC via x265, 720p30                                                             PASS   libx265 via gdi/System -> 960x720@30 5.2s 0.86MB audio=0 | 115 drop=0 dup=0 speed=0.81 startup=1161ms stop=239ms
-T08 Custom 800x600 output (letterboxed)                                               PASS   libx264 via gdi/System -> 800x600@24 5.21s 0.89MB audio=0 | 93 drop=0 dup=0 speed=0.82 startup=1209ms stop=152ms
-T09 Oversized H.264 resolution is refused with a clear message                        PASS   error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
-T10 Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) PASS   clip=10.28s audio=1 save=1824ms ring_files=9/9 
-T11 5 start/stop cycles, no leftover ffmpeg processes                                 PASS   durations 3.13s, 3.17s, 3.13s, 3.1s, 3.17s leftover=0
+error[E0599]: no method named `succeeded` found for struct `WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:106:11
+    |
+106 |     if !r.succeeded() {
+    |           ^^^^^^^^^ method not found in `WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
 
+error[E0599]: no method named `succeeded` found for struct `WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:189:109
+    |
+189 |                 if !RegOpenKeyExW(HKEY_CURRENT_USER, PCWSTR(key_w.as_ptr()), None, KEY_SET_VALUE, &mut key).succeeded()
+    |                                                                                                             ^^^^^^^^^ method not found in `WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
 
-passed=11 failed=0
+error[E0599]: no method named `succeeded` found for struct `WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:195:98
+    |
+195 |                 let ok = RegSetValueExW(key, PCWSTR(name_w.as_ptr()), None, REG_SZ, Some(bytes)).succeeded();
+    |                                                                                                  ^^^^^^^^^ method not found in `WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no method named `succeeded` found for struct `WIN32_ERROR` in the current scope
+   --> crates\win\src\sys.rs:200:104
+    |
+200 |                 RegDeleteKeyValueW(HKEY_CURRENT_USER, PCWSTR(key_w.as_ptr()), PCWSTR(name_w.as_ptr())).succeeded()
+    |                                                                                                        ^^^^^^^^^ method not found in `WIN32_ERROR`
+    |
+    = help: items from traits can only be used if the trait is implemented and in scope
+note: `Win32Ok` defines an item `succeeded`, perhaps you need to implement it
+   --> crates\win\src\sys.rs:23:1
+    |
+ 23 | pub(crate) trait Win32Ok {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `urec-win` (lib) due to 5 previous errors
+warning: build failed, waiting for other jobs to finish...
+## build FAILED
