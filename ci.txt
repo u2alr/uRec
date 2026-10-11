@@ -1,4 +1,4 @@
-commit fe93bfaa3f6fe81d7d435f4dff5ec431fbc97ed4 run 38128794004
+commit 900d4c11a9cbdd72d288f7b072c827a4efece18e run 38129933271
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -329,172 +329,172 @@ commit fe93bfaa3f6fe81d7d435f4dff5ec431fbc97ed4 run 38128794004
       Adding zune-core v0.5.3
       Adding zune-jpeg v0.5.15
  Downloading crates ...
-  Downloaded byteorder-lite v0.1.0
-  Downloaded adler2 v2.0.1
-  Downloaded autocfg v1.5.1
-  Downloaded cfg_aliases v0.2.2
-  Downloaded glutin_wgl_sys v0.6.1
-  Downloaded arboard v3.6.1
-  Downloaded crc32fast v1.5.2
-  Downloaded allocator-api2 v0.2.21
-  Downloaded accesskit v0.24.1
-  Downloaded ahash v0.8.12
   Downloaded bit-vec v0.9.1
   Downloaded bytemuck v1.25.2
-  Downloaded arrayvec v0.7.8
-  Downloaded cc v1.7.0
-  Downloaded embed-resource v3.0.12
-  Downloaded ash v0.38.0+1.3.281
-  Downloaded bit-set v0.10.0
-  Downloaded bitflags v2.13.2
+  Downloaded ecolor v0.36.2
+  Downloaded accesskit v0.24.1
+  Downloaded arboard v3.6.1
+  Downloaded document-features v0.2.12
+  Downloaded rustc-hash v2.1.3
+  Downloaded adler2 v2.0.1
   Downloaded bytemuck_derive v1.12.1
+  Downloaded self_cell v1.3.0
+  Downloaded serde_spanned v1.1.2
+  Downloaded ahash v0.8.12
+  Downloaded arrayvec v0.7.8
+  Downloaded autocfg v1.5.1
+  Downloaded bit-set v0.10.0
+  Downloaded font-types v0.12.6
+  Downloaded rustc-hash v1.1.0
   Downloaded cfg-if v1.0.5
+  Downloaded egui-wgpu v0.36.2
+  Downloaded dpi v0.1.2
+  Downloaded cursor-icon v1.2.0
   Downloaded clipboard-win v5.4.1
+  Downloaded find-msvc-tools v0.1.14
+  Downloaded libloading v0.8.9
+  Downloaded nohash-hasher v0.2.0
+  Downloaded allocator-api2 v0.2.21
+  Downloaded rustc_version v0.4.1
+  Downloaded scopeguard v1.2.0
+  Downloaded glutin_wgl_sys v0.6.1
+  Downloaded pollster v1.0.1
+  Downloaded profiling v1.0.18
+  Downloaded smol_str v0.2.2
+  Downloaded static_assertions v1.1.0
   Downloaded codespan-reporting v0.13.1
   Downloaded color v0.3.3
-  Downloaded equivalent v1.0.2
-  Downloaded euclid v0.22.14
-  Downloaded epaint v0.36.2
-  Downloaded epaint_default_fonts v0.36.2
+  Downloaded crossbeam-utils v0.8.23
   Downloaded error-code v3.4.0
+  Downloaded guillotiere v0.7.0
+  Downloaded miniz_oxide v0.9.1
+  Downloaded shlex v2.0.1
+  Downloaded simd-adler32 v0.3.10
+  Downloaded semver v1.0.28
+  Downloaded serde v1.0.229
+  Downloaded smallvec v1.16.3
+  Downloaded embed-resource v3.0.12
+  Downloaded fdeflate v0.3.7
+  Downloaded spirv v0.4.0+sdk-1.4.341.0
+  Downloaded serde_derive v1.0.229
+  Downloaded serde_core v1.0.229
+  Downloaded foldhash v0.2.0
   Downloaded jobserver v0.1.35
+  Downloaded khronos-egl v6.0.0
+  Downloaded naga-types v30.0.1
+  Downloaded serde_json v1.0.152
+  Downloaded quick-error v2.0.1
+  Downloaded cfg_aliases v0.2.2
+  Downloaded skrifa v0.44.0
+  Downloaded equivalent v1.0.2
+  Downloaded raw-window-handle v0.6.2
+  Downloaded renderdoc-sys v1.1.0
+  Downloaded litrs v1.0.0
+  Downloaded range-alloc v0.1.5
+  Downloaded num-traits v0.2.19
+  Downloaded linebender_resource_handle v0.1.1
+  Downloaded peniko v0.6.1
+  Downloaded pkg-config v0.3.34
+  Downloaded polycool v0.4.0
+  Downloaded bitflags v2.13.2
+  Downloaded byteorder-lite v0.1.0
+  Downloaded crc32fast v1.5.2
+  Downloaded itoa v1.0.18
+  Downloaded lock_api v0.4.14
+  Downloaded pin-project-lite v0.2.17
+  Downloaded presser v0.3.1
+  Downloaded either v1.19.0
   Downloaded emath v0.36.2
   Downloaded fax v0.2.7
-  Downloaded find-msvc-tools v0.1.14
-  Downloaded lock_api v0.4.14
-  Downloaded num-traits v0.2.19
-  Downloaded naga-types v30.0.1
-  Downloaded cursor-icon v1.2.0
-  Downloaded guillotiere v0.7.0
-  Downloaded nohash-hasher v0.2.0
-  Downloaded dpi v0.1.2
-  Downloaded linebender_resource_handle v0.1.1
-  Downloaded pollster v1.0.1
-  Downloaded document-features v0.2.12
-  Downloaded glifo v0.2.0
-  Downloaded itoa v1.0.18
-  Downloaded parking_lot_core v0.9.12
-  Downloaded peniko v0.6.1
-  Downloaded pin-project-lite v0.2.17
-  Downloaded pkg-config v0.3.34
-  Downloaded presser v0.3.1
-  Downloaded ecolor v0.36.2
-  Downloaded egui-wgpu v0.36.2
-  Downloaded either v1.19.0
-  Downloaded fdeflate v0.3.7
-  Downloaded foldhash v0.2.0
-  Downloaded font-types v0.12.6
   Downloaded gl_generator v0.14.0
-  Downloaded half v2.7.1
-  Downloaded khronos-egl v6.0.0
-  Downloaded litrs v1.0.0
-  Downloaded log v0.4.34
+  Downloaded glifo v0.2.0
   Downloaded once_cell v1.21.4
   Downloaded ordered-float v5.5.0
   Downloaded parking_lot v0.12.5
-  Downloaded polycool v0.4.0
-  Downloaded crossbeam-utils v0.8.23
-  Downloaded getrandom v0.4.3
+  Downloaded parking_lot_core v0.9.12
+  Downloaded crossbeam-channel v0.5.17
   Downloaded gpu-allocator v0.28.0
-  Downloaded keyboard-types v0.8.3
-  Downloaded libloading v0.8.9
+  Downloaded half v2.7.1
+  Downloaded log v0.4.34
   Downloaded miniz_oxide v0.8.9
   Downloaded egui-winit v0.36.2
-  Downloaded miniz_oxide v0.9.1
-  Downloaded profiling v1.0.18
-  Downloaded quick-error v2.0.1
-  Downloaded crossbeam-channel v0.5.17
-  Downloaded flate2 v1.1.10
-  Downloaded hashbrown v0.16.1
-  Downloaded indexmap v2.14.2
-  Downloaded memchr v2.8.3
-  Downloaded glow v0.17.0
-  Downloaded itertools v0.15.0
+  Downloaded getrandom v0.4.3
   Downloaded eframe v0.36.2
-  Downloaded fearless_simd v0.4.1
+  Downloaded euclid v0.22.14
+  Downloaded flate2 v1.1.10
+  Downloaded keyboard-types v0.8.3
+  Downloaded memchr v2.8.3
+  Downloaded indexmap v2.14.2
+  Downloaded cc v1.7.0
+  Downloaded hashbrown v0.16.1
+  Downloaded itertools v0.15.0
   Downloaded muda v0.21.2
   Downloaded png v0.18.1
-  Downloaded hashbrown v0.17.1
-  Downloaded libm v0.2.16
+  Downloaded epaint v0.36.2
+  Downloaded glow v0.17.0
   Downloaded kurbo v0.13.1
   Downloaded moxcms v0.8.1
-  Downloaded image v0.25.10
+  Downloaded hashbrown v0.17.1
+  Downloaded libm v0.2.16
+  Downloaded fearless_simd v0.4.1
   Downloaded harfrust v0.12.0
+  Downloaded image v0.25.10
+  Downloaded ash v0.38.0+1.3.281
   Downloaded egui v0.36.2
-  Downloaded libc v0.2.190
-  Downloaded khronos_api v3.1.0
-  Downloaded naga v30.0.1
-  Downloaded pxfm v0.1.30
-  Downloaded range-alloc v0.1.5
-  Downloaded rustc-hash v2.1.3
-  Downloaded serde_json v1.0.152
-  Downloaded self_cell v1.3.0
-  Downloaded serde_core v1.0.229
-  Downloaded rustc_version v0.4.1
-  Downloaded renderdoc-sys v1.1.0
-  Downloaded smol_str v0.2.2
-  Downloaded serde_derive v1.0.229
-  Downloaded smallvec v1.16.3
-  Downloaded raw-window-handle v0.6.2
-  Downloaded semver v1.0.28
-  Downloaded rustc-hash v1.1.0
-  Downloaded serde_spanned v1.1.2
-  Downloaded spirv v0.4.0+sdk-1.4.341.0
-  Downloaded static_assertions v1.1.0
-  Downloaded serde v1.0.229
-  Downloaded shlex v2.0.1
-  Downloaded simd-adler32 v0.3.10
-  Downloaded skrifa v0.44.0
-  Downloaded scopeguard v1.2.0
   Downloaded read-fonts v0.41.0
+  Downloaded khronos_api v3.1.0
+  Downloaded epaint_default_fonts v0.36.2
+  Downloaded pxfm v0.1.30
+  Downloaded libc v0.2.190
+  Downloaded naga v30.0.1
   Downloaded syn v3.0.7
   Downloaded toml_datetime v1.1.2+spec-1.1.0
-  Downloaded toml v1.1.8+spec-1.1.0
-  Downloaded toml_parser v1.1.5+spec-1.1.0
-  Downloaded type-map v0.5.1
-  Downloaded unicode-general-category v1.1.0
   Downloaded termcolor v1.4.1
+  Downloaded unicode-general-category v1.1.0
   Downloaded thiserror v2.0.21
+  Downloaded toml_parser v1.1.5+spec-1.1.0
   Downloaded thiserror-impl v2.0.21
   Downloaded toml_writer v1.1.3+spec-1.1.0
+  Downloaded toml v1.1.8+spec-1.1.0
+  Downloaded tracing-core v0.1.36
+  Downloaded type-map v0.5.1
   Downloaded tiff v0.11.3
   Downloaded tray-icon v0.26.1
   Downloaded tracing v0.1.44
-  Downloaded tracing-core v0.1.36
+  Downloaded wgpu-core-deps-windows-linux-android v30.0.1
   Downloaded unicode-segmentation v1.13.3
+  Downloaded vello_common v0.1.0
+  Downloaded wgpu-naga-bridge v30.0.1
+  Downloaded weezl v0.1.12
   Downloaded version_check v0.9.5
   Downloaded vswhom v0.1.0
   Downloaded vswhom-sys v0.1.3
-  Downloaded uuid v1.28.0
-  Downloaded wgpu-naga-bridge v30.0.1
-  Downloaded winapi-util v0.1.11
-  Downloaded wgpu-core-deps-windows-linux-android v30.0.1
-  Downloaded web-time v1.1.0
-  Downloaded vello_common v0.1.0
-  Downloaded weezl v0.1.12
-  Downloaded vello_cpu v0.1.0
-  Downloaded unicode-width v0.2.2
-  Downloaded wgpu-types v30.0.1
   Downloaded wgpu v30.0.1
+  Downloaded uuid v1.28.0
+  Downloaded unicode-width v0.2.2
+  Downloaded vello_cpu v0.1.0
   Downloaded wgpu-core v30.0.1
+  Downloaded web-time v1.1.0
   Downloaded wgpu-hal v30.0.1
+  Downloaded wgpu-types v30.0.1
+  Downloaded winapi-util v0.1.11
+  Downloaded windows-sys v0.52.0
   Downloaded windows-targets v0.52.6
   Downloaded windows-targets v0.53.5
-  Downloaded winreg v0.56.0
+  Downloaded windows-sys v0.60.2
   Downloaded zmij v1.0.23
-  Downloaded zune-core v0.5.3
+  Downloaded winreg v0.56.0
   Downloaded xml-rs v0.8.29
-  Downloaded winnow v1.0.4
-  Downloaded zerocopy-derive v0.8.62
+  Downloaded zune-core v0.5.3
   Downloaded zune-jpeg v0.5.15
+  Downloaded zerocopy-derive v0.8.62
+  Downloaded winnow v1.0.4
   Downloaded zlib-rs v0.6.8
   Downloaded zerocopy v0.8.62
   Downloaded winit v0.30.13
-  Downloaded windows-sys v0.60.2
   Downloaded windows_x86_64_msvc v0.52.6
   Downloaded windows_x86_64_msvc v0.53.1
   Downloaded windows-sys v0.61.2
-  Downloaded windows-sys v0.52.0
    Compiling proc-macro2 v1.0.107
    Compiling quote v1.0.47
    Compiling libm v0.2.16
@@ -506,29 +506,29 @@ commit fe93bfaa3f6fe81d7d435f4dff5ec431fbc97ed4 run 38128794004
    Compiling libc v0.2.190
    Compiling parking_lot_core v0.9.12
     Checking bitflags v2.13.2
-   Compiling khronos_api v3.1.0
-    Checking cfg-if v1.0.5
    Compiling syn v3.0.7
    Compiling syn v2.0.119
+   Compiling khronos_api v3.1.0
+    Checking cfg-if v1.0.5
    Compiling naga v30.0.1
-   Compiling ash v0.38.0+1.3.281
     Checking foldhash v0.2.0
-   Compiling log v0.4.34
+   Compiling ash v0.38.0+1.3.281
    Compiling xml-rs v0.8.29
-   Compiling crc32fast v1.5.2
-    Checking smallvec v1.16.3
+   Compiling log v0.4.34
    Compiling gl_generator v0.14.0
+    Checking smallvec v1.16.3
    Compiling bytemuck_derive v1.12.1
    Compiling thiserror-impl v2.0.21
    Compiling glutin_wgl_sys v0.6.1
-    Checking once_cell v1.21.4
    Compiling windows_x86_64_msvc v0.52.6
-   Compiling khronos-egl v6.0.0
-   Compiling windows-interface v0.59.3
-   Compiling windows-implement v0.60.2
-   Compiling zerocopy-derive v0.8.62
     Checking bytemuck v1.25.2
+   Compiling windows-implement v0.60.2
+   Compiling windows-interface v0.59.3
+   Compiling zerocopy-derive v0.8.62
+   Compiling crc32fast v1.5.2
     Checking arrayvec v0.7.8
+    Checking once_cell v1.21.4
+   Compiling khronos-egl v6.0.0
     Checking hashbrown v0.17.1
    Compiling version_check v0.9.5
    Compiling ahash v0.8.12
@@ -538,33 +538,33 @@ commit fe93bfaa3f6fe81d7d435f4dff5ec431fbc97ed4 run 38128794004
    Compiling unicode-general-category v1.1.0
     Checking equivalent v1.0.2
     Checking windows-future v0.3.2
-    Checking windows-collections v0.3.2
     Checking windows-numerics v0.3.1
+    Checking windows-collections v0.3.2
     Checking scopeguard v1.2.0
     Checking lock_api v0.4.14
     Checking windows v0.62.2
     Checking indexmap v2.14.2
-   Compiling winit v0.30.13
    Compiling wgpu-core v30.0.1
+   Compiling winit v0.30.13
     Checking raw-window-handle v0.6.2
     Checking rustc-hash v1.1.0
    Compiling crossbeam-utils v0.8.23
    Compiling litrs v1.0.0
     Checking naga-types v30.0.1
     Checking parking_lot v0.12.5
-    Checking polycool v0.4.0
    Compiling document-features v0.2.12
+    Checking polycool v0.4.0
     Checking libloading v0.8.9
-    Checking unicode-width v0.2.2
-    Checking bit-vec v0.9.1
-    Checking simd-adler32 v0.3.10
    Compiling find-msvc-tools v0.1.14
-   Compiling serde_core v1.0.229
+    Checking bit-vec v0.9.1
     Checking profiling v1.0.18
    Compiling shlex v2.0.1
+    Checking simd-adler32 v0.3.10
+    Checking unicode-width v0.2.2
+   Compiling serde_core v1.0.229
+    Checking codespan-reporting v0.13.1
     Checking bit-set v0.10.0
    Compiling cc v1.7.0
-    Checking codespan-reporting v0.13.1
     Checking kurbo v0.13.1
     Checking half v2.7.1
     Checking color v0.3.3
@@ -572,14 +572,14 @@ commit fe93bfaa3f6fe81d7d435f4dff5ec431fbc97ed4 run 38128794004
     Checking euclid v0.22.14
     Checking spirv v0.4.0+sdk-1.4.341.0
    Compiling wgpu v30.0.1
-    Checking static_assertions v1.1.0
-    Checking linebender_resource_handle v0.1.1
-    Checking unicode-ident v1.0.26
-    Checking allocator-api2 v0.2.21
     Checking adler2 v2.0.1
-    Checking wgpu-types v30.0.1
+    Checking allocator-api2 v0.2.21
+    Checking unicode-ident v1.0.26
+    Checking linebender_resource_handle v0.1.1
+    Checking static_assertions v1.1.0
     Checking hashbrown v0.16.1
     Checking peniko v0.6.1
+    Checking wgpu-types v30.0.1
     Checking guillotiere v0.7.0
     Checking read-fonts v0.41.0
    Compiling vswhom-sys v0.1.3
@@ -588,59 +588,59 @@ commit fe93bfaa3f6fe81d7d435f4dff5ec431fbc97ed4 run 38128794004
     Checking vello_common v0.1.0
     Checking wgpu-naga-bridge v30.0.1
     Checking miniz_oxide v0.9.1
+    Checking gpu-allocator v0.28.0
     Checking emath v0.36.2
     Checking ordered-float v5.5.0
-    Checking range-alloc v0.1.5
-   Compiling muda v0.21.2
-    Checking renderdoc-sys v1.1.0
-    Checking glow v0.17.0
-   Compiling windows-link v0.2.1
     Checking unicode-segmentation v1.13.3
-   Compiling winnow v1.0.4
-    Checking gpu-allocator v0.28.0
     Checking dpi v0.1.2
+    Checking glow v0.17.0
+    Checking range-alloc v0.1.5
+    Checking renderdoc-sys v1.1.0
    Compiling zmij v1.0.23
-   Compiling toml_parser v1.1.5+spec-1.1.0
+   Compiling windows-link v0.2.1
+   Compiling winnow v1.0.4
+   Compiling muda v0.21.2
    Compiling windows-sys v0.61.2
+   Compiling toml_parser v1.1.5+spec-1.1.0
     Checking ecolor v0.36.2
-    Checking windows-targets v0.52.6
     Checking flate2 v1.1.10
+    Checking windows-targets v0.52.6
     Checking vello_cpu v0.1.0
-   Compiling toml_datetime v1.1.2+spec-1.1.0
-   Compiling serde_spanned v1.1.2
     Checking harfrust v0.12.0
     Checking skrifa v0.44.0
+   Compiling serde_spanned v1.1.2
+   Compiling toml_datetime v1.1.2+spec-1.1.0
     Checking miniz_oxide v0.8.9
     Checking fdeflate v0.3.7
-    Checking either v1.19.0
-    Checking epaint_default_fonts v0.36.2
-    Checking self_cell v1.3.0
     Checking uuid v1.28.0
-    Checking pin-project-lite v0.2.17
-   Compiling semver v1.0.28
-    Checking pxfm v0.1.30
     Checking nohash-hasher v0.2.0
-    Checking tracing-core v0.1.36
+    Checking either v1.19.0
+    Checking self_cell v1.3.0
+   Compiling semver v1.0.28
+    Checking pin-project-lite v0.2.17
+    Checking pxfm v0.1.30
    Compiling toml_writer v1.1.3+spec-1.1.0
-    Checking epaint v0.36.2
-    Checking tracing v0.1.44
-   Compiling toml v1.1.8+spec-1.1.0
+    Checking epaint_default_fonts v0.36.2
+    Checking tracing-core v0.1.36
     Checking accesskit v0.24.1
-    Checking moxcms v0.8.1
-   Compiling rustc_version v0.4.1
-    Checking itertools v0.15.0
+    Checking tracing v0.1.44
+    Checking epaint v0.36.2
    Compiling winreg v0.56.0
+   Compiling toml v1.1.8+spec-1.1.0
+    Checking moxcms v0.8.1
+    Checking itertools v0.15.0
+   Compiling rustc_version v0.4.1
     Checking windows-targets v0.53.5
     Checking png v0.18.1
     Checking wgpu-core-deps-windows-linux-android v30.0.1
     Checking windows-sys v0.52.0
    Compiling vswhom v0.1.0
-    Checking smol_str v0.2.2
-   Compiling serde_json v1.0.152
-    Checking cursor-icon v1.2.0
-    Checking byteorder-lite v0.1.0
-   Compiling tray-icon v0.26.1
     Checking error-code v3.4.0
+   Compiling serde_json v1.0.152
+    Checking byteorder-lite v0.1.0
+    Checking cursor-icon v1.2.0
+    Checking smol_str v0.2.2
+   Compiling tray-icon v0.26.1
    Compiling serde v1.0.229
     Checking image v0.25.10
     Checking clipboard-win v5.4.1
@@ -649,8 +649,8 @@ commit fe93bfaa3f6fe81d7d435f4dff5ec431fbc97ed4 run 38128794004
     Checking windows-sys v0.60.2
    Compiling serde_derive v1.0.229
     Checking web-time v1.1.0
-    Checking rustc-hash v2.1.3
     Checking urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
+    Checking rustc-hash v2.1.3
     Checking type-map v0.5.1
     Checking arboard v3.6.1
     Checking crossbeam-channel v0.5.17
@@ -659,75 +659,59 @@ commit fe93bfaa3f6fe81d7d435f4dff5ec431fbc97ed4 run 38128794004
     Checking egui-wgpu v0.36.2
     Checking urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
     Checking egui-winit v0.36.2
-    Checking pollster v1.0.1
     Checking memchr v2.8.3
+    Checking pollster v1.0.1
     Checking itoa v1.0.18
     Checking eframe v0.36.2
     Checking urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-error: field `app` is never read
-  --> crates\app\src\controller.rs:72:9
-   |
-69 | pub struct Recording {
-   |            --------- field in this struct
-...
-72 |     pub app: String,
-   |         ^^^
-   |
-   = note: `Recording` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
-
-error: could not compile `urec` (bin "uRec") due to 1 previous error
-warning: build failed, waiting for other jobs to finish...
-error: could not compile `urec` (bin "uRec" test) due to 1 previous error
-## clippy FAILED
+    Finished `release` profile [optimized] target(s) in 2m 39s
 ## test
    Compiling bitflags v2.13.2
    Compiling libm v0.2.16
-   Compiling bytemuck v1.25.2
    Compiling cfg-if v1.0.5
+   Compiling bytemuck v1.25.2
    Compiling thiserror v2.0.21
    Compiling foldhash v0.2.0
-   Compiling once_cell v1.21.4
    Compiling arrayvec v0.7.8
-   Compiling smallvec v1.16.3
    Compiling log v0.4.34
+   Compiling once_cell v1.21.4
+   Compiling smallvec v1.16.3
    Compiling windows-core v0.62.2
    Compiling hashbrown v0.17.1
    Compiling zerocopy v0.8.62
    Compiling num-traits v0.2.19
    Compiling equivalent v1.0.2
    Compiling windows-future v0.3.2
-   Compiling windows-numerics v0.3.1
    Compiling windows-collections v0.3.2
+   Compiling windows-numerics v0.3.1
    Compiling windows v0.62.2
    Compiling scopeguard v1.2.0
    Compiling lock_api v0.4.14
    Compiling parking_lot_core v0.9.12
    Compiling indexmap v2.14.2
-   Compiling rustc-hash v1.1.0
    Compiling raw-window-handle v0.6.2
+   Compiling rustc-hash v1.1.0
    Compiling parking_lot v0.12.5
    Compiling naga-types v30.0.1
    Compiling polycool v0.4.0
    Compiling libloading v0.8.9
-   Compiling profiling v1.0.18
-   Compiling unicode-width v0.2.2
-   Compiling simd-adler32 v0.3.10
    Compiling bit-vec v0.9.1
-   Compiling codespan-reporting v0.13.1
+   Compiling simd-adler32 v0.3.10
+   Compiling unicode-width v0.2.2
+   Compiling profiling v1.0.18
    Compiling bit-set v0.10.0
+   Compiling codespan-reporting v0.13.1
    Compiling kurbo v0.13.1
    Compiling half v2.7.1
    Compiling euclid v0.22.14
-   Compiling color v0.3.3
    Compiling font-types v0.12.6
+   Compiling color v0.3.3
    Compiling spirv v0.4.0+sdk-1.4.341.0
+   Compiling unicode-ident v1.0.26
    Compiling linebender_resource_handle v0.1.1
    Compiling adler2 v2.0.1
-   Compiling unicode-ident v1.0.26
-   Compiling static_assertions v1.1.0
    Compiling allocator-api2 v0.2.21
+   Compiling static_assertions v1.1.0
    Compiling wgpu-types v30.0.1
    Compiling hashbrown v0.16.1
    Compiling naga v30.0.1
@@ -736,103 +720,152 @@ error: could not compile `urec` (bin "uRec" test) due to 1 previous error
    Compiling guillotiere v0.7.0
    Compiling libc v0.2.190
    Compiling ash v0.38.0+1.3.281
-   Compiling presser v0.3.1
    Compiling fearless_simd v0.4.1
+   Compiling presser v0.3.1
    Compiling vello_common v0.1.0
    Compiling wgpu-naga-bridge v30.0.1
    Compiling glutin_wgl_sys v0.6.1
    Compiling khronos-egl v6.0.0
-   Compiling crc32fast v1.5.2
    Compiling windows_x86_64_msvc v0.52.6
+   Compiling crc32fast v1.5.2
    Compiling miniz_oxide v0.9.1
    Compiling gpu-allocator v0.28.0
    Compiling ordered-float v5.5.0
    Compiling emath v0.36.2
    Compiling glow v0.17.0
+   Compiling renderdoc-sys v1.1.0
    Compiling range-alloc v0.1.5
    Compiling unicode-segmentation v1.13.3
    Compiling dpi v0.1.2
-   Compiling renderdoc-sys v1.1.0
    Compiling ecolor v0.36.2
    Compiling wgpu-hal v30.0.1
    Compiling flate2 v1.1.10
-   Compiling windows-targets v0.52.6
    Compiling ahash v0.8.12
+   Compiling windows-targets v0.52.6
+   Compiling windows_x86_64_msvc v0.53.1
    Compiling vello_cpu v0.1.0
    Compiling unicode-general-category v1.1.0
-   Compiling windows_x86_64_msvc v0.53.1
-   Compiling harfrust v0.12.0
    Compiling skrifa v0.44.0
+   Compiling harfrust v0.12.0
    Compiling miniz_oxide v0.8.9
    Compiling fdeflate v0.3.7
-   Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
-   Compiling either v1.19.0
-   Compiling uuid v1.28.0
-   Compiling self_cell v1.3.0
-   Compiling pin-project-lite v0.2.17
    Compiling tracing-core v0.1.36
-   Compiling epaint_default_fonts v0.36.2
-   Compiling nohash-hasher v0.2.0
    Compiling pxfm v0.1.30
-   Compiling epaint v0.36.2
+   Compiling uuid v1.28.0
+   Compiling either v1.19.0
+   Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
+   Compiling nohash-hasher v0.2.0
+   Compiling self_cell v1.3.0
+   Compiling epaint_default_fonts v0.36.2
+   Compiling pin-project-lite v0.2.17
    Compiling tracing v0.1.44
+   Compiling epaint v0.36.2
+   Compiling itertools v0.15.0
    Compiling moxcms v0.8.1
    Compiling accesskit v0.24.1
-   Compiling itertools v0.15.0
    Compiling png v0.18.1
    Compiling wgpu-core-deps-windows-linux-android v30.0.1
    Compiling windows-targets v0.53.5
    Compiling windows-sys v0.52.0
-   Compiling cursor-icon v1.2.0
    Compiling smol_str v0.2.2
-   Compiling error-code v3.4.0
    Compiling byteorder-lite v0.1.0
+   Compiling cursor-icon v1.2.0
+   Compiling error-code v3.4.0
+   Compiling clipboard-win v5.4.1
    Compiling image v0.25.10
    Compiling winit v0.30.13
-   Compiling clipboard-win v5.4.1
    Compiling windows-sys v0.60.2
    Compiling wgpu-core v30.0.1
-   Compiling egui v0.36.2
    Compiling crossbeam-utils v0.8.23
+   Compiling egui v0.36.2
    Compiling windows-sys v0.61.2
-   Compiling rustc-hash v2.1.3
    Compiling web-time v1.1.0
+   Compiling rustc-hash v2.1.3
    Compiling type-map v0.5.1
-   Compiling crossbeam-channel v0.5.17
    Compiling wgpu v30.0.1
+   Compiling crossbeam-channel v0.5.17
    Compiling arboard v3.6.1
    Compiling serde_core v1.0.229
    Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
    Compiling keyboard-types v0.8.3
    Compiling muda v0.21.2
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
-   Compiling egui-wgpu v0.36.2
    Compiling egui-winit v0.36.2
+   Compiling egui-wgpu v0.36.2
    Compiling zmij v1.0.23
-   Compiling pollster v1.0.1
    Compiling itoa v1.0.18
    Compiling memchr v2.8.3
-   Compiling serde_json v1.0.152
+   Compiling pollster v1.0.1
    Compiling eframe v0.36.2
+   Compiling serde_json v1.0.152
    Compiling serde v1.0.229
    Compiling tray-icon v0.26.1
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-error: field `app` is never read
-  --> crates\app\src\controller.rs:72:9
-   |
-69 | pub struct Recording {
-   |            --------- field in this struct
-...
-72 |     pub app: String,
-   |         ^^^
-   |
-   = note: `Recording` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+    Finished `release` profile [optimized] target(s) in 3m 10s
+     Running unittests src\main.rs (target\release\deps\uRec-4c4f6c328e425171.exe)
 
-error: could not compile `urec` (bin "uRec" test) due to 1 previous error
-warning: build failed, waiting for other jobs to finish...
-## test FAILED
+running 6 tests
+test library::tests::durations ... ok
+test settings::tests::partial_and_out_of_range_values ... ok
+test settings::tests::video_conversion_roundtrip ... ok
+test settings::tests::corrupt_file_is_quarantined ... ok
+test settings::tests::roundtrip_and_defaults ... ok
+test library::tests::scans_nested_and_skips_partials ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\main.rs (target\release\deps\urec_cli-feb4adf4a85da5b0.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\release\deps\urec_engine-7b56bc09cc9d8a35.exe)
+
+running 21 tests
+test encoder::tests::failure_messages ... ok
+test encoder::tests::names_and_candidates ... ok
+test encoder::tests::args_have_rate_and_keyframes ... ok
+test hotkey::tests::finds_conflicts ... ok
+test hotkey::tests::roundtrip ... ok
+test naming::tests::sanitizes ... ok
+test naming::tests::stamps ... ok
+test pipeline::tests::gpu_scaling_stays_on_gpu ... ok
+test pipeline::tests::audio_and_replay_output ... ok
+test pipeline::tests::region_crops ... ok
+test pipeline::tests::system_path_downloads_once ... ok
+test pipeline::tests::zero_copy_native_has_no_filters ... ok
+test process::tests::parses_progress_blocks ... ok
+test replay::tests::parses_and_selects ... ok
+test replay::tests::ring_math ... ok
+test video::tests::bitrate_scales ... ok
+test naming::tests::unique_names ... ok
+test video::tests::bytes_formatting ... ok
+test video::tests::output_size_never_upscales ... ok
+test video::tests::presets_respect_machine ... ok
+test video::tests::validate_catches_limits ... ok
+
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\release\deps\urec_win-70e46994bfbc3a84.exe)
+
+running 1 test
+test tests::app_names ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests urec_engine
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests urec_win
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 ## build
    Compiling bitflags v2.13.2
    Compiling libm v0.2.16
@@ -840,10 +873,10 @@ warning: build failed, waiting for other jobs to finish...
    Compiling bytemuck v1.25.2
    Compiling thiserror v2.0.21
    Compiling foldhash v0.2.0
-   Compiling smallvec v1.16.3
    Compiling log v0.4.34
-   Compiling once_cell v1.21.4
    Compiling arrayvec v0.7.8
+   Compiling smallvec v1.16.3
+   Compiling once_cell v1.21.4
    Compiling hashbrown v0.17.1
    Compiling windows-core v0.62.2
    Compiling zerocopy v0.8.62
@@ -856,75 +889,75 @@ warning: build failed, waiting for other jobs to finish...
    Compiling indexmap v2.14.2
    Compiling windows-collections v0.3.2
    Compiling windows-numerics v0.3.1
-   Compiling rustc-hash v1.1.0
    Compiling raw-window-handle v0.6.2
-   Compiling windows v0.62.2
+   Compiling rustc-hash v1.1.0
    Compiling naga-types v30.0.1
+   Compiling windows v0.62.2
    Compiling parking_lot v0.12.5
    Compiling polycool v0.4.0
    Compiling libloading v0.8.9
+   Compiling simd-adler32 v0.3.10
    Compiling unicode-width v0.2.2
    Compiling profiling v1.0.18
    Compiling bit-vec v0.9.1
-   Compiling simd-adler32 v0.3.10
-   Compiling bit-set v0.10.0
    Compiling codespan-reporting v0.13.1
+   Compiling bit-set v0.10.0
    Compiling kurbo v0.13.1
    Compiling euclid v0.22.14
    Compiling half v2.7.1
    Compiling font-types v0.12.6
    Compiling color v0.3.3
    Compiling spirv v0.4.0+sdk-1.4.341.0
-   Compiling adler2 v2.0.1
-   Compiling linebender_resource_handle v0.1.1
-   Compiling unicode-ident v1.0.26
    Compiling static_assertions v1.1.0
    Compiling allocator-api2 v0.2.21
-   Compiling wgpu-types v30.0.1
-   Compiling hashbrown v0.16.1
-   Compiling naga v30.0.1
+   Compiling unicode-ident v1.0.26
+   Compiling linebender_resource_handle v0.1.1
+   Compiling adler2 v2.0.1
    Compiling peniko v0.6.1
+   Compiling hashbrown v0.16.1
+   Compiling wgpu-types v30.0.1
+   Compiling naga v30.0.1
    Compiling read-fonts v0.41.0
    Compiling libc v0.2.190
    Compiling guillotiere v0.7.0
    Compiling ash v0.38.0+1.3.281
-   Compiling presser v0.3.1
    Compiling fearless_simd v0.4.1
+   Compiling presser v0.3.1
    Compiling vello_common v0.1.0
    Compiling wgpu-naga-bridge v30.0.1
    Compiling glutin_wgl_sys v0.6.1
    Compiling khronos-egl v6.0.0
-   Compiling crc32fast v1.5.2
    Compiling windows_x86_64_msvc v0.52.6
+   Compiling crc32fast v1.5.2
    Compiling miniz_oxide v0.9.1
    Compiling ordered-float v5.5.0
    Compiling emath v0.36.2
-   Compiling gpu-allocator v0.28.0
    Compiling range-alloc v0.1.5
    Compiling glow v0.17.0
+   Compiling gpu-allocator v0.28.0
+   Compiling unicode-segmentation v1.13.3
    Compiling renderdoc-sys v1.1.0
    Compiling dpi v0.1.2
-   Compiling unicode-segmentation v1.13.3
    Compiling wgpu-hal v30.0.1
    Compiling ecolor v0.36.2
    Compiling flate2 v1.1.10
    Compiling windows-targets v0.52.6
    Compiling ahash v0.8.12
    Compiling windows_x86_64_msvc v0.53.1
-   Compiling unicode-general-category v1.1.0
    Compiling vello_cpu v0.1.0
+   Compiling unicode-general-category v1.1.0
    Compiling harfrust v0.12.0
    Compiling skrifa v0.44.0
    Compiling miniz_oxide v0.8.9
    Compiling fdeflate v0.3.7
+   Compiling self_cell v1.3.0
+   Compiling pin-project-lite v0.2.17
    Compiling uuid v1.28.0
-   Compiling epaint_default_fonts v0.36.2
-   Compiling nohash-hasher v0.2.0
    Compiling either v1.19.0
    Compiling pxfm v0.1.30
-   Compiling pin-project-lite v0.2.17
    Compiling tracing-core v0.1.36
-   Compiling self_cell v1.3.0
+   Compiling nohash-hasher v0.2.0
+   Compiling epaint_default_fonts v0.36.2
    Compiling epaint v0.36.2
    Compiling tracing v0.1.44
    Compiling moxcms v0.8.1
@@ -935,8 +968,8 @@ warning: build failed, waiting for other jobs to finish...
    Compiling windows-targets v0.53.5
    Compiling windows-sys v0.52.0
    Compiling byteorder-lite v0.1.0
-   Compiling error-code v3.4.0
    Compiling cursor-icon v1.2.0
+   Compiling error-code v3.4.0
    Compiling smol_str v0.2.2
    Compiling clipboard-win v5.4.1
    Compiling image v0.25.10
@@ -946,8 +979,8 @@ warning: build failed, waiting for other jobs to finish...
    Compiling egui v0.36.2
    Compiling crossbeam-utils v0.8.23
    Compiling windows-sys v0.61.2
-   Compiling rustc-hash v2.1.3
    Compiling web-time v1.1.0
+   Compiling rustc-hash v2.1.3
    Compiling type-map v0.5.1
    Compiling crossbeam-channel v0.5.17
    Compiling wgpu v30.0.1
@@ -969,18 +1002,97 @@ warning: build failed, waiting for other jobs to finish...
    Compiling tray-icon v0.26.1
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
-error: field `app` is never read
-  --> crates\app\src\controller.rs:72:9
-   |
-69 | pub struct Recording {
-   |            --------- field in this struct
-...
-72 |     pub app: String,
-   |         ^^^
-   |
-   = note: `Recording` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+    Finished `release` profile [optimized] target(s) in 4m 02s
+Screen: 1024x768
+=== Probe
+  ffmpeg=ffmpeg version 9.0.2-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
+  encoder=h264_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
+  encoder=h264_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=h264_qsv     ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=h264_mf      ok=false ms=123   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
+  encoder=libx264      ok=true ms=62    arg_error=false reason=
+  encoder=h264_mf      ok=true ms=145   arg_error=false reason=
+  encoder=hevc_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
+  encoder=hevc_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=hevc_qsv     ok=false ms=82    arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=hevc_mf      ok=false ms=63    arg_error=false reason=Windows has no hardware encoder for H.265 (HEVC) on this PC.
+  encoder=libx265      ok=true ms=103   arg_error=false reason=
+  encoder=hevc_mf      ok=false ms=63    arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
+  encoder=av1_nvenc    ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
+  encoder=av1_amf      ok=false ms=62    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=av1_qsv      ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=av1_mf       ok=false ms=62    arg_error=false reason=Windows has no hardware encoder for AV1 on this PC.
+  best_h264=CPU (x264/x265) (H.264 (AVC))
+  best_hevc=CPU (x264/x265) (H.265 (HEVC))
+  best_av1=none
+T01 PASS Encoder probe: every generated argument set is accepted by FFmpeg :: best h264: 
+=== Recordings
+  fallbacks: fallback_from=wgc/System: Error opening input files: Unknown error occurred | fallback_from=dda/System: Error opening input files: Unknown error occurred
+=== Invalid settings are rejected
+T09 PASS Oversized H.264 resolution is refused with a clear message :: error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
+=== Instant replay
+T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1869ms ring_files=9/9 
+=== Repeated start/stop
+T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.1s, 3.13s, 3.13s, 3.17s, 3.13s leftover=0
+=== Devices
+  windows_build=Some(26100) wgc=true
+  monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
+  window: 'C:\ProgramData\GitHub\HostedComputeAgent\hosted-compute-agent' exe=WindowsTerminal app=WindowsTerminal Rect { x: 25, y: 26, width: 1030, height: 628 }
+  audio_out: Speakers (VB-Audio Virtual Cable) default=true
+  audio_in: CABLE Output (VB-Audio Virtual Cable) default=true
+  disk_free=155 GB of 161 GB
+T12 PASS Monitor enumeration finds the primary screen at its real size :: monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
+  audio outputs=1 inputs=1
+=== Audio
+T13 PASS Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone :: state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.7 dB dur=7.33s
+T14 PASS Separate tracks: one per working source (mic present: False) :: tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
+T15 PASS Microphone: recorded only if it really initialized; recording works either way :: mic=Failed { reason: "Access is denied." } tracks=0
+=== Window capture
+T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=131 output=D:\a\_temp\urec-it\T16.mp4
+=== Summary
 
-error: could not compile `urec` (bin "uRec") due to 1 previous error
-## build FAILED
+Id  Test                                                                              Result Detail
+--  ----                                                                              ------ ------
+T01 Encoder probe: every generated argument set is accepted by FFmpeg                 PASS   best h264: 
+T02 GDI capture, x264, 720p30                                                         PASS   libx264 via gdi/System -> 960x720@30 6.23s 1.53MB audio=0 | 152 drop=0 dup=3 speed=0.88 startup=1210ms stop=177ms
+T03 GDI capture, Media Foundation (CPU), native 30fps, audio                          PASS   h264_mf via gdi/System -> 1024x768@30 6.04s 0.9MB audio=1 | 153 drop=0 dup=0 speed=1.03 startup=658ms stop=178ms
+T04 GDI capture, x264, native 60fps                                                   PASS   libx264 via gdi/System -> 1024x768@60 5.68s 1.71MB audio=0 | 292 drop=4 dup=74 speed=0.94 startup=656ms stop=179ms
+T05 Automatic capture fallback (WGC -> DDA -> GDI)                                    PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.22MB audio=0 | 120 drop=0 dup=2 speed=0.85 startup=1318ms stop=210ms
+T06 MKV container                                                                     PASS   libx264 via gdi/System -> 1024x768@30 5.17s 1.21MB audio=0 | 120 drop=0 dup=0 speed=0.85 startup=1162ms stop=161ms
+T07 HEVC via x265, 720p30                                                             PASS   libx265 via gdi/System -> 960x720@30 5.23s 0.83MB audio=0 | 115 drop=0 dup=0 speed=0.81 startup=1175ms stop=343ms
+T08 Custom 800x600 output (letterboxed)                                               PASS   libx264 via gdi/System -> 800x600@24 5.21s 0.89MB audio=0 | 93 drop=0 dup=0 speed=0.82 startup=1210ms stop=159ms
+T09 Oversized H.264 resolution is refused with a clear message                        PASS   error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
+T10 Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) PASS   clip=10.28s audio=1 save=1869ms ring_files=9/9 
+T11 5 start/stop cycles, no leftover ffmpeg processes                                 PASS   durations 3.1s, 3.13s, 3.13s, 3.17s, 3.13s leftover=0
+T12 Monitor enumeration finds the primary screen at its real size                     PASS   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0)
+                                                                                             dda=true
+T13 Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone                PASS   state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.7 dB
+                                                                                             dur=7.33s
+T14 Separate tracks: one per working source (mic present: False)                      PASS   tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
+T15 Microphone: recorded only if it really initialized; recording works either way    PASS   mic=Failed { reason: "Access is denied." } tracks=0
+T16 Window capture (Notepad) records just that window                                 PASS   754x512 via gdi stop_ms=131 output=D:\a\_temp\urec-it\T16.mp4
+
+
+passed=16 failed=0
+home alive=False -> screenshots\home.png
+  exit code -1073740771
+library alive=False -> screenshots\library.png
+  exit code -1073740771
+settings:general alive=False -> screenshots\settings-general.png
+  exit code -1073740771
+settings:recording alive=False -> screenshots\settings-recording.png
+  exit code -1073740771
+settings:video alive=False -> screenshots\settings-video.png
+  exit code -1073740771
+settings:audio alive=False -> screenshots\settings-audio.png
+  exit code -1073740771
+settings:instantreplay alive=False -> screenshots\settings-instantreplay.png
+  exit code -1073740771
+settings:hotkeys alive=False -> screenshots\settings-hotkeys.png
+  exit code -1073740771
+settings:storage alive=False -> screenshots\settings-storage.png
+  exit code -1073740771
+settings:appearance alive=False -> screenshots\settings-appearance.png
+  exit code -1073740771
+settings:advanced alive=False -> screenshots\settings-advanced.png
+  exit code -1073740771
