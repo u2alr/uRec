@@ -1,4 +1,4 @@
-commit ceee69e5fa9bde52835a942ee752660083b713d1 run 38153058199
+commit 446563ca22208007bb45e4762060f3f7f0f256ad run 38153358936
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -8,36 +8,19 @@ commit ceee69e5fa9bde52835a942ee752660083b713d1 run 38153058199
    Compiling urec v0.1.1 (D:\a\uRec\uRec\crates\app)
     Checking gpu-allocator v0.28.0
     Checking urec-win v0.1.1 (D:\a\uRec\uRec\crates\win)
-    Checking wgpu-hal v30.0.1
-error[E0599]: no associated function or constant named `from_win32` found for struct `windows_result::error::Error` in the current scope
-   --> crates\win\src\http.rs:29:35
-    |
- 29 |     let e = windows::core::Error::from_win32();
-    |                                   ^^^^^^^^^^ associated function or constant not found in `windows_result::error::Error`
-    |
-note: if you're trying to build a new `windows_result::error::Error` consider using one of the following associated functions:
-      windows_result::error::Error::empty
-      windows_result::error::Error::new
-      windows_result::error::Error::from_hresult
-      windows_result::error::Error::from_thread
-   --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-result-0.4.1\src\error.rs:82:5
-    |
- 82 |     pub const fn empty() -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
- 91 |     pub fn new<T: AsRef<str>>(code: HRESULT, message: T) -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-110 |     pub fn from_hresult(code: HRESULT) -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-118 |     pub fn from_thread() -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+error: very complex type used. Consider factoring parts into `type` definitions
+  --> crates\win\src\http.rs:59:11
+   |
+59 |     sink: &mut dyn FnMut(&[u8], Option<u64>) -> Result<(), String>,
+   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#type_complexity
+   = note: `-D clippy::type-complexity` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::type_complexity)]`
 
-For more information about this error, try `rustc --explain E0599`.
 error: could not compile `urec-win` (lib) due to 1 previous error
 warning: build failed, waiting for other jobs to finish...
-error: could not compile `urec-win` (lib test) due to 1 previous error
+error: could not compile `urec-win` (lib) due to 1 previous error
 ## clippy FAILED
 ## test
    Compiling windows v0.62.2
@@ -45,66 +28,113 @@ error: could not compile `urec-win` (lib test) due to 1 previous error
    Compiling urec v0.1.1 (D:\a\uRec\uRec\crates\app)
    Compiling gpu-allocator v0.28.0
    Compiling urec-win v0.1.1 (D:\a\uRec\uRec\crates\win)
-error[E0599]: no associated function or constant named `from_win32` found for struct `windows_result::error::Error` in the current scope
-   --> crates\win\src\http.rs:29:35
-    |
- 29 |     let e = windows::core::Error::from_win32();
-    |                                   ^^^^^^^^^^ associated function or constant not found in `windows_result::error::Error`
-    |
-note: if you're trying to build a new `windows_result::error::Error` consider using one of the following associated functions:
-      windows_result::error::Error::empty
-      windows_result::error::Error::new
-      windows_result::error::Error::from_hresult
-      windows_result::error::Error::from_thread
-   --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-result-0.4.1\src\error.rs:82:5
-    |
- 82 |     pub const fn empty() -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
- 91 |     pub fn new<T: AsRef<str>>(code: HRESULT, message: T) -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-110 |     pub fn from_hresult(code: HRESULT) -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-118 |     pub fn from_thread() -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   Compiling wgpu-hal v30.0.1
+   Compiling urec-cli v0.1.1 (D:\a\uRec\uRec\crates\cli)
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling wgpu-core v30.0.1
+   Compiling wgpu v30.0.1
+   Compiling egui-wgpu v0.36.2
+   Compiling eframe v0.36.2
+    Finished `release` profile [optimized] target(s) in 1m 43s
+     Running unittests src\main.rs (target\release\deps\uRec-caa9bbb18ea47d71.exe)
 
-For more information about this error, try `rustc --explain E0599`.
-error: could not compile `urec-win` (lib) due to 1 previous error
-warning: build failed, waiting for other jobs to finish...
-## test FAILED
+running 10 tests
+test library::tests::durations ... ok
+test library::tests::parses_ffmpeg_info ... ok
+test library::tests::scans_nested_and_skips_partials ... ok
+test settings::tests::video_conversion_roundtrip ... ok
+test settings::tests::corrupt_file_is_quarantined ... ok
+test update::tests::release_json ... ok
+test update::tests::sums ... ok
+test update::tests::versions ... ok
+test settings::tests::partial_and_out_of_range_values ... ok
+test settings::tests::roundtrip_and_defaults ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\main.rs (target\release\deps\urec_cli-00a5202cbb6c24f0.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src\lib.rs (target\release\deps\urec_engine-7acf93f180c08fdd.exe)
+
+running 22 tests
+test encoder::tests::args_have_rate_and_keyframes ... ok
+test hotkey::tests::finds_conflicts ... ok
+test encoder::tests::names_and_candidates ... ok
+test encoder::tests::failure_messages ... ok
+test naming::tests::sanitizes ... ok
+test hotkey::tests::roundtrip ... ok
+test naming::tests::stamps ... ok
+test pipeline::tests::audio_and_replay_output ... ok
+test pipeline::tests::region_crops ... ok
+test pipeline::tests::system_path_downloads_once ... ok
+test pipeline::tests::gpu_scaling_stays_on_gpu ... ok
+test process::tests::parses_progress_blocks ... ok
+test pipeline::tests::zero_copy_native_has_no_filters ... ok
+test naming::tests::unique_names ... ok
+test replay::tests::parses_and_selects ... ok
+test replay::tests::ring_math ... ok
+test video::tests::bitrate_scales ... ok
+test video::tests::bytes_formatting ... ok
+test video::tests::output_size_never_upscales ... ok
+test video::tests::presets_respect_machine ... ok
+test video::tests::validate_catches_limits ... ok
+test sha256::tests::known_vectors ... ok
+
+test result: ok. 22 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src\lib.rs (target\release\deps\urec_win-6669dc5ccf223b07.exe)
+
+running 3 tests
+test http::tests::urls ... ok
+test tests::app_names ... ok
+test overlay::tests::dot_is_round_and_symmetric ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests urec_engine
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests urec_win
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
 ## build
    Compiling windows v0.62.2
    Compiling urec-engine v0.1.1 (D:\a\uRec\uRec\crates\engine)
    Compiling gpu-allocator v0.28.0
    Compiling urec-win v0.1.1 (D:\a\uRec\uRec\crates\win)
-error[E0599]: no associated function or constant named `from_win32` found for struct `windows_result::error::Error` in the current scope
-   --> crates\win\src\http.rs:29:35
-    |
- 29 |     let e = windows::core::Error::from_win32();
-    |                                   ^^^^^^^^^^ associated function or constant not found in `windows_result::error::Error`
-    |
-note: if you're trying to build a new `windows_result::error::Error` consider using one of the following associated functions:
-      windows_result::error::Error::empty
-      windows_result::error::Error::new
-      windows_result::error::Error::from_hresult
-      windows_result::error::Error::from_thread
-   --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows-result-0.4.1\src\error.rs:82:5
-    |
- 82 |     pub const fn empty() -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
- 91 |     pub fn new<T: AsRef<str>>(code: HRESULT, message: T) -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-110 |     pub fn from_hresult(code: HRESULT) -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-...
-118 |     pub fn from_thread() -> Self {
-    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-For more information about this error, try `rustc --explain E0599`.
-error: could not compile `urec-win` (lib) due to 1 previous error
-warning: build failed, waiting for other jobs to finish...
-## build FAILED
+   Compiling wgpu-hal v30.0.1
+   Compiling urec-cli v0.1.1 (D:\a\uRec\uRec\crates\cli)
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling wgpu-core v30.0.1
+   Compiling wgpu v30.0.1
+   Compiling egui-wgpu v0.36.2
+   Compiling eframe v0.36.2
+   Compiling urec v0.1.1 (D:\a\uRec\uRec\crates\app)
+    Finished `release` profile [optimized] target(s) in 2m 41s
+sample recording: True
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 16.02.22.mp4 size=695972
+light home alive=True
+light library alive=True
+light settings:general alive=True
+light settings:recording alive=True
+light settings:video alive=True
+light settings:audio alive=True
+light settings:instantreplay alive=True
+light settings:hotkeys alive=True
+light settings:storage alive=True
+light settings:appearance alive=True
+light settings:advanced alive=True
+dark home alive=True
+dark library alive=True
+dark settings:video alive=True
+dark settings:audio alive=True
