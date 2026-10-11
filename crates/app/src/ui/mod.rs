@@ -390,21 +390,25 @@ impl eframe::App for App {
         if let Some(msg) = self.startup_message.take() {
             self.push_notice(Level::Warning, msg);
         }
-        self.tally(ui, &st);
-        self.nav(ui, &st);
+        // Explicit layout: tally strip, nav rail, content. Every child gets an exact rectangle.
         let p = self.p;
-        egui::CentralPanel::default()
-            .frame(egui::Frame::new().fill(p.bg).inner_margin(egui::Margin {
-                left: 28,
-                right: 28,
-                top: 22,
-                bottom: 18,
-            }))
-            .show(ui, |ui| match self.page {
-                Page::Home => home::show(self, ui, &st),
-                Page::Library => library_page::show(self, ui, &st),
-                Page::Settings => settings_page::show(self, ui, &st),
-            });
+        let full = ui.max_rect();
+        ui.painter().rect_filled(full, CornerRadius::ZERO, p.bg);
+        let tally = egui::Rect::from_min_size(full.min, Vec2::new(full.width(), 3.0));
+        self.tally(ui, tally, &st);
+        let body = egui::Rect::from_min_max(egui::pos2(full.min.x, full.min.y + 3.0), full.max);
+        let nav_w = 184.0;
+        let nav = egui::Rect::from_min_size(body.min, Vec2::new(nav_w, body.height()));
+        let content = egui::Rect::from_min_max(
+            egui::pos2(body.min.x + nav_w + 28.0, body.min.y + 22.0),
+            body.max - Vec2::new(28.0, 18.0),
+        );
+        ui.scope_builder(egui::UiBuilder::new().max_rect(nav).id_salt("nav"), |ui| self.nav(ui, &st));
+        ui.scope_builder(egui::UiBuilder::new().max_rect(content).id_salt("content"), |ui| match self.page {
+            Page::Home => home::show(self, ui, &st),
+            Page::Library => library_page::show(self, ui, &st),
+            Page::Settings => settings_page::show(self, ui, &st),
+        });
         self.notices(&ctx, &st);
 
         // Idle: no repaints at all. Active: refresh the timer and meters.

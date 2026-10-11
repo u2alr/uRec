@@ -669,7 +669,7 @@ impl Worker {
             if let SourceState::Failed { reason } = state {
                 self.notice(
                     Level::Warning,
-                    format!("{name} isn't being recorded: {}", explain_audio_failure(reason)),
+                    format!("{name} isn't being recorded. {}", explain_audio_failure(reason)),
                     None,
                 );
             }
