@@ -31,6 +31,7 @@ features = [
   "Win32_Storage_FileSystem",
   "Win32_System_Pipes",
   "Win32_Networking_WinHttp",
+  "Win32_Security_Cryptography",
   "UI_Notifications",
   "Data_Xml_Dom",
   "Foundation",

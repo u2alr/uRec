@@ -113,6 +113,22 @@ pub fn hex(bytes: &[u8]) -> String {
     bytes.iter().map(|b| format!("{b:02X}")).collect()
 }
 
+/// Raw SHA-256 of a byte slice.
+pub fn digest_bytes(data: &[u8]) -> [u8; 32] {
+    let mut h = Sha256::new();
+    h.update(data);
+    h.finish()
+}
+
+/// Parse hex (either case, surrounding whitespace ignored).
+pub fn from_hex(s: &str) -> Option<Vec<u8>> {
+    let s = s.trim();
+    if s.len() % 2 != 0 {
+        return None;
+    }
+    (0..s.len()).step_by(2).map(|i| u8::from_str_radix(s.get(i..i + 2)?, 16).ok()).collect()
+}
+
 /// Uppercase hex SHA-256 of a byte slice.
 pub fn digest(data: &[u8]) -> String {
     let mut h = Sha256::new();
@@ -157,5 +173,9 @@ mod tests {
             left -= n;
         }
         assert_eq!(hex(&h.finish()), "CDC76E5C9914FB9281A1C7E284D73E67F1809A48A497200E046D39CCC7112CD0");
+        assert_eq!(from_hex(" 0aFf \n"), Some(vec![0x0a, 0xff]));
+        assert_eq!(from_hex("abc"), None);
+        assert_eq!(from_hex("zz"), None);
+        assert_eq!(hex(&digest_bytes(b"abc")), digest(b"abc"));
     }
 }

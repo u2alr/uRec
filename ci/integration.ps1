@@ -126,6 +126,26 @@ $grow = $samples[-1].Ff - $samples[0].Ff
 $growCli = $samples[-1].Cli - $samples[0].Cli
 Add-Result "T20" "150 s Instant Replay: memory stays flat, ring stays bounded, save still works" ($grow -lt 30 -and $growCli -lt 10 -and ($samples | Measure-Object Ring -Maximum).Maximum -le 19 -and $mL -and -not $mL.DecodeErrors) ("ffmpeg private MB " + (($samples | ForEach-Object { "$($_.T)s=$($_.Ff)" }) -join " ") + " | host " + (($samples | ForEach-Object { $_.Cli }) -join "/") + " | ring max $(($samples | Measure-Object Ring -Maximum).Maximum)/19 | clip $($mL.Duration)s")
 
+# Update signatures: a throwaway P-256 key signs a file; uRec's CNG check must accept it and
+# refuse a changed file, a changed signature and another key.
+$ec = [System.Security.Cryptography.ECDsa]::Create([System.Security.Cryptography.ECCurve+NamedCurves]::nistP256)
+$qp = $ec.ExportParameters($false)
+$keyHex = (($qp.Q.X + $qp.Q.Y) | ForEach-Object { $_.ToString("x2") }) -join ""
+$sumsF = Join-Path $work "SHA256SUMS.txt"; $sigF = Join-Path $work "SHA256SUMS.txt.sig"
+"abc123  uRec-9.9.9-setup.exe`n" | Out-File -NoNewline -Encoding ascii $sumsF
+$sigHex = (($ec.SignData([IO.File]::ReadAllBytes($sumsF), [System.Security.Cryptography.HashAlgorithmName]::SHA256)) | ForEach-Object { $_.ToString("x2") }) -join ""
+$sigHex | Out-File -NoNewline -Encoding ascii $sigF
+$good = Invoke-Cli @("verify-sig", "--key", $keyHex, "--file", $sumsF, "--sig", $sigF)
+"tampered  uRec-9.9.9-setup.exe`n" | Out-File -NoNewline -Encoding ascii (Join-Path $work "tampered.txt")
+$badFile = Invoke-Cli @("verify-sig", "--key", $keyHex, "--file", (Join-Path $work "tampered.txt"), "--sig", $sigF)
+$flipped = ($sigHex.Substring(0, 10) + $(if ($sigHex[10] -eq 'a') { 'b' } else { 'a' }) + $sigHex.Substring(11))
+$flipped | Out-File -NoNewline -Encoding ascii (Join-Path $work "flipped.sig")
+$badSig = Invoke-Cli @("verify-sig", "--key", $keyHex, "--file", $sumsF, "--sig", (Join-Path $work "flipped.sig"))
+$other = [System.Security.Cryptography.ECDsa]::Create([System.Security.Cryptography.ECCurve+NamedCurves]::nistP256).ExportParameters($false)
+$otherHex = (($other.Q.X + $other.Q.Y) | ForEach-Object { $_.ToString("x2") }) -join ""
+$badKey = Invoke-Cli @("verify-sig", "--key", $otherHex, "--file", $sumsF, "--sig", $sigF)
+Add-Result "T21" "Signed updates: valid signature accepted; changed file, changed signature and other key refused" ($good.Kv['verified'] -eq 'true' -and $badFile.Kv['verified'] -eq 'false' -and $badSig.Kv['verified'] -eq 'false' -and $badKey.Kv['verified'] -eq 'false') "good=$($good.Kv['verified']) tampered_file=$($badFile.Kv['verified']) flipped_sig=$($badSig.Kv['verified']) other_key=$($badKey.Kv['verified'])"
+
 "=== Repeated start/stop"
 $cycleOk = $true; $cycleDetail = @()
 for ($i = 1; $i -le 5; $i++) {

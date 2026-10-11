@@ -159,3 +159,6 @@ impl PushToTalk {
         PushToTalk
     }
 }
+pub fn verify_p256(_public_xy: &[u8; 64], _hash: &[u8; 32], _sig: &[u8; 64]) -> bool {
+    false
+}

@@ -247,6 +247,38 @@ struct Release {
     page: String,
     setup: Option<(String, String)>, // (name, url)
     sums: Option<String>,            // url
+    sums_sig: Option<String>,        // url
+}
+
+/// Public key (64-byte P-256 point as hex) that release checksums are signed with. Empty until
+/// the project creates one (ci/new-update-key.ps1); then every update must carry a valid
+/// signature, on top of the SHA-256 check.
+const UPDATE_KEY: &str = include_str!("../assets/update-key.pub");
+
+/// Check `SHA256SUMS.txt` against its signature. `verify` does the curve maths (Windows CNG).
+pub fn check_signature(
+    key_hex: &str,
+    sums: &[u8],
+    sig_hex: Option<&str>,
+    verify: &dyn Fn(&[u8; 64], &[u8; 32], &[u8; 64]) -> bool,
+) -> Result<(), String> {
+    let key_hex = key_hex.trim();
+    if key_hex.is_empty() {
+        return Ok(()); // no signing key yet: checksum-only
+    }
+    let key: [u8; 64] = urec_engine::sha256::from_hex(key_hex)
+        .and_then(|v| v.try_into().ok())
+        .ok_or("this build's update key is malformed")?;
+    let sig_hex = sig_hex.ok_or("the release isn't signed")?;
+    let sig: [u8; 64] = urec_engine::sha256::from_hex(sig_hex)
+        .and_then(|v| v.try_into().ok())
+        .ok_or("the release signature is malformed")?;
+    let hash = urec_engine::sha256::digest_bytes(sums);
+    if verify(&key, &hash, &sig) {
+        Ok(())
+    } else {
+        Err("the release signature doesn't match uRec's key".into())
+    }
 }
 
 fn user_agent() -> String {
@@ -284,6 +316,7 @@ fn parse_release(body: &[u8]) -> Result<Release, String> {
     let page = v["html_url"].as_str().unwrap_or(RELEASES_PAGE).to_string();
     let mut setup = None;
     let mut sums = None;
+    let mut sums_sig = None;
     for a in v["assets"].as_array().map(|a| a.as_slice()).unwrap_or(&[]) {
         let (Some(name), Some(url)) = (a["name"].as_str(), a["browser_download_url"].as_str()) else { continue };
         if !allowed_download(url) {
@@ -293,9 +326,11 @@ fn parse_release(body: &[u8]) -> Result<Release, String> {
             setup = Some((name.to_string(), url.to_string()));
         } else if name == "SHA256SUMS.txt" {
             sums = Some(url.to_string());
+        } else if name == "SHA256SUMS.txt.sig" {
+            sums_sig = Some(url.to_string());
         }
     }
-    Ok(Release { version, page, setup, sums })
+    Ok(Release { version, page, setup, sums, sums_sig })
 }
 
 /// Find `name` in a sha256sum-style listing ("<hex>  <name>" or "<hex> *<name>").
@@ -346,10 +381,25 @@ fn check_once(auto: bool, state: &Mutex<State>, repaint: &(dyn Fn() + Send + Syn
             return State::Ready { version: rel.version };
         }
     }
-    let sums = match urec_win::https_get(&sums_url, &user_agent(), &[], 64 * 1024) {
-        Ok(b) => String::from_utf8_lossy(&b).to_string(),
+    let sums_bytes = match urec_win::https_get(&sums_url, &user_agent(), &[], 64 * 1024) {
+        Ok(b) => b,
         Err(e) => return State::Failed(format!("Couldn't download the checksums: {e}")),
     };
+    // Signed releases: the checksum list itself must carry a valid signature.
+    if !UPDATE_KEY.trim().is_empty() {
+        let sig = match &rel.sums_sig {
+            Some(u) => match urec_win::https_get(u, &user_agent(), &[], 4096) {
+                Ok(b) => Some(String::from_utf8_lossy(&b).to_string()),
+                Err(e) => return State::Failed(format!("Couldn't download the signature: {e}")),
+            },
+            None => None,
+        };
+        if let Err(e) = check_signature(UPDATE_KEY, &sums_bytes, sig.as_deref(), &urec_win::verify_p256) {
+            crate::controller::log(&format!("update: refused {}: {e}", rel.version));
+            return State::Failed(format!("Update refused: {e}."));
+        }
+    }
+    let sums = String::from_utf8_lossy(&sums_bytes).to_string();
     let Some(expected) = find_sum(&sums, &name) else {
         return State::Failed(format!("{name} isn't listed in SHA256SUMS.txt"));
     };
@@ -497,5 +547,29 @@ mod tests {
         assert!(r.sums.is_some());
         let pre = br#"{"tag_name":"v0.2.0","prerelease":true,"assets":[]}"#;
         assert!(parse_release(pre).is_err());
+    }
+
+    #[test]
+    fn signature_rules() {
+        let key = "ab".repeat(64);
+        let sig = "cd".repeat(64);
+        let yes = |_: &[u8; 64], _: &[u8; 32], _: &[u8; 64]| true;
+        let no = |_: &[u8; 64], _: &[u8; 32], _: &[u8; 64]| false;
+        // No key compiled in: checksum-only, as before.
+        assert!(check_signature("", b"sums", None, &no).is_ok());
+        // With a key: a signature is required and must verify.
+        assert!(check_signature(&key, b"sums", Some(&sig), &yes).is_ok());
+        assert!(check_signature(&key, b"sums", None, &yes).unwrap_err().contains("isn't signed"));
+        assert!(check_signature(&key, b"sums", Some(&sig), &no).unwrap_err().contains("doesn't match"));
+        assert!(check_signature(&key, b"sums", Some("12"), &yes).unwrap_err().contains("malformed"));
+        assert!(check_signature("abcd", b"sums", Some(&sig), &yes).is_err());
+        // The hash passed to the verifier is SHA-256 of the checksum file.
+        let seen = std::cell::Cell::new([0u8; 32]);
+        let spy = |_: &[u8; 64], h: &[u8; 32], _: &[u8; 64]| {
+            seen.set(*h);
+            true
+        };
+        check_signature(&key, b"abc", Some(&sig), &spy).unwrap();
+        assert_eq!(urec_engine::sha256::hex(&seen.get()), urec_engine::sha256::digest(b"abc"));
     }
 }

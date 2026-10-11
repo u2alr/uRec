@@ -18,6 +18,8 @@ pub mod notify;
 mod overlay;
 pub mod pill;
 #[cfg(windows)]
+mod sig;
+#[cfg(windows)]
 mod sys;
 #[cfg(windows)]
 mod toast;
@@ -35,6 +37,8 @@ pub use hotkeys::{Hotkeys, PushToTalk};
 pub use http::{https_download, https_get};
 #[cfg(windows)]
 pub use overlay::Overlay;
+#[cfg(windows)]
+pub use sig::verify_p256;
 #[cfg(windows)]
 pub use sys::*;
 #[cfg(windows)]

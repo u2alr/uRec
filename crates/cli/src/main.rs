@@ -88,6 +88,23 @@ fn main() -> ExitCode {
     if args.cmd == "overlay" {
         return cmd_overlay(&args);
     }
+    if args.cmd == "verify-sig" {
+        // verify-sig --key HEX(64 bytes) --file PATH --sig PATH(hex r||s)
+        let key = args.get("key").and_then(urec_engine::sha256::from_hex).and_then(|v| <[u8; 64]>::try_from(v).ok());
+        let data = args.get("file").and_then(|f| std::fs::read(f).ok());
+        let sig = args
+            .get("sig")
+            .and_then(|f| std::fs::read_to_string(f).ok())
+            .and_then(|t| urec_engine::sha256::from_hex(&t))
+            .and_then(|v| <[u8; 64]>::try_from(v).ok());
+        let (Some(key), Some(data), Some(sig)) = (key, data, sig) else {
+            println!("verified=false reason=bad-input");
+            return ExitCode::from(2);
+        };
+        let ok = urec_win::verify_p256(&key, &urec_engine::sha256::digest_bytes(&data), &sig);
+        println!("verified={ok}");
+        return if ok { ExitCode::SUCCESS } else { ExitCode::from(1) };
+    }
     if args.cmd == "toast" {
         return cmd_toast(&args);
     }
