@@ -144,8 +144,13 @@ pub struct Status {
 }
 
 impl Status {
+    /// Something is being captured or written (no updates or re-probing now).
     pub fn busy(&self) -> bool {
-        self.recording.is_some() || self.finishing || self.replay == ReplayState::On
+        self.recording.is_some()
+            || self.finishing
+            || self.replay == ReplayState::On
+            || self.replay_saving > 0
+            || self.test.as_ref().is_some_and(|t| t.running)
     }
 
     pub fn best_encoder(&self, codec: Codec) -> Option<Encoder> {
@@ -1250,12 +1255,12 @@ impl Worker {
         }
         let t0 = Instant::now();
         while t0.elapsed() < Duration::from_secs(5) {
-            if !self.live.as_ref().is_some_and(|l| l.session.running()) {
+            if !self.live.as_mut().is_some_and(|l| l.session.running()) {
                 break;
             }
             std::thread::sleep(Duration::from_millis(200));
         }
-        let crashed = !self.live.as_ref().is_some_and(|l| l.session.running());
+        let crashed = !self.live.as_mut().is_some_and(|l| l.session.running());
         let audio_states = self.live.as_ref().and_then(|l| l.audio.as_ref()).map(|f| f.states());
         let stats = self.live.as_ref().map(|l| l.session.stats()).unwrap_or_default();
         let audio_settings = self.s.audio_settings();
@@ -1425,8 +1430,15 @@ impl Worker {
         let visible = self.s.appearance.overlay && st.overlay_visible && (self.recording.is_some() || replay_on);
         let mut o =
             urec_win::OverlayState { visible, corner: self.s.appearance.overlay_corner.clone(), ..Default::default() };
+        o.size = match self.s.appearance.overlay_size.as_str() {
+            "small" => 0.8,
+            "large" => 1.3,
+            _ => 1.0,
+        };
+        o.opacity = self.s.appearance.overlay_opacity as f32 / 100.0;
+        // Keep the position even while hidden, so a save message appears in the right corner.
+        o.monitor = self.overlay_monitor;
         if visible {
-            o.monitor = self.overlay_monitor;
             o.dot = if self.recording.is_some() { (229, 72, 77) } else { (217, 164, 65) };
         }
         self.overlay.set(o);

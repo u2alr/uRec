@@ -158,6 +158,10 @@ pub struct Appearance {
     pub ui_scale: f32,
     /// "system" (follow Windows animation effects) | "reduced" | "full"
     pub motion: String,
+    /// "small" | "medium" | "large"
+    pub overlay_size: String,
+    /// Dot opacity in percent (30-100).
+    pub overlay_opacity: u32,
 }
 
 impl Default for Settings {
@@ -273,6 +277,8 @@ impl Default for Appearance {
             overlay_corner: "top_right".into(),
             ui_scale: 1.0,
             motion: "system".into(),
+            overlay_size: "medium".into(),
+            overlay_opacity: 100,
         }
     }
 }
@@ -368,6 +374,10 @@ impl Settings {
         check(["system", "reduced", "full"].contains(&ap.motion.as_str()), "animations", &mut || {
             ap.motion = "system".into()
         });
+        check(["small", "medium", "large"].contains(&ap.overlay_size.as_str()), "overlay size", &mut || {
+            ap.overlay_size = "medium".into()
+        });
+        check((30..=100).contains(&ap.overlay_opacity), "overlay opacity", &mut || ap.overlay_opacity = 100);
         let c = &mut self.capture;
         check(["monitor", "window", "region"].contains(&c.kind.as_str()), "capture source", &mut || {
             c.kind = "monitor".into()

@@ -51,7 +51,7 @@ struct Anim {
 static ANIM: Mutex<Option<Anim>> = Mutex::new(None);
 
 fn scale(st: &OverlayState) -> f32 {
-    (st.monitor.3 as f32 / 1080.0).clamp(1.0, 2.5)
+    (st.monitor.3 as f32 / 1080.0).clamp(1.0, 2.5) * st.size.clamp(0.6, 1.6)
 }
 
 /// Premultiplied BGRA pixels of the dot: a soft dark halo for contrast on bright scenes,
@@ -239,7 +239,8 @@ unsafe fn draw(hwnd: HWND) {
         Look::Dot { alpha } if st.visible => {
             let px = render_dot(dot_size as usize, st.dot);
             let (x, y) = ((cx - dot_size as f32 / 2.0) as i32, (cy - dot_size as f32 / 2.0) as i32);
-            present(hwnd, x, y, dot_size, dot_size, &px, (alpha.clamp(0.0, 1.0) * 255.0) as u8);
+            let a = alpha.clamp(0.0, 1.0) * st.opacity.clamp(0.3, 1.0);
+            present(hwnd, x, y, dot_size, dot_size, &px, (a * 255.0) as u8);
             true
         }
         Look::Dot { .. } => false,

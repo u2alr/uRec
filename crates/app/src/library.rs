@@ -34,6 +34,8 @@ pub struct Item {
     pub meta: Option<Meta>,
     /// Raw RGBA thumbnail file, THUMB_W × THUMB_H.
     pub thumb: Option<PathBuf>,
+    /// Why the file can't be read, if FFmpeg couldn't open it (damaged or unfinished).
+    pub problem: Option<String>,
 }
 
 #[derive(Default, Serialize, Deserialize)]
@@ -50,6 +52,12 @@ pub struct Library {
     pub items: Arc<Mutex<Vec<Item>>>,
     pub scanning: Arc<AtomicBool>,
     tx: Sender<Job>,
+    /// Starred recordings (full paths), kept in %APPDATA%\uRec\favorites.json.
+    favorites: Mutex<Vec<PathBuf>>,
+}
+
+fn favorites_path() -> PathBuf {
+    crate::settings::Settings::path().with_file_name("favorites.json")
 }
 
 fn key(path: &Path, size: u64, modified: SystemTime) -> String {
@@ -99,6 +107,8 @@ impl Library {
                             if let Some(m) = probe_meta(ff, &item.path) {
                                 cache.entries.insert(k.clone(), m.clone());
                                 item.meta = Some(m);
+                            } else {
+                                item.problem = Some(diagnose(&item.path, item.modified));
                             }
                         }
                         let t = cache_dir().join(format!("{k}.rgba"));
@@ -116,7 +126,7 @@ impl Library {
                     // Thumbnails, newest first. Paused while a recording is written; a new
                     // refresh request interrupts and restarts the whole pass.
                     let Some(ff) = ffmpeg.as_deref() else { continue };
-                    'thumbs: for item in found.iter().filter(|i| i.thumb.is_none()).take(200) {
+                    'thumbs: for item in found.iter().filter(|i| i.thumb.is_none() && i.problem.is_none()).take(200) {
                         while capturing.load(Ordering::Relaxed) {
                             if let Ok(j) = rx.recv_timeout(Duration::from_secs(1)) {
                                 pending = Some(j);
@@ -140,7 +150,23 @@ impl Library {
                 }
             })
             .expect("spawn library");
-        Library { items, scanning, tx }
+        let favorites: Vec<PathBuf> =
+            std::fs::read(favorites_path()).ok().and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default();
+        Library { items, scanning, tx, favorites: Mutex::new(favorites) }
+    }
+
+    pub fn is_favorite(&self, path: &Path) -> bool {
+        self.favorites.lock().map(|f| f.iter().any(|x| x == path)).unwrap_or(false)
+    }
+
+    pub fn set_favorite(&self, path: &Path, on: bool) {
+        if let Ok(mut f) = self.favorites.lock() {
+            f.retain(|x| x != path);
+            if on {
+                f.push(path.to_path_buf());
+            }
+            let _ = std::fs::write(favorites_path(), serde_json::to_vec(&*f).unwrap_or_default());
+        }
     }
 
     pub fn refresh(&self, dir: &Path) {
@@ -165,7 +191,14 @@ impl Library {
         if target.exists() {
             return Err(format!("A file named \"{clean}.{ext}\" already exists."));
         }
+        if !item.path.exists() {
+            return Err("This recording was moved or deleted outside uRec.".into());
+        }
         std::fs::rename(&item.path, &target).map_err(|e| format!("Couldn't rename: {e}"))?;
+        if self.is_favorite(&item.path) {
+            self.set_favorite(&item.path, false);
+            self.set_favorite(&target, true);
+        }
         if let Some(x) = self.items.lock().unwrap().iter_mut().find(|x| x.path == item.path) {
             x.path = target.clone();
             x.name = clean;
@@ -175,8 +208,14 @@ impl Library {
 
     /// Move a recording to the Recycle Bin.
     pub fn delete(&self, item: &Item) -> Result<(), String> {
+        if !item.path.exists() {
+            self.items.lock().unwrap().retain(|x| x.path != item.path);
+            self.set_favorite(&item.path, false);
+            return Err("This recording was already moved or deleted outside uRec.".into());
+        }
         if urec_win::recycle(&item.path) {
             self.items.lock().unwrap().retain(|x| x.path != item.path);
+            self.set_favorite(&item.path, false);
             Ok(())
         } else {
             Err("Couldn't move the file to the Recycle Bin. It may be open in another app.".into())
@@ -186,7 +225,21 @@ impl Library {
 
 fn is_video(p: &Path) -> bool {
     let name = p.file_name().and_then(|n| n.to_str()).unwrap_or("").to_ascii_lowercase();
-    (name.ends_with(".mp4") || name.ends_with(".mkv")) && !name.ends_with(".part.mp4")
+    (name.ends_with(".mp4") || name.ends_with(".mkv"))
+        && !name.ends_with(".part.mp4")
+        && !name.ends_with(urec_engine::replay::TEMP_SUFFIX)
+}
+
+/// Plain-words reason a video can't be opened. Recent files may still be being written.
+fn diagnose(path: &Path, modified: SystemTime) -> String {
+    if SystemTime::now().duration_since(modified).map(|d| d.as_secs() < 30).unwrap_or(true) {
+        return "Still being written".into();
+    }
+    let is_mp4 = path.extension().is_some_and(|e| e.eq_ignore_ascii_case("mp4"));
+    match is_mp4.then(|| urec_engine::mp4check::check(path)) {
+        Some(Err(e)) => format!("Damaged: {e}"),
+        _ => "Can't be read".into(),
+    }
 }
 
 /// Videos in `dir` and its direct sub-folders, newest first.
@@ -208,6 +261,7 @@ pub fn scan(dir: &Path) -> Vec<Item> {
                     modified: md.modified().unwrap_or(UNIX_EPOCH),
                     meta: None,
                     thumb: None,
+                    problem: None,
                     path: p,
                 });
             }
@@ -324,6 +378,7 @@ mod tests {
         std::fs::write(d.join("a.mp4"), b"x").unwrap();
         std::fs::write(d.join("VALORANT").join("b.mkv"), b"x").unwrap();
         std::fs::write(d.join("VALORANT").join("c.part.mp4"), b"x").unwrap();
+        std::fs::write(d.join("VALORANT").join(format!("e.1-2{}", urec_engine::replay::TEMP_SUFFIX)), b"x").unwrap();
         std::fs::write(d.join(".hidden").join("d.mp4"), b"x").unwrap();
         std::fs::write(d.join("notes.txt"), b"x").unwrap();
         let items = scan(&d);
@@ -346,5 +401,20 @@ mod tests {
     fn durations() {
         assert_eq!(format_duration(65.4), "1:05");
         assert_eq!(format_duration(3725.0), "1:02:05");
+    }
+
+    #[test]
+    fn diagnoses_unreadable_files() {
+        let d = std::env::temp_dir().join(format!("urec-lib-diag-{}", std::process::id()));
+        let _ = std::fs::create_dir_all(&d);
+        let f = d.join("broken.mp4");
+        std::fs::write(&f, [0u8; 64]).unwrap();
+        assert_eq!(diagnose(&f, SystemTime::now()), "Still being written");
+        let old = SystemTime::now() - Duration::from_secs(3600);
+        assert!(diagnose(&f, old).starts_with("Damaged: "));
+        let mkv = d.join("x.mkv");
+        std::fs::write(&mkv, b"x").unwrap();
+        assert_eq!(diagnose(&mkv, old), "Can't be read");
+        let _ = std::fs::remove_dir_all(d);
     }
 }

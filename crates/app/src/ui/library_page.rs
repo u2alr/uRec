@@ -39,6 +39,49 @@ pub struct LibraryUi {
     pub sort: Sort,
     pub renaming: Option<(PathBuf, String)>,
     pub confirm_delete: Option<Item>,
+    pub favorites_only: bool,
+}
+
+/// Act on a file only if it's still there; otherwise say so and re-scan.
+fn still_there(app: &mut App, item: &Item) -> bool {
+    if item.path.exists() {
+        return true;
+    }
+    app.push_notice(Level::Warning, format!("\"{}\" was moved or deleted outside uRec.", item.name));
+    app.library.refresh(&app.s.output_dir());
+    false
+}
+
+/// Outline or filled star, drawn (no font glyph needed).
+fn star(ui: &mut egui::Ui, p: &theme::Palette, on: bool) -> egui::Response {
+    let (rect, resp) = ui.allocate_exact_size(Vec2::splat(18.0), Sense::click());
+    let c = rect.center();
+    let pts: Vec<egui::Pos2> = (0..10)
+        .map(|i| {
+            let r = if i % 2 == 0 { 7.5 } else { 3.2 };
+            let a = std::f32::consts::PI * (i as f32 / 5.0) - std::f32::consts::FRAC_PI_2;
+            c + Vec2::new(a.cos() * r, a.sin() * r)
+        })
+        .collect();
+    let color = if on {
+        p.replay
+    } else if resp.hovered() {
+        p.text
+    } else {
+        p.faint
+    };
+    if on {
+        // The star isn't convex: fill it as ten triangles around the centre.
+        for i in 0..pts.len() {
+            let tri = vec![c, pts[i], pts[(i + 1) % pts.len()]];
+            ui.painter().add(egui::Shape::convex_polygon(tri, color, egui::Stroke::NONE));
+        }
+    }
+    ui.painter().add(egui::Shape::closed_line(pts, egui::Stroke::new(1.3, color)));
+    if resp.hovered() {
+        ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
+    }
+    resp.on_hover_text(if on { "Remove from favorites" } else { "Add to favorites" })
 }
 
 /// Seconds east of UTC for the local time zone (from the current clock).
@@ -105,12 +148,18 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, _st: &Status) {
                 ui.selectable_value(&mut app.lib.sort, s, s.label());
             }
         });
+        ui.add_space(8.0);
+        theme::switch(ui, &p, &mut app.lib.favorites_only);
+        ui.label(RichText::new("Favorites only").color(p.muted));
     });
     ui.add_space(12.0);
 
     let q = app.lib.search.to_lowercase();
     if !q.is_empty() {
         items.retain(|i| i.name.to_lowercase().contains(&q) || i.app.to_lowercase().contains(&q));
+    }
+    if app.lib.favorites_only {
+        items.retain(|i| app.library.is_favorite(&i.path));
     }
     match app.lib.sort {
         Sort::Newest => items.sort_by_key(|i| std::cmp::Reverse(i.modified)),
@@ -132,6 +181,8 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, _st: &Status) {
                 &p,
                 &format!("Recordings and saved replays appear here. They're saved to {}.", app.s.storage.output_dir),
             );
+        } else if app.lib.favorites_only && q.is_empty() {
+            theme::note(ui, &p, "No favorites yet. Star a recording to keep it here.");
         } else {
             theme::note(ui, &p, "Nothing matches your search.");
         }
@@ -186,7 +237,7 @@ fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
         ui.painter().galley(bg.min + Vec2::new(4.0, 2.0), galley, Color32::WHITE);
     }
     let thumb_resp = ui.interact(thumb, ui.id().with(("thumb", &item.path)), Sense::click());
-    if thumb_resp.clicked() {
+    if thumb_resp.clicked() && still_there(app, item) {
         open_file(&item.path);
     }
     if thumb_resp.hovered() {
@@ -230,7 +281,13 @@ fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
             app.lib.renaming = None;
         }
     } else {
-        child.add(egui::Label::new(RichText::new(&item.name).color(p.text)).truncate());
+        child.horizontal(|ui| {
+            let fav = app.library.is_favorite(&item.path);
+            if star(ui, &p, fav).clicked() {
+                app.library.set_favorite(&item.path, !fav);
+            }
+            ui.add(egui::Label::new(RichText::new(&item.name).color(p.text)).truncate());
+        });
     }
     let mut meta = Vec::new();
     if let Some(m) = &item.meta {
@@ -245,12 +302,15 @@ fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
         meta.push(item.app.clone());
     }
     child.label(RichText::new(meta.join(", ")).small().color(p.muted));
+    if let Some(problem) = &item.problem {
+        child.label(RichText::new(problem).small().color(p.warn));
+    }
     child.add_space(4.0);
     child.horizontal(|ui| {
-        if theme::link_button(ui, &p, "Play").clicked() {
+        if theme::link_button(ui, &p, "Play").clicked() && still_there(app, item) {
             open_file(&item.path);
         }
-        if theme::link_button(ui, &p, "Show in folder").clicked() {
+        if theme::link_button(ui, &p, "Show in folder").clicked() && still_there(app, item) {
             urec_win::reveal_in_explorer(&item.path);
         }
         if theme::link_button(ui, &p, "Rename").clicked() {

@@ -170,6 +170,10 @@ pub struct OverlayState {
     pub corner: String,
     /// Monitor rectangle to place it on (x, y, w, h).
     pub monitor: (i32, i32, u32, u32),
+    /// Size multiplier (0.8 small, 1.0 medium, 1.3 large).
+    pub size: f32,
+    /// Opacity of the status dot, 0.3..1. Save messages are always fully opaque to stay readable.
+    pub opacity: f32,
 }
 
 /// Instant Replay save progress for the overlay indicator.
@@ -183,7 +187,14 @@ pub enum OverlayEvent {
 
 impl Default for OverlayState {
     fn default() -> Self {
-        OverlayState { visible: false, dot: (229, 72, 77), corner: "top_right".into(), monitor: (0, 0, 1920, 1080) }
+        OverlayState {
+            visible: false,
+            dot: (229, 72, 77),
+            corner: "top_right".into(),
+            monitor: (0, 0, 1920, 1080),
+            size: 1.0,
+            opacity: 1.0,
+        }
     }
 }
 

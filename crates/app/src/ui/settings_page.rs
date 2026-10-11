@@ -954,6 +954,24 @@ fn appearance(app: &mut App, ui: &mut egui::Ui) {
                 180.0,
             );
         });
+        theme::row(ui, &p, "Overlay size", "", |ui| {
+            combo(
+                ui,
+                "overlay_size",
+                &mut a.overlay_size,
+                &opts(&[("small", "Small"), ("medium", "Medium"), ("large", "Large")]),
+                180.0,
+            );
+        });
+        theme::row(
+            ui,
+            &p,
+            "Dot opacity",
+            "Save messages always appear at full strength so they stay readable.",
+            |ui| {
+                ui.add(egui::Slider::new(&mut a.overlay_opacity, 30..=100).suffix("%"));
+            },
+        );
     });
     let overlay_on = a.overlay;
     theme::row(
