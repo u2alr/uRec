@@ -162,16 +162,20 @@ if ($hasOut -gt 0) {
     $r = Invoke-Cli @("record", "--out", $out, "--source", $src, "--method", "gdi", "--encoder", "software", "--res", "720", "--fps", "30", "--seconds", "11", "--audio", "system")
     $flash | Wait-Process -Timeout 25 -ErrorAction SilentlyContinue
     # Video onsets: frames where average brightness jumps from dark to bright.
+    Push-Location $work
+    & $ff -hide_banner -v error -i $out -vf "signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=yavg.txt" -f null - 2>&1 | Out-Null
+    Pop-Location
     $yfile = Join-Path $work "yavg.txt"
-    & $ff -hide_banner -v error -i $out -vf "signalstats,metadata=print:key=lavfi.signalstats.YAVG:file=$($yfile -replace '\\','/' -replace ':','\:')" -f null - 2>&1 | Out-Null
     $vOn = @(); $prevBright = $false; $t = 0.0
     foreach ($l in (Get-Content $yfile -ErrorAction SilentlyContinue)) {
         if ($l -match "pts_time:([\d.]+)") { $t = [double]$Matches[1] }
-        if ($l -match "YAVG=([\d.]+)") { $bright = [double]$Matches[1] -gt 128; if ($bright -and -not $prevBright) { $vOn += $t }; $prevBright = $bright }
+        if ($l -match "YAVG=([\d.]+)") { $bright = [double]$Matches[1] -gt 100; if ($bright -and -not $prevBright) { $vOn += $t }; $prevBright = $bright }
     }
     # Audio onsets: ends of silence.
     $sd = & $ff -hide_banner -i $out -map 0:a:0 -af "silencedetect=n=-35dB:d=0.3" -f null - 2>&1 | Out-String
     $aOn = @([regex]::Matches($sd, "silence_end: ([\d.]+)") | ForEach-Object { [double]$_.Groups[1].Value })
+    "  video flash onsets: $($vOn -join ', ')"
+    "  audio beep onsets:  $($aOn -join ', ')"
     $offs = @()
     foreach ($v in $vOn) {
         $near = $aOn | Sort-Object { [math]::Abs($_ - $v) } | Select-Object -First 1
