@@ -94,7 +94,12 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, _st: &Status) {
     });
     ui.add_space(10.0);
     ui.horizontal(|ui| {
-        ui.add(egui::TextEdit::singleline(&mut app.lib.search).hint_text("Search recordings").desired_width(280.0));
+        ui.add(
+            egui::TextEdit::singleline(&mut app.lib.search)
+                .hint_text("Search recordings")
+                .desired_width(280.0)
+                .margin(egui::Margin::symmetric(10, 8)),
+        );
         egui::ComboBox::from_id_salt("lib_sort").selected_text(app.lib.sort.label()).width(150.0).show_ui(ui, |ui| {
             for s in Sort::ALL {
                 ui.selectable_value(&mut app.lib.sort, s, s.label());

@@ -222,12 +222,13 @@ fn welcome(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     }
     let p = app.p;
     ui.add_space(18.0);
+    let inner = ui.available_width() - 36.0;
     egui::Frame::new()
         .fill(p.panel)
         .corner_radius(CornerRadius::same(10))
         .inner_margin(egui::Margin::symmetric(18, 14))
         .show(ui, |ui| {
-            ui.set_width(ui.available_width());
+            ui.set_width(inner);
             ui.label(RichText::new("Set up for this PC").font(theme::semibold(15.0)));
             let enc = st
                 .best_encoder(app.s.codec())

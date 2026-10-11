@@ -1,40 +1,62 @@
-# Launches the real app on each page and captures the screen, so the UI can be reviewed.
-param([Parameter(Mandatory)][string]$Exe, [string]$Out = "screenshots")
+# Launches the real app, captures every page (light and dark), and drives a recording with the
+# real global hotkey (Alt+F9) to check hotkey -> recording -> saved file end to end.
+param([Parameter(Mandatory)][string]$Exe, [string]$Cli = "", [string]$Out = "screenshots")
 $ErrorActionPreference = "Continue"
 Add-Type -AssemblyName System.Windows.Forms, System.Drawing
 New-Item -ItemType Directory -Force $Out | Out-Null
 $env:UREC_FFMPEG = (& "$PSScriptRoot\get-ffmpeg.ps1" | Select-Object -Last 1)
-$pages = "home", "library", "settings:general", "settings:recording", "settings:video", "settings:audio", "settings:instantreplay", "settings:hotkeys", "settings:storage", "settings:appearance", "settings:advanced"
 $env:RUST_BACKTRACE = "1"
 $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
-# Diagnostic variants of the home page
-foreach ($v in @(@{n = "noov"; k = "UREC_NO_OVERLAY"; val = "1" }, @{n = "glow"; k = "UREC_RENDERER"; val = "glow" })) {
-    Set-Item "env:$($v.k)" $v.val
-    $env:UREC_PAGE = "home"
-    $proc = Start-Process $Exe -PassThru -RedirectStandardError (Join-Path $Out "stderr-$($v.n).txt")
-    Start-Sleep -Seconds 8
-    "variant $($v.n) alive=$(-not $proc.HasExited) $(if ($proc.HasExited) { "exit $($proc.ExitCode)" })"
-    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
-    Remove-Item "env:$($v.k)"
-    Start-Sleep -Seconds 1
-}
-foreach ($pg in $pages) {
-    $env:UREC_PAGE = $pg
-    $err = Join-Path $Out ("stderr-{0}.txt" -f ($pg -replace ':', '-'))
-    $proc = Start-Process $Exe -PassThru -RedirectStandardError $err -RedirectStandardOutput "$err.out"
-    Start-Sleep -Seconds $(if ($pg -eq "home") { 9 } else { 5 })
-    $alive = -not $proc.HasExited
+$videos = Join-Path $env:USERPROFILE "Videos\uRec"
+
+function Shot($name) {
     $bmp = New-Object System.Drawing.Bitmap $b.Width, $b.Height
     $g = [System.Drawing.Graphics]::FromImage($bmp)
     $g.CopyFromScreen($b.Location, [System.Drawing.Point]::Empty, $b.Size)
-    $file = Join-Path $Out ("{0}.png" -f ($pg -replace ':', '-'))
-    $bmp.Save($file, [System.Drawing.Imaging.ImageFormat]::Png)
+    $bmp.Save((Join-Path $Out "$name.png"), [System.Drawing.Imaging.ImageFormat]::Png)
     $g.Dispose(); $bmp.Dispose()
-    "$pg alive=$alive -> $file"
-    if ($alive) { Stop-Process -Id $proc.Id -Force } else { "  exit code $($proc.ExitCode)" }
-    Start-Sleep -Seconds 1
 }
-Get-WinEvent -FilterHashtable @{ LogName = 'Application'; Id = 1000, 1001, 1026 } -MaxEvents 6 -ErrorAction SilentlyContinue |
-    ForEach-Object { "---- event $($_.Id) $($_.TimeCreated)"; $_.Message } | Out-File (Join-Path $Out "events.txt")
+
+# A sample recording so the library has something to show.
+if ($Cli -and (Test-Path $Cli)) {
+    New-Item -ItemType Directory -Force (Join-Path $videos "Desktop") | Out-Null
+    & $Cli record --out (Join-Path $videos "Desktop\Desktop 2026-10-11 10.00.00.mp4") --method gdi --encoder software --res 720 --fps 30 --seconds 4 | Out-Null
+    "sample recording: $(Test-Path (Join-Path $videos 'Desktop\Desktop 2026-10-11 10.00.00.mp4'))"
+}
+
+# Hotkey test: start the app, press Alt+F9 to start, wait, press again to stop.
+$env:UREC_PAGE = "home"
+$before = @(Get-ChildItem $videos -Recurse -Filter *.mp4 -ErrorAction SilentlyContinue).Count
+$proc = Start-Process $Exe -PassThru
+Start-Sleep -Seconds 9
+Shot "home-ready"
+$wsh = New-Object -ComObject WScript.Shell
+$wsh.SendKeys("%{F9}")
+Start-Sleep -Seconds 6
+Shot "home-recording"
+$wsh.SendKeys("%{F9}")
+Start-Sleep -Seconds 6
+Shot "home-saved"
+$after = @(Get-ChildItem $videos -Recurse -Filter *.mp4 -ErrorAction SilentlyContinue)
+$new = $after | Sort-Object LastWriteTime | Select-Object -Last 1
+"hotkey recording: files before=$before after=$($after.Count) newest=$($new.Name) size=$($new.Length)"
+if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force } else { "app exited: $($proc.ExitCode)" }
+Start-Sleep -Seconds 2
+
+$pages = "home", "library", "settings:general", "settings:recording", "settings:video", "settings:audio", "settings:instantreplay", "settings:hotkeys", "settings:storage", "settings:appearance", "settings:advanced"
+foreach ($theme in "light", "dark") {
+    $env:UREC_THEME = $theme
+    foreach ($pg in $pages) {
+        if ($theme -eq "dark" -and $pg -notin "home", "library", "settings:video", "settings:audio") { continue }
+        $env:UREC_PAGE = $pg
+        $proc = Start-Process $Exe -PassThru
+        Start-Sleep -Seconds 5
+        Shot ("{0}-{1}" -f $theme, ($pg -replace ':', '-'))
+        "$theme $pg alive=$(-not $proc.HasExited)"
+        if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force } else { "  exit code $($proc.ExitCode)" }
+        Start-Sleep -Seconds 1
+    }
+}
+Remove-Item env:UREC_THEME
 $log = Join-Path $env:LOCALAPPDATA "uRec\logs\urec.log"
 if (Test-Path $log) { Copy-Item $log (Join-Path $Out "urec.log") }

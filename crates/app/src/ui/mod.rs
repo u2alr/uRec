@@ -196,7 +196,8 @@ impl App {
 
     fn apply_theme(&mut self, ctx: &egui::Context) {
         let system_dark = ctx.input(|i| i.raw.system_theme).map(|t| t == egui::Theme::Dark).unwrap_or(true);
-        let dark = match self.s.appearance.theme.as_str() {
+        let forced = std::env::var("UREC_THEME").ok();
+        let dark = match forced.as_deref().unwrap_or(self.s.appearance.theme.as_str()) {
             "light" => false,
             "dark" => true,
             _ => system_dark,

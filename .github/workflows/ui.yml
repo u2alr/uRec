@@ -23,17 +23,13 @@ jobs:
         run: |
           ./ci/get-ffmpeg.ps1 | Out-Null
           $env:CARGO_PROFILE_RELEASE_DEBUG = "1"; $env:CARGO_PROFILE_RELEASE_STRIP = "false"
-          cargo build --release -p urec *>&1 | Tee-Object build.txt | Select-String -Pattern "^(error|warning)" -Context 0,4
+          cargo build --release -p urec -p urec-cli *>&1 | Tee-Object build.txt | Select-String -Pattern "^(error|warning)" -Context 0,4
           if ($LASTEXITCODE -ne 0) { exit 1 }
-      - name: Crash dump
-        if: always()
-        shell: pwsh
-        run: if (Test-Path target/release/uRec.exe) { ./ci/crash-dump.ps1 -Exe target/release/uRec.exe *>&1 | Tee-Object -FilePath crash.txt }
       - name: Screenshots
         if: always()
         shell: pwsh
         run: |
-          if (Test-Path target/release/uRec.exe) { ./ci/ui-screenshots.ps1 -Exe target/release/uRec.exe -Out screenshots *>&1 | Tee-Object -FilePath ui.txt }
+          if (Test-Path target/release/uRec.exe) { ./ci/ui-screenshots.ps1 -Exe target/release/uRec.exe -Cli target/release/urec-cli.exe -Out screenshots *>&1 | Tee-Object -FilePath ui.txt }
           else { Get-Content build.txt -Tail 60 | Out-File ui.txt }
       - name: Publish
         if: always()
