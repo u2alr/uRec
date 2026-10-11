@@ -241,7 +241,7 @@ fn make_audio(args: &Args, holder: &RefCell<Option<AudioFeed>>) -> Vec<AudioInpu
 
 #[cfg(windows)]
 fn bind(s: &Session) {
-    println!("job_bound={}", urec_win::bind_child_to_app(s.process.raw_handle() as *mut std::ffi::c_void));
+    println!("job_bound={}", urec_win::bind_child_to_app(s.process.raw_handle()));
 }
 
 #[cfg(not(windows))]
