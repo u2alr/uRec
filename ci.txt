@@ -1,4 +1,4 @@
-commit cc02a2e466a3bb1818bb27ef54d615a429d1d231 run 38127647334
+commit d4f6f1a4cf4fd61e8fa1bfce5a8ac20d95829cf6 run 38128204184
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -329,172 +329,172 @@ commit cc02a2e466a3bb1818bb27ef54d615a429d1d231 run 38127647334
       Adding zune-core v0.5.3
       Adding zune-jpeg v0.5.15
  Downloading crates ...
-  Downloaded cfg_aliases v0.2.2
-  Downloaded rustc_version v0.4.1
-  Downloaded accesskit v0.24.1
-  Downloaded ahash v0.8.12
-  Downloaded rustc-hash v2.1.3
-  Downloaded serde_json v1.0.152
-  Downloaded scopeguard v1.2.0
-  Downloaded equivalent v1.0.2
-  Downloaded serde_derive v1.0.229
-  Downloaded serde_spanned v1.1.2
-  Downloaded smallvec v1.16.3
-  Downloaded smol_str v0.2.2
-  Downloaded rustc-hash v1.1.0
-  Downloaded self_cell v1.3.0
-  Downloaded serde_core v1.0.229
-  Downloaded spirv v0.4.0+sdk-1.4.341.0
-  Downloaded static_assertions v1.1.0
-  Downloaded naga-types v30.0.1
-  Downloaded shlex v2.0.1
-  Downloaded simd-adler32 v0.3.10
-  Downloaded serde v1.0.229
-  Downloaded semver v1.0.28
-  Downloaded profiling v1.0.18
-  Downloaded byteorder-lite v0.1.0
-  Downloaded skrifa v0.44.0
-  Downloaded font-types v0.12.6
-  Downloaded autocfg v1.5.1
-  Downloaded bit-vec v0.9.1
-  Downloaded crossbeam-utils v0.8.23
-  Downloaded clipboard-win v5.4.1
-  Downloaded arrayvec v0.7.8
-  Downloaded cfg-if v1.0.5
-  Downloaded glifo v0.2.0
-  Downloaded polycool v0.4.0
-  Downloaded bytemuck_derive v1.12.1
-  Downloaded gpu-allocator v0.28.0
-  Downloaded allocator-api2 v0.2.21
-  Downloaded arboard v3.6.1
-  Downloaded bitflags v2.13.2
-  Downloaded bytemuck v1.25.2
-  Downloaded codespan-reporting v0.13.1
   Downloaded color v0.3.3
-  Downloaded crc32fast v1.5.2
   Downloaded dpi v0.1.2
-  Downloaded libm v0.2.16
-  Downloaded cc v1.7.0
-  Downloaded adler2 v2.0.1
+  Downloaded bytemuck v1.25.2
+  Downloaded ahash v0.8.12
+  Downloaded bitflags v2.13.2
+  Downloaded equivalent v1.0.2
+  Downloaded accesskit v0.24.1
+  Downloaded arboard v3.6.1
+  Downloaded ash v0.38.0+1.3.281
   Downloaded bit-set v0.10.0
+  Downloaded cfg-if v1.0.5
+  Downloaded byteorder-lite v0.1.0
+  Downloaded arrayvec v0.7.8
+  Downloaded bit-vec v0.9.1
+  Downloaded cfg_aliases v0.2.2
+  Downloaded crc32fast v1.5.2
   Downloaded ecolor v0.36.2
-  Downloaded guillotiere v0.7.0
-  Downloaded kurbo v0.13.1
-  Downloaded moxcms v0.8.1
-  Downloaded num-traits v0.2.19
-  Downloaded presser v0.3.1
-  Downloaded pkg-config v0.3.34
-  Downloaded khronos-egl v6.0.0
-  Downloaded half v2.7.1
-  Downloaded either v1.19.0
-  Downloaded find-msvc-tools v0.1.14
-  Downloaded foldhash v0.2.0
+  Downloaded hashbrown v0.16.1
+  Downloaded cc v1.7.0
   Downloaded cursor-icon v1.2.0
-  Downloaded linebender_resource_handle v0.1.1
-  Downloaded log v0.4.34
-  Downloaded itoa v1.0.18
-  Downloaded embed-resource v3.0.12
-  Downloaded error-code v3.4.0
-  Downloaded glutin_wgl_sys v0.6.1
-  Downloaded pollster v1.0.1
-  Downloaded renderdoc-sys v1.1.0
-  Downloaded document-features v0.2.12
-  Downloaded nohash-hasher v0.2.0
-  Downloaded quick-error v2.0.1
-  Downloaded miniz_oxide v0.8.9
-  Downloaded lock_api v0.4.14
-  Downloaded pin-project-lite v0.2.17
-  Downloaded gl_generator v0.14.0
-  Downloaded peniko v0.6.1
-  Downloaded raw-window-handle v0.6.2
-  Downloaded libloading v0.8.9
-  Downloaded range-alloc v0.1.5
-  Downloaded egui-wgpu v0.36.2
+  Downloaded allocator-api2 v0.2.21
   Downloaded euclid v0.22.14
   Downloaded fax v0.2.7
+  Downloaded bytemuck_derive v1.12.1
+  Downloaded codespan-reporting v0.13.1
+  Downloaded find-msvc-tools v0.1.14
+  Downloaded clipboard-win v5.4.1
+  Downloaded crossbeam-utils v0.8.23
+  Downloaded adler2 v2.0.1
+  Downloaded autocfg v1.5.1
+  Downloaded document-features v0.2.12
+  Downloaded flate2 v1.1.10
+  Downloaded foldhash v0.2.0
+  Downloaded font-types v0.12.6
+  Downloaded gl_generator v0.14.0
+  Downloaded harfrust v0.12.0
+  Downloaded presser v0.3.1
+  Downloaded glifo v0.2.0
+  Downloaded polycool v0.4.0
   Downloaded fdeflate v0.3.7
-  Downloaded itertools v0.15.0
+  Downloaded glutin_wgl_sys v0.6.1
+  Downloaded gpu-allocator v0.28.0
+  Downloaded guillotiere v0.7.0
+  Downloaded indexmap v2.14.2
+  Downloaded png v0.18.1
+  Downloaded naga-types v30.0.1
+  Downloaded lock_api v0.4.14
+  Downloaded miniz_oxide v0.8.9
+  Downloaded pollster v1.0.1
+  Downloaded linebender_resource_handle v0.1.1
+  Downloaded num-traits v0.2.19
   Downloaded jobserver v0.1.35
-  Downloaded parking_lot v0.12.5
+  Downloaded khronos-egl v6.0.0
+  Downloaded egui-wgpu v0.36.2
+  Downloaded error-code v3.4.0
+  Downloaded nohash-hasher v0.2.0
+  Downloaded itoa v1.0.18
+  Downloaded libloading v0.8.9
+  Downloaded ordered-float v5.5.0
+  Downloaded peniko v0.6.1
+  Downloaded pin-project-lite v0.2.17
+  Downloaded pkg-config v0.3.34
+  Downloaded profiling v1.0.18
+  Downloaded quick-error v2.0.1
+  Downloaded either v1.19.0
+  Downloaded embed-resource v3.0.12
+  Downloaded once_cell v1.21.4
   Downloaded parking_lot_core v0.9.12
   Downloaded emath v0.36.2
-  Downloaded indexmap v2.14.2
-  Downloaded ordered-float v5.5.0
-  Downloaded litrs v1.0.0
+  Downloaded half v2.7.1
+  Downloaded miniz_oxide v0.9.1
+  Downloaded parking_lot v0.12.5
   Downloaded egui-winit v0.36.2
   Downloaded getrandom v0.4.3
-  Downloaded once_cell v1.21.4
-  Downloaded flate2 v1.1.10
-  Downloaded keyboard-types v0.8.3
-  Downloaded miniz_oxide v0.9.1
-  Downloaded crossbeam-channel v0.5.17
+  Downloaded libm v0.2.16
+  Downloaded litrs v1.0.0
+  Downloaded log v0.4.34
   Downloaded memchr v2.8.3
+  Downloaded crossbeam-channel v0.5.17
+  Downloaded keyboard-types v0.8.3
+  Downloaded itertools v0.15.0
+  Downloaded eframe v0.36.2
   Downloaded epaint v0.36.2
   Downloaded glow v0.17.0
-  Downloaded hashbrown v0.16.1
   Downloaded muda v0.21.2
-  Downloaded png v0.18.1
-  Downloaded eframe v0.36.2
   Downloaded hashbrown v0.17.1
-  Downloaded egui v0.36.2
+  Downloaded kurbo v0.13.1
+  Downloaded moxcms v0.8.1
   Downloaded fearless_simd v0.4.1
   Downloaded image v0.25.10
-  Downloaded harfrust v0.12.0
-  Downloaded ash v0.38.0+1.3.281
-  Downloaded read-fonts v0.41.0
+  Downloaded egui v0.36.2
   Downloaded khronos_api v3.1.0
   Downloaded epaint_default_fonts v0.36.2
-  Downloaded libc v0.2.190
-  Downloaded pxfm v0.1.30
   Downloaded naga v30.0.1
+  Downloaded pxfm v0.1.30
+  Downloaded libc v0.2.190
+  Downloaded range-alloc v0.1.5
+  Downloaded raw-window-handle v0.6.2
+  Downloaded renderdoc-sys v1.1.0
+  Downloaded rustc-hash v1.1.0
+  Downloaded rustc_version v0.4.1
+  Downloaded self_cell v1.3.0
+  Downloaded semver v1.0.28
+  Downloaded simd-adler32 v0.3.10
+  Downloaded serde_derive v1.0.229
+  Downloaded scopeguard v1.2.0
+  Downloaded serde v1.0.229
+  Downloaded serde_spanned v1.1.2
+  Downloaded shlex v2.0.1
+  Downloaded smol_str v0.2.2
+  Downloaded static_assertions v1.1.0
+  Downloaded rustc-hash v2.1.3
+  Downloaded serde_core v1.0.229
+  Downloaded spirv v0.4.0+sdk-1.4.341.0
+  Downloaded smallvec v1.16.3
+  Downloaded serde_json v1.0.152
+  Downloaded skrifa v0.44.0
+  Downloaded read-fonts v0.41.0
   Downloaded syn v3.0.7
-  Downloaded tiff v0.11.3
-  Downloaded thiserror v2.0.21
-  Downloaded unicode-general-category v1.1.0
-  Downloaded thiserror-impl v2.0.21
-  Downloaded tracing-core v0.1.36
-  Downloaded toml_datetime v1.1.2+spec-1.1.0
   Downloaded termcolor v1.4.1
-  Downloaded type-map v0.5.1
-  Downloaded toml v1.1.8+spec-1.1.0
-  Downloaded toml_parser v1.1.5+spec-1.1.0
   Downloaded toml_writer v1.1.3+spec-1.1.0
+  Downloaded thiserror v2.0.21
+  Downloaded thiserror-impl v2.0.21
+  Downloaded tiff v0.11.3
+  Downloaded toml v1.1.8+spec-1.1.0
+  Downloaded type-map v0.5.1
+  Downloaded toml_parser v1.1.5+spec-1.1.0
   Downloaded tray-icon v0.26.1
+  Downloaded unicode-general-category v1.1.0
+  Downloaded toml_datetime v1.1.2+spec-1.1.0
+  Downloaded tracing-core v0.1.36
   Downloaded tracing v0.1.44
   Downloaded unicode-segmentation v1.13.3
-  Downloaded weezl v0.1.12
+  Downloaded unicode-width v0.2.2
+  Downloaded vswhom v0.1.0
   Downloaded version_check v0.9.5
-  Downloaded vswhom-sys v0.1.3
   Downloaded web-time v1.1.0
   Downloaded wgpu-core-deps-windows-linux-android v30.0.1
-  Downloaded wgpu-naga-bridge v30.0.1
-  Downloaded winapi-util v0.1.11
-  Downloaded uuid v1.28.0
-  Downloaded vswhom v0.1.0
-  Downloaded wgpu v30.0.1
-  Downloaded vello_cpu v0.1.0
   Downloaded wgpu-types v30.0.1
-  Downloaded unicode-width v0.2.2
+  Downloaded uuid v1.28.0
+  Downloaded vswhom-sys v0.1.3
+  Downloaded winapi-util v0.1.11
+  Downloaded wgpu-naga-bridge v30.0.1
+  Downloaded vello_cpu v0.1.0
+  Downloaded weezl v0.1.12
   Downloaded vello_common v0.1.0
+  Downloaded wgpu v30.0.1
   Downloaded wgpu-core v30.0.1
   Downloaded wgpu-hal v30.0.1
   Downloaded windows-targets v0.52.6
   Downloaded windows-targets v0.53.5
-  Downloaded zmij v1.0.23
+  Downloaded windows-sys v0.52.0
   Downloaded winreg v0.56.0
-  Downloaded zune-core v0.5.3
-  Downloaded xml-rs v0.8.29
-  Downloaded zune-jpeg v0.5.15
-  Downloaded zerocopy-derive v0.8.62
   Downloaded winnow v1.0.4
+  Downloaded xml-rs v0.8.29
+  Downloaded zmij v1.0.23
+  Downloaded zune-core v0.5.3
+  Downloaded zune-jpeg v0.5.15
+  Downloaded windows_x86_64_msvc v0.52.6
+  Downloaded zerocopy-derive v0.8.62
   Downloaded zlib-rs v0.6.8
   Downloaded zerocopy v0.8.62
   Downloaded winit v0.30.13
   Downloaded windows_x86_64_msvc v0.53.1
-  Downloaded windows_x86_64_msvc v0.52.6
-  Downloaded windows-sys v0.52.0
-  Downloaded windows-sys v0.61.2
   Downloaded windows-sys v0.60.2
+  Downloaded windows-sys v0.61.2
    Compiling proc-macro2 v1.0.107
    Compiling quote v1.0.47
    Compiling libm v0.2.16
@@ -507,35 +507,35 @@ commit cc02a2e466a3bb1818bb27ef54d615a429d1d231 run 38127647334
    Compiling parking_lot_core v0.9.12
     Checking bitflags v2.13.2
     Checking cfg-if v1.0.5
+   Compiling khronos_api v3.1.0
    Compiling syn v3.0.7
    Compiling syn v2.0.119
-   Compiling khronos_api v3.1.0
    Compiling naga v30.0.1
-   Compiling log v0.4.34
-    Checking foldhash v0.2.0
    Compiling ash v0.38.0+1.3.281
+    Checking foldhash v0.2.0
+   Compiling log v0.4.34
    Compiling xml-rs v0.8.29
-    Checking arrayvec v0.7.8
-   Compiling khronos-egl v6.0.0
-   Compiling windows_x86_64_msvc v0.52.6
-   Compiling gl_generator v0.14.0
-    Checking once_cell v1.21.4
-   Compiling bytemuck_derive v1.12.1
-   Compiling thiserror-impl v2.0.21
-   Compiling glutin_wgl_sys v0.6.1
-   Compiling windows-implement v0.60.2
-   Compiling windows-interface v0.59.3
-   Compiling zerocopy-derive v0.8.62
-    Checking bytemuck v1.25.2
     Checking smallvec v1.16.3
    Compiling crc32fast v1.5.2
+   Compiling gl_generator v0.14.0
+    Checking arrayvec v0.7.8
+   Compiling glutin_wgl_sys v0.6.1
+   Compiling windows_x86_64_msvc v0.52.6
+   Compiling bytemuck_derive v1.12.1
+   Compiling thiserror-impl v2.0.21
+    Checking once_cell v1.21.4
+   Compiling khronos-egl v6.0.0
+   Compiling windows-interface v0.59.3
+   Compiling windows-implement v0.60.2
+   Compiling zerocopy-derive v0.8.62
+    Checking bytemuck v1.25.2
     Checking hashbrown v0.17.1
    Compiling version_check v0.9.5
    Compiling ahash v0.8.12
     Checking windows-core v0.62.2
    Compiling wgpu-hal v30.0.1
-   Compiling windows_x86_64_msvc v0.53.1
    Compiling unicode-general-category v1.1.0
+   Compiling windows_x86_64_msvc v0.53.1
     Checking equivalent v1.0.2
     Checking windows-future v0.3.2
     Checking windows-numerics v0.3.1
@@ -544,225 +544,265 @@ commit cc02a2e466a3bb1818bb27ef54d615a429d1d231 run 38127647334
     Checking lock_api v0.4.14
     Checking windows v0.62.2
     Checking indexmap v2.14.2
-   Compiling winit v0.30.13
    Compiling wgpu-core v30.0.1
-   Compiling litrs v1.0.0
-    Checking rustc-hash v1.1.0
+   Compiling winit v0.30.13
     Checking raw-window-handle v0.6.2
    Compiling crossbeam-utils v0.8.23
+    Checking rustc-hash v1.1.0
+   Compiling litrs v1.0.0
     Checking naga-types v30.0.1
-   Compiling document-features v0.2.12
     Checking parking_lot v0.12.5
     Checking polycool v0.4.0
+   Compiling document-features v0.2.12
     Checking libloading v0.8.9
-    Checking unicode-width v0.2.2
-    Checking simd-adler32 v0.3.10
     Checking profiling v1.0.18
-   Compiling find-msvc-tools v0.1.14
-    Checking bit-vec v0.9.1
-   Compiling shlex v2.0.1
    Compiling serde_core v1.0.229
-   Compiling cc v1.7.0
+    Checking unicode-width v0.2.2
+    Checking bit-vec v0.9.1
+    Checking simd-adler32 v0.3.10
+   Compiling find-msvc-tools v0.1.14
+   Compiling shlex v2.0.1
     Checking bit-set v0.10.0
+   Compiling cc v1.7.0
     Checking codespan-reporting v0.13.1
     Checking kurbo v0.13.1
     Checking half v2.7.1
-    Checking font-types v0.12.6
     Checking color v0.3.3
+    Checking font-types v0.12.6
     Checking euclid v0.22.14
     Checking spirv v0.4.0+sdk-1.4.341.0
    Compiling wgpu v30.0.1
-    Checking static_assertions v1.1.0
+    Checking allocator-api2 v0.2.21
     Checking adler2 v2.0.1
     Checking unicode-ident v1.0.26
-    Checking allocator-api2 v0.2.21
     Checking linebender_resource_handle v0.1.1
+    Checking static_assertions v1.1.0
     Checking hashbrown v0.16.1
-    Checking peniko v0.6.1
     Checking wgpu-types v30.0.1
+    Checking peniko v0.6.1
     Checking guillotiere v0.7.0
     Checking read-fonts v0.41.0
    Compiling vswhom-sys v0.1.3
-    Checking presser v0.3.1
     Checking fearless_simd v0.4.1
+    Checking presser v0.3.1
     Checking vello_common v0.1.0
     Checking wgpu-naga-bridge v30.0.1
     Checking miniz_oxide v0.9.1
     Checking emath v0.36.2
-    Checking ordered-float v5.5.0
-    Checking renderdoc-sys v1.1.0
-   Compiling muda v0.21.2
-    Checking unicode-segmentation v1.13.3
     Checking gpu-allocator v0.28.0
-    Checking range-alloc v0.1.5
-   Compiling winnow v1.0.4
+    Checking ordered-float v5.5.0
+   Compiling muda v0.21.2
     Checking dpi v0.1.2
+   Compiling winnow v1.0.4
+    Checking range-alloc v0.1.5
+    Checking glow v0.17.0
+    Checking unicode-segmentation v1.13.3
+    Checking renderdoc-sys v1.1.0
    Compiling windows-link v0.2.1
    Compiling zmij v1.0.23
-    Checking glow v0.17.0
-   Compiling toml_parser v1.1.5+spec-1.1.0
    Compiling windows-sys v0.61.2
+   Compiling toml_parser v1.1.5+spec-1.1.0
     Checking ecolor v0.36.2
     Checking windows-targets v0.52.6
     Checking flate2 v1.1.10
     Checking vello_cpu v0.1.0
-    Checking harfrust v0.12.0
     Checking skrifa v0.44.0
+    Checking harfrust v0.12.0
    Compiling toml_datetime v1.1.2+spec-1.1.0
    Compiling serde_spanned v1.1.2
     Checking miniz_oxide v0.8.9
     Checking fdeflate v0.3.7
-    Checking pxfm v0.1.30
-    Checking either v1.19.0
-   Compiling toml_writer v1.1.3+spec-1.1.0
-    Checking tracing-core v0.1.36
-    Checking nohash-hasher v0.2.0
-    Checking pin-project-lite v0.2.17
-    Checking self_cell v1.3.0
-    Checking epaint_default_fonts v0.36.2
     Checking uuid v1.28.0
+    Checking self_cell v1.3.0
+    Checking nohash-hasher v0.2.0
+    Checking tracing-core v0.1.36
+    Checking either v1.19.0
+    Checking epaint_default_fonts v0.36.2
+   Compiling toml_writer v1.1.3+spec-1.1.0
+    Checking pin-project-lite v0.2.17
+    Checking pxfm v0.1.30
    Compiling semver v1.0.28
-    Checking accesskit v0.24.1
     Checking tracing v0.1.44
+    Checking itertools v0.15.0
+    Checking accesskit v0.24.1
    Compiling rustc_version v0.4.1
     Checking epaint v0.36.2
-    Checking itertools v0.15.0
-    Checking moxcms v0.8.1
    Compiling toml v1.1.8+spec-1.1.0
+    Checking moxcms v0.8.1
    Compiling winreg v0.56.0
     Checking windows-targets v0.53.5
     Checking png v0.18.1
     Checking wgpu-core-deps-windows-linux-android v30.0.1
     Checking windows-sys v0.52.0
    Compiling vswhom v0.1.0
-    Checking cursor-icon v1.2.0
-    Checking error-code v3.4.0
    Compiling tray-icon v0.26.1
-    Checking smol_str v0.2.2
    Compiling serde_json v1.0.152
+    Checking error-code v3.4.0
     Checking byteorder-lite v0.1.0
+    Checking cursor-icon v1.2.0
+    Checking smol_str v0.2.2
    Compiling serde v1.0.229
-    Checking clipboard-win v5.4.1
     Checking image v0.25.10
+    Checking clipboard-win v5.4.1
    Compiling embed-resource v3.0.12
-    Checking windows-sys v0.60.2
     Checking egui v0.36.2
+    Checking windows-sys v0.60.2
    Compiling serde_derive v1.0.229
     Checking web-time v1.1.0
     Checking rustc-hash v2.1.3
     Checking urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
     Checking type-map v0.5.1
-    Checking crossbeam-channel v0.5.17
     Checking arboard v3.6.1
+    Checking crossbeam-channel v0.5.17
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
     Checking keyboard-types v0.8.3
-    Checking urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
     Checking egui-wgpu v0.36.2
+    Checking urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
     Checking egui-winit v0.36.2
+    Checking itoa v1.0.18
     Checking memchr v2.8.3
     Checking pollster v1.0.1
-    Checking itoa v1.0.18
     Checking eframe v0.36.2
     Checking urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-error[E0433]: cannot find `TopBottomPanel` in `egui`
-   --> crates\app\src\ui\mod.rs:245:15
+error: variants `StartRecording` and `StopRecording` are never constructed
+  --> crates\app\src\controller.rs:30:5
+   |
+28 | pub enum Command {
+   |          ------- variants in this enum
+29 |     ToggleRecording,
+30 |     StartRecording,
+   |     ^^^^^^^^^^^^^^
+31 |     StopRecording,
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+
+error: field `app` is never read
+  --> crates\app\src\controller.rs:74:9
+   |
+71 | pub struct Recording {
+   |            --------- field in this struct
+...
+74 |     pub app: String,
+   |         ^^^
+   |
+   = note: `Recording` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+error: very complex type used. Consider factoring parts into `type` definitions
+   --> crates\app\src\controller.rs:127:14
     |
-245 |         egui::TopBottomPanel::top("tally")
-    |               ^^^^^^^^^^^^^^ could not find `TopBottomPanel` in `egui`
-
-error[E0433]: cannot find `SidePanel` in `egui`
-   --> crates\app\src\ui\mod.rs:254:15
+127 |     repaint: Arc<Mutex<Option<Box<dyn Fn() + Send + Sync>>>>,
+    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
-254 |         egui::SidePanel::left("nav")
-    |               ^^^^^^^^^ could not find `SidePanel` in `egui`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#type_complexity
+    = note: `-D clippy::type-complexity` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::type_complexity)]`
 
-error[E0407]: method `update` is not a member of trait `eframe::App`
-   --> crates\app\src\ui\mod.rs:467:5
+error: manual implementation of `.is_multiple_of()`
+    --> crates\app\src\controller.rs:1113:15
+     |
+1113 |     } else if s % 60 == 0 {
+     |               ^^^^^^^^^^^ help: replace with: `s.is_multiple_of(60)`
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#manual_is_multiple_of
+     = note: `-D clippy::manual-is-multiple-of` implied by `-D warnings`
+     = help: to override `-D warnings` add `#[allow(clippy::manual_is_multiple_of)]`
+
+error: consider using `sort_by_key`
+   --> crates\app\src\library.rs:208:5
     |
-467 | /     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-468 | |         self.apply_theme(ctx);
-469 | |         let st = self.ctl.snapshot();
-470 | |         self.handle_close(ctx, &st);
-...   |
-502 | |     }
-    | |_____^ not a member of trait `eframe::App`
-
-error: unused import: `Palette`
- --> crates\app\src\ui\home.rs:3:26
-  |
-3 | use super::theme::{self, Palette};
-  |                          ^^^^^^^
-  |
-  = note: `-D unused-imports` implied by `-D warnings`
-  = help: to override `-D warnings` add `#[allow(unused_imports)]`
-
-error[E0046]: not all trait items implemented, missing: `ui`
-   --> crates\app\src\ui\mod.rs:466:1
+208 |     out.sort_by(|a, b| b.modified.cmp(&a.modified));
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     |
-466 | impl eframe::App for App {
-    | ^^^^^^^^^^^^^^^^^^^^^^^^ missing `ui` in implementation
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_sort_by
+    = note: `-D clippy::unnecessary-sort-by` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::unnecessary_sort_by)]`
+help: try
     |
-    = help: implement the missing item: `fn ui(&mut self, _: &mut eframe::egui::Ui, _: &mut eframe::Frame) { todo!() }`
-
-error[E0308]: mismatched types
-   --> crates\app\src\ui\library_page.rs:165:5
+208 -     out.sort_by(|a, b| b.modified.cmp(&a.modified));
+208 +     out.sort_by_key(|a| std::cmp::Reverse(a.modified));
     |
-165 | /     match item.thumb.as_ref().and_then(|t| app.thumb(ui.ctx(), t)) {
-166 | |         Some(tex) => ui.painter().image(
-167 | |             tex,
-168 | |             thumb,
-...   |
-172 | |         None => ui.painter().rect_filled(thumb, CornerRadius::same(4), p.raised),
-173 | |     }
-    | |     ^- help: consider using a semicolon here
-    | |_____|
-    |       expected `()`, found `ShapeIdx`
 
-error[E0599]: no method named `style` found for reference `&eframe::egui::Context` in the current scope
-    --> crates\app\src\ui\theme.rs:95:27
-     |
-  95 |     let mut style = (*ctx.style()).clone();
-     |                           ^^^^^
-     |
-help: there is a method `style_of` with a similar name, but with different arguments
-    --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\egui-0.36.2\src\context.rs:2221:5
-     |
-2221 |     pub fn style_of(&self, theme: Theme) -> Arc<Style> {
-     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+error: consider using `sort_by_key`
+   --> crates\app\src\ui\library_page.rs:111:25
+    |
+111 |         Sort::Newest => items.sort_by(|a, b| b.modified.cmp(&a.modified)),
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_sort_by
+help: try
+    |
+111 -         Sort::Newest => items.sort_by(|a, b| b.modified.cmp(&a.modified)),
+111 +         Sort::Newest => items.sort_by_key(|a| std::cmp::Reverse(a.modified)),
+    |
 
-error[E0599]: no method named `set_style` found for reference `&eframe::egui::Context` in the current scope
-    --> crates\app\src\ui\theme.rs:161:9
-     |
- 161 |     ctx.set_style(style);
-     |         ^^^^^^^^^
-     |
-help: there is a method `set_style_of` with a similar name, but with different arguments
-    --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\egui-0.36.2\src\context.rs:2250:5
-     |
-2250 |     pub fn set_style_of(&self, theme: Theme, style: impl Into<Arc<Style>>) {
-     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+error: consider using `sort_by_key`
+   --> crates\app\src\ui\library_page.rs:112:25
+    |
+112 |         Sort::Oldest => items.sort_by(|a, b| a.modified.cmp(&b.modified)),
+    |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_sort_by
+help: try
+    |
+112 -         Sort::Oldest => items.sort_by(|a, b| a.modified.cmp(&b.modified)),
+112 +         Sort::Oldest => items.sort_by_key(|a| a.modified),
+    |
 
-error[E0308]: mismatched types
-    --> crates\app\src\ui\mod.rs:484:19
-     |
- 484 |             .show(ctx, |ui| match self.page {
-     |              ---- ^^^ types differ in mutability
-     |              |
-     |              arguments to this method are incorrect
-     |
-     = note: expected mutable reference `&mut eframe::egui::Ui`
-                        found reference `&eframe::egui::Context`
-note: method defined here
-    --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\egui-0.36.2\src\containers\panel.rs:1212:12
-     |
-1212 |     pub fn show<R>(self, ui: &mut Ui, add_contents: impl FnOnce(&mut Ui) -> R) -> InnerResponse<R> {
-     |            ^^^^
+error: consider using `sort_by_key`
+   --> crates\app\src\ui\library_page.rs:113:26
+    |
+113 |         Sort::Largest => items.sort_by(|a, b| b.size.cmp(&a.size)),
+    |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_sort_by
+help: try
+    |
+113 -         Sort::Largest => items.sort_by(|a, b| b.size.cmp(&a.size)),
+113 +         Sort::Largest => items.sort_by_key(|a| std::cmp::Reverse(a.size)),
+    |
 
-Some errors have detailed explanations: E0046, E0308, E0407, E0433, E0599.
-For more information about an error, try `rustc --explain E0046`.
-error: could not compile `urec` (bin "uRec" test) due to 9 previous errors
+error: the loop variable `i` is used to index `ACTIONS`
+   --> crates\app\src\ui\settings_page.rs:712:14
+    |
+712 |     for i in 0..ACTIONS.len() {
+    |              ^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#needless_range_loop
+    = note: `-D clippy::needless-range-loop` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::needless_range_loop)]`
+help: consider using an iterator and enumerate()
+    |
+712 -     for i in 0..ACTIONS.len() {
+712 +     for (i, <item>) in ACTIONS.iter().enumerate() {
+    |
+
+error: this `if` has identical blocks
+   --> crates\app\src\ui\mod.rs:404:93
+    |
+404 |           if st.recording.is_some() || st.finishing || st.starting || st.probing || !st.ready {
+    |  _____________________________________________________________________________________________^
+405 | |             ctx.request_repaint_after(every);
+406 | |         } else if st.replay == ReplayState::On && self.page == Page::Home {
+    | |_________^
+    |
+note: same as this
+   --> crates\app\src\ui\mod.rs:406:75
+    |
+406 |           } else if st.replay == ReplayState::On && self.page == Page::Home {
+    |  ___________________________________________________________________________^
+407 | |             ctx.request_repaint_after(every);
+408 | |         }
+    | |_________^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#if_same_then_else
+    = note: `-D clippy::if-same-then-else` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::if_same_then_else)]`
+
+error: could not compile `urec` (bin "uRec") due to 10 previous errors
 warning: build failed, waiting for other jobs to finish...
-error: could not compile `urec` (bin "uRec") due to 9 previous errors
+error: could not compile `urec` (bin "uRec" test) due to 10 previous errors
 ## clippy FAILED
 ## test
    Compiling bitflags v2.13.2
@@ -771,9 +811,9 @@ error: could not compile `urec` (bin "uRec") due to 9 previous errors
    Compiling cfg-if v1.0.5
    Compiling thiserror v2.0.21
    Compiling foldhash v0.2.0
-   Compiling log v0.4.34
-   Compiling arrayvec v0.7.8
    Compiling smallvec v1.16.3
+   Compiling arrayvec v0.7.8
+   Compiling log v0.4.34
    Compiling once_cell v1.21.4
    Compiling windows-core v0.62.2
    Compiling hashbrown v0.17.1
@@ -781,15 +821,15 @@ error: could not compile `urec` (bin "uRec") due to 9 previous errors
    Compiling num-traits v0.2.19
    Compiling equivalent v1.0.2
    Compiling windows-future v0.3.2
-   Compiling windows-collections v0.3.2
    Compiling windows-numerics v0.3.1
-   Compiling windows v0.62.2
+   Compiling windows-collections v0.3.2
    Compiling scopeguard v1.2.0
-   Compiling parking_lot_core v0.9.12
+   Compiling windows v0.62.2
    Compiling lock_api v0.4.14
+   Compiling parking_lot_core v0.9.12
    Compiling indexmap v2.14.2
-   Compiling raw-window-handle v0.6.2
    Compiling rustc-hash v1.1.0
+   Compiling raw-window-handle v0.6.2
    Compiling parking_lot v0.12.5
    Compiling naga-types v30.0.1
    Compiling polycool v0.4.0
@@ -807,13 +847,13 @@ error: could not compile `urec` (bin "uRec") due to 9 previous errors
    Compiling font-types v0.12.6
    Compiling spirv v0.4.0+sdk-1.4.341.0
    Compiling unicode-ident v1.0.26
-   Compiling allocator-api2 v0.2.21
-   Compiling adler2 v2.0.1
-   Compiling linebender_resource_handle v0.1.1
    Compiling static_assertions v1.1.0
+   Compiling adler2 v2.0.1
+   Compiling allocator-api2 v0.2.21
+   Compiling linebender_resource_handle v0.1.1
    Compiling peniko v0.6.1
-   Compiling wgpu-types v30.0.1
    Compiling hashbrown v0.16.1
+   Compiling wgpu-types v30.0.1
    Compiling naga v30.0.1
    Compiling read-fonts v0.41.0
    Compiling guillotiere v0.7.0
@@ -831,55 +871,55 @@ error: could not compile `urec` (bin "uRec") due to 9 previous errors
    Compiling gpu-allocator v0.28.0
    Compiling ordered-float v5.5.0
    Compiling emath v0.36.2
+   Compiling glow v0.17.0
+   Compiling unicode-segmentation v1.13.3
    Compiling range-alloc v0.1.5
    Compiling renderdoc-sys v1.1.0
-   Compiling unicode-segmentation v1.13.3
    Compiling dpi v0.1.2
-   Compiling glow v0.17.0
    Compiling ecolor v0.36.2
    Compiling flate2 v1.1.10
-   Compiling ahash v0.8.12
-   Compiling windows-targets v0.52.6
-   Compiling windows_x86_64_msvc v0.53.1
-   Compiling unicode-general-category v1.1.0
    Compiling wgpu-hal v30.0.1
+   Compiling windows-targets v0.52.6
+   Compiling ahash v0.8.12
    Compiling vello_cpu v0.1.0
-   Compiling skrifa v0.44.0
+   Compiling unicode-general-category v1.1.0
+   Compiling windows_x86_64_msvc v0.53.1
    Compiling harfrust v0.12.0
+   Compiling skrifa v0.44.0
    Compiling miniz_oxide v0.8.9
    Compiling fdeflate v0.3.7
-   Compiling pin-project-lite v0.2.17
-   Compiling epaint_default_fonts v0.36.2
-   Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
-   Compiling tracing-core v0.1.36
-   Compiling nohash-hasher v0.2.0
    Compiling pxfm v0.1.30
-   Compiling uuid v1.28.0
-   Compiling either v1.19.0
+   Compiling nohash-hasher v0.2.0
    Compiling self_cell v1.3.0
+   Compiling either v1.19.0
+   Compiling pin-project-lite v0.2.17
+   Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
+   Compiling uuid v1.28.0
+   Compiling tracing-core v0.1.36
+   Compiling epaint_default_fonts v0.36.2
    Compiling epaint v0.36.2
-   Compiling moxcms v0.8.1
-   Compiling itertools v0.15.0
-   Compiling accesskit v0.24.1
    Compiling tracing v0.1.44
+   Compiling accesskit v0.24.1
+   Compiling itertools v0.15.0
+   Compiling moxcms v0.8.1
    Compiling png v0.18.1
    Compiling wgpu-core-deps-windows-linux-android v30.0.1
    Compiling windows-targets v0.53.5
    Compiling windows-sys v0.52.0
-   Compiling cursor-icon v1.2.0
    Compiling byteorder-lite v0.1.0
-   Compiling smol_str v0.2.2
+   Compiling cursor-icon v1.2.0
    Compiling error-code v3.4.0
+   Compiling smol_str v0.2.2
    Compiling clipboard-win v5.4.1
-   Compiling image v0.25.10
    Compiling winit v0.30.13
+   Compiling image v0.25.10
    Compiling windows-sys v0.60.2
    Compiling wgpu-core v30.0.1
    Compiling egui v0.36.2
    Compiling crossbeam-utils v0.8.23
    Compiling windows-sys v0.61.2
-   Compiling rustc-hash v2.1.3
    Compiling web-time v1.1.0
+   Compiling rustc-hash v2.1.3
    Compiling type-map v0.5.1
    Compiling crossbeam-channel v0.5.17
    Compiling wgpu v30.0.1
@@ -900,116 +940,46 @@ error: could not compile `urec` (bin "uRec") due to 9 previous errors
    Compiling serde v1.0.229
    Compiling tray-icon v0.26.1
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-error[E0433]: cannot find `TopBottomPanel` in `egui`
-   --> crates\app\src\ui\mod.rs:245:15
-    |
-245 |         egui::TopBottomPanel::top("tally")
-    |               ^^^^^^^^^^^^^^ could not find `TopBottomPanel` in `egui`
+error: variants `StartRecording` and `StopRecording` are never constructed
+  --> crates\app\src\controller.rs:30:5
+   |
+28 | pub enum Command {
+   |          ------- variants in this enum
+29 |     ToggleRecording,
+30 |     StartRecording,
+   |     ^^^^^^^^^^^^^^
+31 |     StopRecording,
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-error[E0433]: cannot find `SidePanel` in `egui`
-   --> crates\app\src\ui\mod.rs:254:15
-    |
-254 |         egui::SidePanel::left("nav")
-    |               ^^^^^^^^^ could not find `SidePanel` in `egui`
+error: field `app` is never read
+  --> crates\app\src\controller.rs:74:9
+   |
+71 | pub struct Recording {
+   |            --------- field in this struct
+...
+74 |     pub app: String,
+   |         ^^^
+   |
+   = note: `Recording` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
 
-error[E0407]: method `update` is not a member of trait `eframe::App`
-   --> crates\app\src\ui\mod.rs:467:5
-    |
-467 | /     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-468 | |         self.apply_theme(ctx);
-469 | |         let st = self.ctl.snapshot();
-470 | |         self.handle_close(ctx, &st);
-...   |
-502 | |     }
-    | |_____^ not a member of trait `eframe::App`
-
-error: unused import: `Palette`
- --> crates\app\src\ui\home.rs:3:26
-  |
-3 | use super::theme::{self, Palette};
-  |                          ^^^^^^^
-  |
-  = note: `-D unused-imports` implied by `-D warnings`
-  = help: to override `-D warnings` add `#[allow(unused_imports)]`
-
-error[E0046]: not all trait items implemented, missing: `ui`
-   --> crates\app\src\ui\mod.rs:466:1
-    |
-466 | impl eframe::App for App {
-    | ^^^^^^^^^^^^^^^^^^^^^^^^ missing `ui` in implementation
-    |
-    = help: implement the missing item: `fn ui(&mut self, _: &mut Ui, _: &mut eframe::Frame) { todo!() }`
-
-error[E0308]: mismatched types
-   --> crates\app\src\ui\library_page.rs:165:5
-    |
-165 | /     match item.thumb.as_ref().and_then(|t| app.thumb(ui.ctx(), t)) {
-166 | |         Some(tex) => ui.painter().image(
-167 | |             tex,
-168 | |             thumb,
-...   |
-172 | |         None => ui.painter().rect_filled(thumb, CornerRadius::same(4), p.raised),
-173 | |     }
-    | |     ^- help: consider using a semicolon here
-    | |_____|
-    |       expected `()`, found `ShapeIdx`
-
-error[E0599]: no method named `style` found for reference `&eframe::egui::Context` in the current scope
-    --> crates\app\src\ui\theme.rs:95:27
-     |
-  95 |     let mut style = (*ctx.style()).clone();
-     |                           ^^^^^
-     |
-help: there is a method `style_of` with a similar name, but with different arguments
-    --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\egui-0.36.2\src\context.rs:2221:5
-     |
-2221 |     pub fn style_of(&self, theme: Theme) -> Arc<Style> {
-     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0599]: no method named `set_style` found for reference `&eframe::egui::Context` in the current scope
-    --> crates\app\src\ui\theme.rs:161:9
-     |
- 161 |     ctx.set_style(style);
-     |         ^^^^^^^^^
-     |
-help: there is a method `set_style_of` with a similar name, but with different arguments
-    --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\egui-0.36.2\src\context.rs:2250:5
-     |
-2250 |     pub fn set_style_of(&self, theme: Theme, style: impl Into<Arc<Style>>) {
-     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0308]: mismatched types
-    --> crates\app\src\ui\mod.rs:484:19
-     |
- 484 |             .show(ctx, |ui| match self.page {
-     |              ---- ^^^ types differ in mutability
-     |              |
-     |              arguments to this method are incorrect
-     |
-     = note: expected mutable reference `&mut Ui`
-                        found reference `&eframe::egui::Context`
-note: method defined here
-    --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\egui-0.36.2\src\containers\panel.rs:1212:12
-     |
-1212 |     pub fn show<R>(self, ui: &mut Ui, add_contents: impl FnOnce(&mut Ui) -> R) -> InnerResponse<R> {
-     |            ^^^^
-
-Some errors have detailed explanations: E0046, E0308, E0407, E0433, E0599.
-For more information about an error, try `rustc --explain E0046`.
-error: could not compile `urec` (bin "uRec" test) due to 9 previous errors
+error: could not compile `urec` (bin "uRec" test) due to 2 previous errors
 warning: build failed, waiting for other jobs to finish...
 ## test FAILED
 ## build
    Compiling bitflags v2.13.2
    Compiling libm v0.2.16
-   Compiling bytemuck v1.25.2
    Compiling cfg-if v1.0.5
+   Compiling bytemuck v1.25.2
    Compiling thiserror v2.0.21
    Compiling foldhash v0.2.0
-   Compiling smallvec v1.16.3
-   Compiling once_cell v1.21.4
    Compiling log v0.4.34
    Compiling arrayvec v0.7.8
+   Compiling smallvec v1.16.3
+   Compiling once_cell v1.21.4
    Compiling hashbrown v0.17.1
    Compiling windows-core v0.62.2
    Compiling zerocopy v0.8.62
@@ -1020,30 +990,30 @@ warning: build failed, waiting for other jobs to finish...
    Compiling windows-future v0.3.2
    Compiling parking_lot_core v0.9.12
    Compiling indexmap v2.14.2
-   Compiling windows-collections v0.3.2
    Compiling windows-numerics v0.3.1
-   Compiling raw-window-handle v0.6.2
+   Compiling windows-collections v0.3.2
    Compiling rustc-hash v1.1.0
-   Compiling windows v0.62.2
+   Compiling raw-window-handle v0.6.2
    Compiling parking_lot v0.12.5
+   Compiling windows v0.62.2
    Compiling naga-types v30.0.1
    Compiling polycool v0.4.0
    Compiling libloading v0.8.9
+   Compiling simd-adler32 v0.3.10
    Compiling unicode-width v0.2.2
    Compiling bit-vec v0.9.1
-   Compiling simd-adler32 v0.3.10
    Compiling profiling v1.0.18
-   Compiling bit-set v0.10.0
    Compiling codespan-reporting v0.13.1
+   Compiling bit-set v0.10.0
    Compiling kurbo v0.13.1
    Compiling euclid v0.22.14
    Compiling half v2.7.1
-   Compiling font-types v0.12.6
    Compiling color v0.3.3
+   Compiling font-types v0.12.6
    Compiling spirv v0.4.0+sdk-1.4.341.0
-   Compiling unicode-ident v1.0.26
    Compiling static_assertions v1.1.0
    Compiling linebender_resource_handle v0.1.1
+   Compiling unicode-ident v1.0.26
    Compiling adler2 v2.0.1
    Compiling allocator-api2 v0.2.21
    Compiling peniko v0.6.1
@@ -1067,8 +1037,8 @@ warning: build failed, waiting for other jobs to finish...
    Compiling emath v0.36.2
    Compiling dpi v0.1.2
    Compiling range-alloc v0.1.5
-   Compiling gpu-allocator v0.28.0
    Compiling glow v0.17.0
+   Compiling gpu-allocator v0.28.0
    Compiling renderdoc-sys v1.1.0
    Compiling unicode-segmentation v1.13.3
    Compiling wgpu-hal v30.0.1
@@ -1076,37 +1046,37 @@ warning: build failed, waiting for other jobs to finish...
    Compiling flate2 v1.1.10
    Compiling windows-targets v0.52.6
    Compiling ahash v0.8.12
+   Compiling vello_cpu v0.1.0
    Compiling unicode-general-category v1.1.0
    Compiling windows_x86_64_msvc v0.53.1
-   Compiling vello_cpu v0.1.0
    Compiling harfrust v0.12.0
    Compiling skrifa v0.44.0
    Compiling miniz_oxide v0.8.9
    Compiling fdeflate v0.3.7
-   Compiling nohash-hasher v0.2.0
+   Compiling uuid v1.28.0
    Compiling tracing-core v0.1.36
-   Compiling epaint_default_fonts v0.36.2
    Compiling pin-project-lite v0.2.17
    Compiling either v1.19.0
-   Compiling uuid v1.28.0
-   Compiling pxfm v0.1.30
    Compiling self_cell v1.3.0
+   Compiling pxfm v0.1.30
+   Compiling epaint_default_fonts v0.36.2
+   Compiling nohash-hasher v0.2.0
    Compiling epaint v0.36.2
    Compiling moxcms v0.8.1
-   Compiling accesskit v0.24.1
    Compiling itertools v0.15.0
    Compiling tracing v0.1.44
+   Compiling accesskit v0.24.1
    Compiling png v0.18.1
    Compiling wgpu-core-deps-windows-linux-android v30.0.1
    Compiling windows-targets v0.53.5
    Compiling windows-sys v0.52.0
    Compiling smol_str v0.2.2
+   Compiling byteorder-lite v0.1.0
    Compiling error-code v3.4.0
    Compiling cursor-icon v1.2.0
-   Compiling byteorder-lite v0.1.0
+   Compiling clipboard-win v5.4.1
    Compiling image v0.25.10
    Compiling winit v0.30.13
-   Compiling clipboard-win v5.4.1
    Compiling windows-sys v0.60.2
    Compiling wgpu-core v30.0.1
    Compiling egui v0.36.2
@@ -1123,11 +1093,11 @@ warning: build failed, waiting for other jobs to finish...
    Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
    Compiling muda v0.21.2
    Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
-   Compiling egui-winit v0.36.2
    Compiling egui-wgpu v0.36.2
+   Compiling egui-winit v0.36.2
    Compiling zmij v1.0.23
-   Compiling itoa v1.0.18
    Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
    Compiling pollster v1.0.1
    Compiling eframe v0.36.2
    Compiling serde_json v1.0.152
@@ -1135,102 +1105,31 @@ warning: build failed, waiting for other jobs to finish...
    Compiling tray-icon v0.26.1
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
    Compiling urec v0.1.0 (D:\a\uRec\uRec\crates\app)
-error[E0433]: cannot find `TopBottomPanel` in `egui`
-   --> crates\app\src\ui\mod.rs:245:15
-    |
-245 |         egui::TopBottomPanel::top("tally")
-    |               ^^^^^^^^^^^^^^ could not find `TopBottomPanel` in `egui`
+error: variants `StartRecording` and `StopRecording` are never constructed
+  --> crates\app\src\controller.rs:30:5
+   |
+28 | pub enum Command {
+   |          ------- variants in this enum
+29 |     ToggleRecording,
+30 |     StartRecording,
+   |     ^^^^^^^^^^^^^^
+31 |     StopRecording,
+   |     ^^^^^^^^^^^^^
+   |
+   = note: `Command` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-error[E0433]: cannot find `SidePanel` in `egui`
-   --> crates\app\src\ui\mod.rs:254:15
-    |
-254 |         egui::SidePanel::left("nav")
-    |               ^^^^^^^^^ could not find `SidePanel` in `egui`
+error: field `app` is never read
+  --> crates\app\src\controller.rs:74:9
+   |
+71 | pub struct Recording {
+   |            --------- field in this struct
+...
+74 |     pub app: String,
+   |         ^^^
+   |
+   = note: `Recording` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
 
-error[E0407]: method `update` is not a member of trait `eframe::App`
-   --> crates\app\src\ui\mod.rs:467:5
-    |
-467 | /     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-468 | |         self.apply_theme(ctx);
-469 | |         let st = self.ctl.snapshot();
-470 | |         self.handle_close(ctx, &st);
-...   |
-502 | |     }
-    | |_____^ not a member of trait `eframe::App`
-
-error: unused import: `Palette`
- --> crates\app\src\ui\home.rs:3:26
-  |
-3 | use super::theme::{self, Palette};
-  |                          ^^^^^^^
-  |
-  = note: `-D unused-imports` implied by `-D warnings`
-  = help: to override `-D warnings` add `#[allow(unused_imports)]`
-
-error[E0046]: not all trait items implemented, missing: `ui`
-   --> crates\app\src\ui\mod.rs:466:1
-    |
-466 | impl eframe::App for App {
-    | ^^^^^^^^^^^^^^^^^^^^^^^^ missing `ui` in implementation
-    |
-    = help: implement the missing item: `fn ui(&mut self, _: &mut Ui, _: &mut eframe::Frame) { todo!() }`
-
-error[E0308]: mismatched types
-   --> crates\app\src\ui\library_page.rs:165:5
-    |
-165 | /     match item.thumb.as_ref().and_then(|t| app.thumb(ui.ctx(), t)) {
-166 | |         Some(tex) => ui.painter().image(
-167 | |             tex,
-168 | |             thumb,
-...   |
-172 | |         None => ui.painter().rect_filled(thumb, CornerRadius::same(4), p.raised),
-173 | |     }
-    | |     ^- help: consider using a semicolon here
-    | |_____|
-    |       expected `()`, found `ShapeIdx`
-
-error[E0599]: no method named `style` found for reference `&eframe::egui::Context` in the current scope
-    --> crates\app\src\ui\theme.rs:95:27
-     |
-  95 |     let mut style = (*ctx.style()).clone();
-     |                           ^^^^^
-     |
-help: there is a method `style_of` with a similar name, but with different arguments
-    --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\egui-0.36.2\src\context.rs:2221:5
-     |
-2221 |     pub fn style_of(&self, theme: Theme) -> Arc<Style> {
-     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0599]: no method named `set_style` found for reference `&eframe::egui::Context` in the current scope
-    --> crates\app\src\ui\theme.rs:161:9
-     |
- 161 |     ctx.set_style(style);
-     |         ^^^^^^^^^
-     |
-help: there is a method `set_style_of` with a similar name, but with different arguments
-    --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\egui-0.36.2\src\context.rs:2250:5
-     |
-2250 |     pub fn set_style_of(&self, theme: Theme, style: impl Into<Arc<Style>>) {
-     |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-error[E0308]: mismatched types
-    --> crates\app\src\ui\mod.rs:484:19
-     |
- 484 |             .show(ctx, |ui| match self.page {
-     |              ---- ^^^ types differ in mutability
-     |              |
-     |              arguments to this method are incorrect
-     |
-     = note: expected mutable reference `&mut Ui`
-                        found reference `&eframe::egui::Context`
-note: method defined here
-    --> C:\Users\runneradmin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\egui-0.36.2\src\containers\panel.rs:1212:12
-     |
-1212 |     pub fn show<R>(self, ui: &mut Ui, add_contents: impl FnOnce(&mut Ui) -> R) -> InnerResponse<R> {
-     |            ^^^^
-
-Some errors have detailed explanations: E0046, E0308, E0407, E0433, E0599.
-For more information about an error, try `rustc --explain E0046`.
-error: could not compile `urec` (bin "uRec") due to 9 previous errors
-warning: build failed, waiting for other jobs to finish...
+error: could not compile `urec` (bin "uRec") due to 2 previous errors
 ## build FAILED
