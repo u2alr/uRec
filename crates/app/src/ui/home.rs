@@ -337,7 +337,9 @@ fn replay_row(app: &mut App, ui: &mut egui::Ui, st: &Status) {
         });
         ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
             ui.add_enabled_ui(st.replay == ReplayState::On, |ui| {
-                if theme::primary_button(ui, &p, "Save replay").clicked() {
+                let r = theme::primary_button(ui, &p, "Save replay")
+                    .on_disabled_hover_text("Turn on Instant Replay first. Then this saves the last moments.");
+                if r.clicked() {
                     app.ctl.send(Command::SaveReplay);
                 }
             });
@@ -470,12 +472,5 @@ fn recent(app: &mut App, ui: &mut egui::Ui) {
 }
 
 pub fn open_file(path: &std::path::Path) {
-    #[cfg(windows)]
-    {
-        let _ = std::process::Command::new("explorer.exe").arg(path).spawn();
-    }
-    #[cfg(not(windows))]
-    {
-        let _ = std::process::Command::new("xdg-open").arg(path).spawn();
-    }
+    urec_win::open_file(path);
 }

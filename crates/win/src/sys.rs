@@ -210,15 +210,53 @@ pub fn set_startup(app: &str, command: Option<&str>) -> bool {
     }
 }
 
-/// Open Explorer with a file selected (or a folder opened).
+/// Show a file selected in its Explorer folder, or open a folder.
 pub fn reveal_in_explorer(path: &Path) {
-    let mut cmd = std::process::Command::new("explorer.exe");
+    use windows::Win32::System::Com::{CoInitializeEx, COINIT_APARTMENTTHREADED};
+    use windows::Win32::UI::Shell::{ILCreateFromPathW, ILFree, SHOpenFolderAndSelectItems};
     if path.is_file() {
-        cmd.arg(format!("/select,{}", path.display()));
+        let w = wide_path(path);
+        unsafe {
+            let _ = CoInitializeEx(None, COINIT_APARTMENTTHREADED);
+            let pidl = ILCreateFromPathW(PCWSTR(w.as_ptr()));
+            if !pidl.is_null() {
+                let ok = SHOpenFolderAndSelectItems(pidl, None, 0).succeeded();
+                ILFree(Some(pidl));
+                if ok {
+                    return;
+                }
+            }
+        }
+        // Fall back to opening the containing folder.
+        if let Some(dir) = path.parent() {
+            open_file(dir);
+        }
     } else {
-        cmd.arg(path);
+        let _ = std::fs::create_dir_all(path);
+        open_file(path);
     }
-    let _ = cmd.spawn();
+}
+
+/// Open a file or folder with its default app (videos play, folders open in Explorer).
+pub fn open_file(path: &Path) {
+    use windows::Win32::UI::Shell::ShellExecuteW;
+    use windows::Win32::UI::WindowsAndMessaging::SW_SHOWNORMAL;
+    let w = wide_path(path);
+    let verb = wide("open");
+    unsafe {
+        ShellExecuteW(None, PCWSTR(verb.as_ptr()), PCWSTR(w.as_ptr()), PCWSTR::null(), PCWSTR::null(), SW_SHOWNORMAL);
+    }
+}
+
+/// The user's Videos folder, wherever Windows or OneDrive put it.
+pub fn videos_dir() -> Option<std::path::PathBuf> {
+    use windows::Win32::UI::Shell::{FOLDERID_Videos, SHGetKnownFolderPath, KF_FLAG_DEFAULT};
+    unsafe {
+        let p = SHGetKnownFolderPath(&FOLDERID_Videos, KF_FLAG_DEFAULT, None).ok()?;
+        let s = p.to_string().ok();
+        windows::Win32::System::Com::CoTaskMemFree(Some(p.0 as *const _));
+        s.map(std::path::PathBuf::from)
+    }
 }
 
 /// Full path of a process's executable.

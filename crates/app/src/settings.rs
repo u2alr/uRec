@@ -22,8 +22,11 @@ pub fn local_dir() -> PathBuf {
 }
 
 pub fn default_output_dir() -> PathBuf {
-    let home = std::env::var_os("USERPROFILE").map(PathBuf::from).unwrap_or_else(std::env::temp_dir);
-    home.join("Videos").join(APP_NAME)
+    urec_win::videos_dir()
+        .unwrap_or_else(|| {
+            std::env::var_os("USERPROFILE").map(PathBuf::from).unwrap_or_else(std::env::temp_dir).join("Videos")
+        })
+        .join(APP_NAME)
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]

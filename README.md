@@ -39,7 +39,7 @@ Hotkeys work while a game has focus. Change them in **Settings › Hotkeys**.
 - **Recordings** are saved to `Videos\uRec`, in a sub-folder per game, with names like `VALORANT 2026-10-11 15.02.11.mp4`.
 - **Instant Replay** is off by default. When it's on, uRec keeps the last 15 seconds to 20 minutes in a fixed-size buffer on disk and saves it when you press the hotkey. Starting a recording while it's on reuses the same stream, so nothing is encoded twice.
 - **Library** lists your recordings with thumbnails, length, resolution, frame rate and size. You can play, rename, copy the path, show in Explorer, or delete. Deleting moves files to the Recycle Bin.
-- **Overlay** is a small timer in a screen corner while recording. It's click-through and hidden from your recordings on Windows 10 2004 and newer.
+- **Overlay** is a small dot in a screen corner: red while recording, amber while Instant Replay is on. It's click-through and hidden from your recordings on Windows 10 2004 and newer.
 - **Tray:** closing the window keeps uRec in the system tray so hotkeys keep working. Quit from the tray icon.
 
 ### Settings at a glance

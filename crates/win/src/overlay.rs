@@ -1,132 +1,150 @@
-//! Recording overlay: a tiny native window (no GPU, GDI only) in a screen corner.
-//! Click-through, never takes focus, always on top, and excluded from screen capture on
-//! Windows 10 2004+. Owned by the controller so it works while the main window is hidden.
+//! Recording overlay: a small round dot in a screen corner. Red while recording, amber while
+//! Instant Replay is buffering. Drawn into a per-pixel-alpha bitmap (anti-aliased, perfectly
+//! round), click-through, never takes focus, always on top, and excluded from screen capture
+//! on Windows 10 2004+. Owned by the controller so it works while the main window is hidden.
 
 use crate::sys::{wide, Win32Ok};
 use crate::OverlayState;
+use std::ffi::c_void;
 use std::sync::{Arc, Mutex, OnceLock};
 use std::thread::JoinHandle;
 use windows::core::PCWSTR;
-use windows::Win32::Foundation::{COLORREF, HWND, LPARAM, LRESULT, RECT, WPARAM};
+use windows::Win32::Foundation::{COLORREF, HWND, LPARAM, LRESULT, POINT, SIZE, WPARAM};
 use windows::Win32::Graphics::Gdi::{
-    BeginPaint, CreateFontW, CreateSolidBrush, DeleteObject, DrawTextW, Ellipse, EndPaint, FillRect, InvalidateRect,
-    SelectObject, SetBkMode, SetTextColor, CLEARTYPE_QUALITY, CLIP_DEFAULT_PRECIS, DEFAULT_CHARSET, DT_LEFT, DT_RIGHT,
-    DT_SINGLELINE, DT_VCENTER, FF_DONTCARE, FW_NORMAL, FW_SEMIBOLD, HGDIOBJ, OUT_DEFAULT_PRECIS, PAINTSTRUCT,
-    TRANSPARENT,
+    CreateCompatibleDC, CreateDIBSection, DeleteDC, DeleteObject, GetDC, ReleaseDC, SelectObject, AC_SRC_ALPHA,
+    AC_SRC_OVER, BITMAPINFO, BITMAPINFOHEADER, BI_RGB, BLENDFUNCTION, DIB_RGB_COLORS, HGDIOBJ,
 };
 use windows::Win32::System::LibraryLoader::GetModuleHandleW;
 use windows::Win32::UI::WindowsAndMessaging::{
-    CreateWindowExW, DefWindowProcW, DispatchMessageW, GetMessageW, PostMessageW, PostQuitMessage, RegisterClassW,
-    SetLayeredWindowAttributes, SetWindowPos, ShowWindow, TranslateMessage, HWND_TOPMOST, LWA_ALPHA, MSG,
-    SWP_NOACTIVATE, SW_HIDE, SW_SHOWNOACTIVATE, WM_APP, WM_CLOSE, WM_DESTROY, WM_PAINT, WNDCLASSW, WS_EX_LAYERED,
-    WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW, WS_EX_TOPMOST, WS_EX_TRANSPARENT, WS_POPUP,
+    CreateWindowExW, DefWindowProcW, DestroyWindow, DispatchMessageW, GetMessageW, PostMessageW, PostQuitMessage,
+    RegisterClassW, SetWindowPos, ShowWindow, TranslateMessage, UpdateLayeredWindow, HWND_TOPMOST, MSG, SWP_NOACTIVATE,
+    SWP_NOMOVE, SWP_NOSIZE, SW_HIDE, SW_SHOWNOACTIVATE, ULW_ALPHA, WM_APP, WM_CLOSE, WM_DESTROY, WNDCLASSW,
+    WS_EX_LAYERED, WS_EX_NOACTIVATE, WS_EX_TOOLWINDOW, WS_EX_TOPMOST, WS_EX_TRANSPARENT, WS_POPUP,
 };
 
 static STATE: OnceLock<Arc<Mutex<OverlayState>>> = OnceLock::new();
 const WM_REFRESH: u32 = WM_APP + 1;
 
-pub struct Overlay {
-    hwnd: Arc<Mutex<Option<isize>>>,
-    last: Mutex<OverlayState>,
-    thread: Option<JoinHandle<()>>,
+fn scale(st: &OverlayState) -> f32 {
+    (st.monitor.3 as f32 / 1080.0).clamp(1.0, 2.5)
 }
 
-fn scale(st: &OverlayState) -> f32 {
-    (st.monitor.3 as f32 / 1080.0).clamp(1.0, 2.0)
+/// Premultiplied BGRA pixels of the dot: a soft dark halo for contrast on bright scenes,
+/// then the coloured disc. 4×4 supersampling gives smooth, round edges.
+pub fn render_dot(size: usize, color: (u8, u8, u8)) -> Vec<u8> {
+    let mut px = vec![0u8; size * size * 4];
+    let c = size as f32 / 2.0;
+    let r_dot = size as f32 * 0.30;
+    let r_halo = size as f32 * 0.42;
+    const SS: usize = 4;
+    for y in 0..size {
+        for x in 0..size {
+            let (mut dot, mut halo) = (0.0f32, 0.0f32);
+            for sy in 0..SS {
+                for sx in 0..SS {
+                    let fx = x as f32 + (sx as f32 + 0.5) / SS as f32 - c;
+                    let fy = y as f32 + (sy as f32 + 0.5) / SS as f32 - c;
+                    let d = (fx * fx + fy * fy).sqrt();
+                    if d <= r_dot {
+                        dot += 1.0;
+                    }
+                    if d <= r_halo {
+                        halo += 1.0;
+                    }
+                }
+            }
+            let n = (SS * SS) as f32;
+            let (dot, halo) = (dot / n, halo / n);
+            // Halo: black at 35% opacity; dot drawn over it at full opacity.
+            let halo_a = halo * 0.35 * (1.0 - dot);
+            let a = dot + halo_a;
+            let i = (y * size + x) * 4;
+            // Premultiplied: colour channels already multiplied by alpha.
+            px[i] = (color.2 as f32 * dot).round() as u8;
+            px[i + 1] = (color.1 as f32 * dot).round() as u8;
+            px[i + 2] = (color.0 as f32 * dot).round() as u8;
+            px[i + 3] = (a * 255.0).round().min(255.0) as u8;
+        }
+    }
+    px
+}
+
+unsafe fn redraw(hwnd: HWND, st: &OverlayState) {
+    let k = scale(st);
+    let size = ((22.0 * k).round() as usize).max(12);
+    let margin = (16.0 * k) as i32;
+    let (mx, my, mw, mh) = (st.monitor.0, st.monitor.1, st.monitor.2 as i32, st.monitor.3 as i32);
+    let s = size as i32;
+    let (x, y) = match st.corner.as_str() {
+        "top_left" => (mx + margin, my + margin),
+        "bottom_left" => (mx + margin, my + mh - s - margin * 3),
+        "bottom_right" => (mx + mw - s - margin, my + mh - s - margin * 3),
+        _ => (mx + mw - s - margin, my + margin),
+    };
+    let pixels = render_dot(size, st.dot);
+
+    let screen = GetDC(None);
+    let mem = CreateCompatibleDC(Some(screen));
+    let bmi = BITMAPINFO {
+        bmiHeader: BITMAPINFOHEADER {
+            biSize: std::mem::size_of::<BITMAPINFOHEADER>() as u32,
+            biWidth: s,
+            biHeight: -s, // top-down
+            biPlanes: 1,
+            biBitCount: 32,
+            biCompression: BI_RGB.0,
+            ..Default::default()
+        },
+        ..Default::default()
+    };
+    let mut bits: *mut c_void = std::ptr::null_mut();
+    if let Ok(bmp) = CreateDIBSection(Some(mem), &bmi, DIB_RGB_COLORS, &mut bits, None, 0) {
+        if !bits.is_null() {
+            std::ptr::copy_nonoverlapping(pixels.as_ptr(), bits as *mut u8, pixels.len());
+            let old = SelectObject(mem, HGDIOBJ(bmp.0));
+            let blend = BLENDFUNCTION {
+                BlendOp: AC_SRC_OVER as u8,
+                BlendFlags: 0,
+                SourceConstantAlpha: 255,
+                AlphaFormat: AC_SRC_ALPHA as u8,
+            };
+            let pos = POINT { x, y };
+            let sz = SIZE { cx: s, cy: s };
+            let src = POINT { x: 0, y: 0 };
+            let _ = UpdateLayeredWindow(
+                hwnd,
+                Some(screen),
+                Some(&pos),
+                Some(&sz),
+                Some(mem),
+                Some(&src),
+                COLORREF(0),
+                Some(&blend),
+                ULW_ALPHA,
+            );
+            SelectObject(mem, old);
+        }
+        let _ = DeleteObject(HGDIOBJ(bmp.0));
+    }
+    let _ = DeleteDC(mem);
+    ReleaseDC(None, screen);
 }
 
 unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wp: WPARAM, lp: LPARAM) -> LRESULT {
     match msg {
-        WM_PAINT => {
-            let st = STATE.get().and_then(|s| s.lock().ok().map(|g| g.clone())).unwrap_or_default();
-            let k = scale(&st);
-            let mut ps = PAINTSTRUCT::default();
-            let hdc = BeginPaint(hwnd, &mut ps);
-            if !st.visible || st.text.is_empty() {
-                // Nothing to show (Windows may paint the window before it's ever shown).
-                let _ = EndPaint(hwnd, &ps);
-                return LRESULT(0);
-            }
-            let mut rc = RECT::default();
-            let _ = windows::Win32::UI::WindowsAndMessaging::GetClientRect(hwnd, &mut rc);
-            let bg = CreateSolidBrush(COLORREF(0x0016_1514));
-            FillRect(hdc, &rc, bg);
-            let _ = DeleteObject(HGDIOBJ(bg.0));
-            let (r, g, b) = st.dot;
-            let dot = CreateSolidBrush(COLORREF((b as u32) << 16 | (g as u32) << 8 | r as u32));
-            let old = SelectObject(hdc, HGDIOBJ(dot.0));
-            let pen_null = windows::Win32::Graphics::Gdi::GetStockObject(windows::Win32::Graphics::Gdi::NULL_PEN);
-            let old_pen = SelectObject(hdc, pen_null);
-            let cy = (rc.bottom - rc.top) / 2;
-            let d = (10.0 * k) as i32;
-            let x0 = (12.0 * k) as i32;
-            let _ = Ellipse(hdc, x0, cy - d / 2, x0 + d, cy + d / 2);
-            SelectObject(hdc, old_pen);
-            SelectObject(hdc, old);
-            let _ = DeleteObject(HGDIOBJ(dot.0));
-            SetBkMode(hdc, TRANSPARENT);
-            let face = wide("Segoe UI");
-            let mk = |size: f32, weight: i32| {
-                CreateFontW(
-                    -(size * k) as i32,
-                    0,
-                    0,
-                    0,
-                    weight,
-                    0,
-                    0,
-                    0,
-                    DEFAULT_CHARSET,
-                    OUT_DEFAULT_PRECIS,
-                    CLIP_DEFAULT_PRECIS,
-                    CLEARTYPE_QUALITY,
-                    FF_DONTCARE.0 as u32,
-                    PCWSTR(face.as_ptr()),
-                )
-            };
-            let f_main = mk(15.0, FW_SEMIBOLD.0 as i32);
-            let f_small = mk(12.0, FW_NORMAL.0 as i32);
-            let prev = SelectObject(hdc, HGDIOBJ(f_main.0));
-            SetTextColor(hdc, COLORREF(0x00E6_EAEC));
-            let mut text: Vec<u16> = st.text.encode_utf16().collect();
-            let mut tr = RECT { left: x0 + d + (8.0 * k) as i32, ..rc };
-            DrawTextW(hdc, &mut text, &mut tr, DT_LEFT | DT_VCENTER | DT_SINGLELINE);
-            if st.extra.chars().any(|c| !c.is_whitespace()) {
-                SelectObject(hdc, HGDIOBJ(f_small.0));
-                SetTextColor(hdc, COLORREF(0x0041_A4D9));
-                let mut extra: Vec<u16> = st.extra.encode_utf16().collect();
-                let mut er = RECT { right: rc.right - (10.0 * k) as i32, ..rc };
-                DrawTextW(hdc, &mut extra, &mut er, DT_RIGHT | DT_VCENTER | DT_SINGLELINE);
-            }
-            SelectObject(hdc, prev);
-            let _ = DeleteObject(HGDIOBJ(f_main.0));
-            let _ = DeleteObject(HGDIOBJ(f_small.0));
-            let _ = EndPaint(hwnd, &ps);
-            LRESULT(0)
-        }
         WM_REFRESH => {
             let st = STATE.get().and_then(|s| s.lock().ok().map(|g| g.clone())).unwrap_or_default();
             if st.visible {
-                let k = scale(&st);
-                let (w, h) = ((if st.extra.is_empty() { 150.0 } else { 220.0 } * k) as i32, (34.0 * k) as i32);
-                let m = (18.0 * k) as i32;
-                let (mx, my, mw, mh) = (st.monitor.0, st.monitor.1, st.monitor.2 as i32, st.monitor.3 as i32);
-                let (x, y) = match st.corner.as_str() {
-                    "top_left" => (mx + m, my + m),
-                    "bottom_left" => (mx + m, my + mh - h - m * 3),
-                    "bottom_right" => (mx + mw - w - m, my + mh - h - m * 3),
-                    _ => (mx + mw - w - m, my + m),
-                };
-                let _ = SetWindowPos(hwnd, Some(HWND_TOPMOST), x, y, w, h, SWP_NOACTIVATE);
+                redraw(hwnd, &st);
+                let _ = SetWindowPos(hwnd, Some(HWND_TOPMOST), 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE);
                 let _ = ShowWindow(hwnd, SW_SHOWNOACTIVATE);
-                let _ = InvalidateRect(Some(hwnd), None, true);
             } else {
                 let _ = ShowWindow(hwnd, SW_HIDE);
             }
             LRESULT(0)
         }
         WM_CLOSE => {
-            let _ = windows::Win32::UI::WindowsAndMessaging::DestroyWindow(hwnd);
+            let _ = DestroyWindow(hwnd);
             LRESULT(0)
         }
         WM_DESTROY => {
@@ -137,10 +155,15 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wp: WPARAM, lp: LPARAM) 
     }
 }
 
+pub struct Overlay {
+    hwnd: Arc<Mutex<Option<isize>>>,
+    last: Mutex<OverlayState>,
+    thread: Option<JoinHandle<()>>,
+}
+
 impl Overlay {
     pub fn new() -> Overlay {
-        let state = STATE.get_or_init(|| Arc::new(Mutex::new(OverlayState::default()))).clone();
-        let _ = state;
+        STATE.get_or_init(|| Arc::new(Mutex::new(OverlayState::default())));
         let hwnd_slot: Arc<Mutex<Option<isize>>> = Arc::new(Mutex::new(None));
         let slot = hwnd_slot.clone();
         let (tx, rx) = std::sync::mpsc::channel();
@@ -164,8 +187,8 @@ impl Overlay {
                     WS_POPUP,
                     0,
                     0,
-                    150,
-                    34,
+                    22,
+                    22,
                     None,
                     None,
                     Some(hinst),
@@ -175,7 +198,6 @@ impl Overlay {
                     let _ = tx.send(());
                     return;
                 };
-                let _ = SetLayeredWindowAttributes(hwnd, COLORREF(0), 225, LWA_ALPHA);
                 crate::sys::exclude_from_capture(hwnd.0 as usize as u64);
                 *slot.lock().unwrap() = Some(hwnd.0 as isize);
                 let _ = tx.send(());
@@ -195,7 +217,7 @@ impl Overlay {
         Overlay { hwnd: Arc::new(Mutex::new(None)), last: Mutex::new(OverlayState::default()), thread: None }
     }
 
-    /// Update what the overlay shows. Cheap to call often; only repaints on change.
+    /// Update what the overlay shows. Cheap to call often; only redraws on change.
     pub fn set(&self, st: OverlayState) {
         {
             let mut last = self.last.lock().unwrap();
@@ -230,6 +252,29 @@ impl Drop for Overlay {
         }
         if let Some(t) = self.thread.take() {
             let _ = t.join();
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::render_dot;
+
+    #[test]
+    fn dot_is_round_and_symmetric() {
+        let n = 33;
+        let px = render_dot(n, (229, 72, 77));
+        let a = |x: usize, y: usize| px[(y * n + x) * 4 + 3];
+        // centre fully opaque, corners fully transparent
+        assert_eq!(a(16, 16), 255);
+        assert_eq!(a(0, 0), 0);
+        // 4-way and diagonal symmetry
+        for y in 0..n {
+            for x in 0..n {
+                assert_eq!(a(x, y), a(n - 1 - x, y));
+                assert_eq!(a(x, y), a(x, n - 1 - y));
+                assert_eq!(a(x, y), a(y, x));
+            }
         }
     }
 }

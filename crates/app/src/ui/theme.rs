@@ -241,23 +241,61 @@ pub fn group_title(ui: &mut Ui, p: &Palette, title: &str) {
     hairline(ui, p);
 }
 
+#[derive(Clone, Copy, PartialEq, Eq)]
+enum ButtonKind {
+    Primary,
+    Quiet,
+}
+
+/// Hand-drawn button so hover, pressed and disabled states always show, whatever the fill.
+fn button(ui: &mut Ui, p: &Palette, text: &str, kind: ButtonKind) -> Response {
+    let enabled = ui.is_enabled();
+    let font = if kind == ButtonKind::Primary { semibold(14.0) } else { FontId::proportional(14.0) };
+    let galley = ui.painter().layout_no_wrap(text.to_owned(), font, Color32::PLACEHOLDER);
+    let size = Vec2::new(galley.size().x + 30.0, if kind == ButtonKind::Primary { 34.0 } else { 32.0 });
+    let (rect, resp) = ui.allocate_exact_size(size, Sense::click());
+    let hovered = enabled && resp.hovered();
+    let pressed = enabled && resp.is_pointer_button_down_on();
+    let (fill, stroke, text_color) = match (kind, enabled) {
+        (ButtonKind::Primary, true) => {
+            let t = if pressed {
+                0.24
+            } else if hovered {
+                0.12
+            } else {
+                0.0
+            };
+            (lerp(p.text, p.bg, t), Stroke::NONE, p.bg)
+        }
+        (ButtonKind::Primary, false) => (p.raised, Stroke::NONE, p.faint),
+        (ButtonKind::Quiet, true) => {
+            let fill = if pressed {
+                lerp(p.raised, p.hairline, 0.6)
+            } else if hovered {
+                p.raised
+            } else {
+                Color32::TRANSPARENT
+            };
+            (fill, Stroke::new(1.0, if hovered { p.faint } else { p.hairline }), p.text)
+        }
+        (ButtonKind::Quiet, false) => (Color32::TRANSPARENT, Stroke::new(1.0, p.hairline), p.faint),
+    };
+    let painter = ui.painter();
+    painter.rect(rect, CornerRadius::same(6), fill, stroke, egui::StrokeKind::Inside);
+    painter.galley(rect.center() - galley.size() / 2.0, galley, text_color);
+    if hovered {
+        ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
+    }
+    resp
+}
+
 /// Solid button in the text colour (inverted), for the single main action on a screen.
 pub fn primary_button(ui: &mut Ui, p: &Palette, text: &str) -> Response {
-    let b = egui::Button::new(RichText::new(text).color(p.bg).strong())
-        .fill(p.text)
-        .stroke(Stroke::NONE)
-        .corner_radius(CornerRadius::same(6))
-        .min_size(Vec2::new(0.0, 34.0));
-    ui.add(b)
+    button(ui, p, text, ButtonKind::Primary)
 }
 
 pub fn quiet_button(ui: &mut Ui, p: &Palette, text: &str) -> Response {
-    let b = egui::Button::new(RichText::new(text).color(p.text))
-        .fill(Color32::TRANSPARENT)
-        .stroke(Stroke::new(1.0, p.hairline))
-        .corner_radius(CornerRadius::same(6))
-        .min_size(Vec2::new(0.0, 32.0));
-    ui.add(b)
+    button(ui, p, text, ButtonKind::Quiet)
 }
 
 pub fn link_button(ui: &mut Ui, p: &Palette, text: &str) -> Response {

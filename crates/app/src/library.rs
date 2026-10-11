@@ -65,7 +65,7 @@ fn cache_dir() -> PathBuf {
 }
 
 impl Library {
-    /// `capturing` pauses thumbnail generation; `repaint` is called when items change.
+    /// `capturing` (a recording is being written) pauses thumbnails; `repaint` is called on changes.
     pub fn new(ffmpeg: Option<PathBuf>, capturing: Arc<AtomicBool>, repaint: Arc<dyn Fn() + Send + Sync>) -> Library {
         let items = Arc::new(Mutex::new(Vec::new()));
         let scanning = Arc::new(AtomicBool::new(false));
@@ -77,8 +77,18 @@ impl Library {
                 let cache_path = cache_dir().join("metadata.json");
                 let mut cache: Cache =
                     std::fs::read(&cache_path).ok().and_then(|b| serde_json::from_slice(&b).ok()).unwrap_or_default();
-                while let Ok(Job::Refresh(dir)) = rx.recv() {
+                let mut pending: Option<Job> = None;
+                loop {
+                    let job = match pending.take() {
+                        Some(j) => j,
+                        None => match rx.recv() {
+                            Ok(j) => j,
+                            Err(_) => break,
+                        },
+                    };
+                    let Job::Refresh(dir) = job;
                     sc.store(true, Ordering::Relaxed);
+                    repaint();
                     let mut found = scan(&dir);
                     // Metadata: cheap, from the cache or `ffmpeg -i`.
                     for item in found.iter_mut() {
@@ -97,27 +107,36 @@ impl Library {
                         }
                     }
                     *it.lock().unwrap() = found.clone();
-                    repaint();
                     let _ = std::fs::create_dir_all(cache_dir());
                     let _ = std::fs::write(&cache_path, serde_json::to_vec(&cache).unwrap_or_default());
-                    // Thumbnails: only while idle, newest first, stop if a refresh arrives.
-                    if let Some(ff) = ffmpeg.as_deref() {
-                        for item in found.iter().filter(|i| i.thumb.is_none()).take(200) {
-                            while capturing.load(Ordering::Relaxed) {
-                                std::thread::sleep(Duration::from_secs(1));
-                            }
-                            let k = key(&item.path, item.size, item.modified);
-                            let t = cache_dir().join(format!("{k}.rgba"));
-                            let seek = item.meta.as_ref().map(|m| (m.duration / 3.0).min(2.0)).unwrap_or(1.0);
-                            if make_thumb(ff, &item.path, &t, seek) {
-                                if let Some(x) = it.lock().unwrap().iter_mut().find(|x| x.path == item.path) {
-                                    x.thumb = Some(t);
-                                }
-                                repaint();
+                    // The list is ready: stop the spinner before the slower thumbnail work.
+                    sc.store(false, Ordering::Relaxed);
+                    repaint();
+
+                    // Thumbnails, newest first. Paused while a recording is written; a new
+                    // refresh request interrupts and restarts the whole pass.
+                    let Some(ff) = ffmpeg.as_deref() else { continue };
+                    'thumbs: for item in found.iter().filter(|i| i.thumb.is_none()).take(200) {
+                        while capturing.load(Ordering::Relaxed) {
+                            if let Ok(j) = rx.recv_timeout(Duration::from_secs(1)) {
+                                pending = Some(j);
+                                break 'thumbs;
                             }
                         }
+                        if let Ok(j) = rx.try_recv() {
+                            pending = Some(j);
+                            break 'thumbs;
+                        }
+                        let k = key(&item.path, item.size, item.modified);
+                        let t = cache_dir().join(format!("{k}.rgba"));
+                        let seek = item.meta.as_ref().map(|m| (m.duration / 3.0).min(2.0)).unwrap_or(1.0);
+                        if make_thumb(ff, &item.path, &t, seek) {
+                            if let Some(x) = it.lock().unwrap().iter_mut().find(|x| x.path == item.path) {
+                                x.thumb = Some(t);
+                            }
+                            repaint();
+                        }
                     }
-                    sc.store(false, Ordering::Relaxed);
                 }
             })
             .expect("spawn library");
@@ -257,6 +276,8 @@ fn make_thumb(ffmpeg: &Path, file: &Path, out: &Path, seek: f64) -> bool {
         "error".into(),
         "-nostdin".into(),
         "-y".into(),
+        "-threads".into(),
+        "1".into(),
         "-ss".into(),
         format!("{seek:.2}"),
         "-i".into(),

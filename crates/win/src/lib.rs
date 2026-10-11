@@ -154,12 +154,8 @@ pub enum SourceState {
 #[derive(Clone, Debug, PartialEq)]
 pub struct OverlayState {
     pub visible: bool,
-    /// Dot colour (r, g, b).
+    /// Dot colour (r, g, b): red while recording, amber while Instant Replay buffers.
     pub dot: (u8, u8, u8),
-    /// Main text, e.g. "0:12:34" or "Replay on".
-    pub text: String,
-    /// Small text on the right, e.g. "Mic off" (empty for none).
-    pub extra: String,
     /// "top_right" | "top_left" | "bottom_right" | "bottom_left"
     pub corner: String,
     /// Monitor rectangle to place it on (x, y, w, h).
@@ -168,14 +164,7 @@ pub struct OverlayState {
 
 impl Default for OverlayState {
     fn default() -> Self {
-        OverlayState {
-            visible: false,
-            dot: (229, 72, 77),
-            text: String::new(),
-            extra: String::new(),
-            corner: "top_right".into(),
-            monitor: (0, 0, 1920, 1080),
-        }
+        OverlayState { visible: false, dot: (229, 72, 77), corner: "top_right".into(), monitor: (0, 0, 1920, 1080) }
     }
 }
 

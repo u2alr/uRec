@@ -857,9 +857,9 @@ fn appearance(app: &mut App, ui: &mut egui::Ui) {
         &p,
         "Recording overlay",
         if excl {
-            "A small timer in the corner of your screen while recording or buffering. It never appears in your videos."
+            "A small dot in a corner of your screen: red while recording, amber while Instant Replay is on. It never appears in your videos."
         } else {
-            "A small timer in the corner of your screen. On this version of Windows it may appear in recordings."
+            "A small dot in a corner of your screen while recording. On this version of Windows it may appear in recordings."
         },
         |ui| {
             theme::switch(ui, &p, &mut a.overlay);

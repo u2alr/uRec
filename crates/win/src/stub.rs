@@ -115,3 +115,9 @@ impl Overlay {
     }
     pub fn set(&self, _st: crate::OverlayState) {}
 }
+pub fn open_file(path: &Path) {
+    let _ = std::process::Command::new("xdg-open").arg(path).spawn();
+}
+pub fn videos_dir() -> Option<std::path::PathBuf> {
+    None
+}

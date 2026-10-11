@@ -122,7 +122,8 @@ type RepaintFn = Arc<Mutex<Option<Box<dyn Fn() + Send + Sync>>>>;
 pub struct Controller {
     tx: Arc<Mutex<Sender<Command>>>,
     pub status: Arc<Mutex<Status>>,
-    /// True while capturing; background work (thumbnails) waits for this to clear.
+    /// True while a recording is being written; thumbnail generation waits for it to clear.
+    /// (Instant Replay alone doesn't count, so thumbnails still appear while it buffers.)
     pub capturing: Arc<AtomicBool>,
     repaint: RepaintFn,
     /// Set when the controller thread has shut down cleanly.
@@ -686,7 +687,6 @@ impl Worker {
             }
         }
         self.live = Some(Live { session, audio: feed_slot, kind });
-        self.ctl.capturing.store(true, Ordering::Relaxed);
         self.lag_since = None;
         self.lag_warned = false;
         Ok(())
@@ -696,7 +696,6 @@ impl Worker {
         let live = self.live.take()?;
         let result = live.session.stop(Duration::from_secs(20));
         drop(live.audio);
-        self.ctl.capturing.store(false, Ordering::Relaxed);
         self.update(|s| {
             s.capture = None;
             s.stats = Stats::default();
@@ -763,6 +762,7 @@ impl Worker {
     }
 
     fn begin_recording(&mut self, output: PathBuf, app: String) {
+        self.ctl.capturing.store(true, Ordering::Relaxed);
         let rec = Recording { started: Instant::now(), output, app };
         self.recording = Some(rec.clone());
         self.low_space_warned = false;
@@ -800,6 +800,7 @@ impl Worker {
     }
 
     fn finish_recording(&mut self, result: Result<Option<PathBuf>, String>, rec: &Recording) {
+        self.ctl.capturing.store(false, Ordering::Relaxed);
         self.update(|s| s.finishing = false);
         match result {
             Ok(Some(p)) => {
@@ -1020,27 +1021,13 @@ impl Worker {
             urec_win::OverlayState { visible, corner: self.s.appearance.overlay_corner.clone(), ..Default::default() };
         if visible {
             o.monitor = self.overlay_monitor;
-            if let Some(r) = &self.recording {
-                let s = r.started.elapsed().as_secs();
-                o.dot = (229, 72, 77);
-                o.text = format!("{}:{:02}:{:02}", s / 3600, s / 60 % 60, s % 60);
-            } else {
-                o.dot = (217, 164, 65);
-                o.text = "Replay on".into();
-            }
-            let mut extra = Vec::new();
-            if self.s.audio.mic && st.mic_muted {
-                extra.push("Mic off".to_string());
-            }
-            if st.stats.drop_frames > 0 {
-                extra.push(format!("{} dropped", st.stats.drop_frames));
-            }
-            o.extra = extra.join(", ");
+            o.dot = if self.recording.is_some() { (229, 72, 77) } else { (217, 164, 65) };
         }
         self.overlay.set(o);
     }
 
     fn on_crash(&mut self, log_tail: &str) {
+        self.ctl.capturing.store(false, Ordering::Relaxed);
         let kind_replay = self.live.as_ref().is_some_and(|l| l.kind == LiveKind::Replay);
         log(&format!("ffmpeg exited unexpectedly: {log_tail}"));
         let _ = self.stop_live();
