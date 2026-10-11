@@ -1,0 +1,38 @@
+name: UI smoke test
+
+on:
+  push:
+    branches: [main]
+    paths: ["crates/app/**", "crates/win/**", "ci/ui-screenshots.ps1", ".github/workflows/ui.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  ui:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: ui
+      - name: Build app
+        shell: pwsh
+        run: |
+          ./ci/get-ffmpeg.ps1 | Out-Null
+          cargo build --release -p urec *>&1 | Tee-Object build.txt | Select-String -Pattern "^(error|warning)" -Context 0,4
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Screenshots
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path target/release/uRec.exe) { ./ci/ui-screenshots.ps1 -Exe target/release/uRec.exe -Out screenshots *>&1 | Tee-Object -FilePath ui.txt }
+          else { Get-Content build.txt -Tail 60 | Out-File ui.txt }
+      - name: Publish
+        if: always()
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: ./ci/publish-results.ps1 -Name ui -File ui.txt -Dir screenshots

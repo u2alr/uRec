@@ -14,6 +14,17 @@ use settings::Settings;
 use std::sync::Arc;
 
 fn main() -> eframe::Result {
+    // Record crashes in the log (the window app has no console).
+    std::panic::set_hook(Box::new(|info| {
+        let location = info.location().map(|l| format!("{}:{}", l.file(), l.line())).unwrap_or_default();
+        let msg = info
+            .payload()
+            .downcast_ref::<&str>()
+            .map(|s| s.to_string())
+            .or_else(|| info.payload().downcast_ref::<String>().cloned())
+            .unwrap_or_default();
+        controller::log(&format!("CRASH at {location}: {msg}\n{}", std::backtrace::Backtrace::force_capture()));
+    }));
     let args: Vec<String> = std::env::args().collect();
     let minimized = args.iter().any(|a| a == "--minimized");
     // Only one uRec at a time: a second launch brings the first one forward.
