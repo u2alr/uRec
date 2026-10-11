@@ -1,4 +1,4 @@
-commit c6ef493ca33215a98600c0dd0fbe76659df94648 run 38124693579
+commit 5b6de7631f851eb21843e92546ec725a6b40dec5 run 38124856569
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -20,55 +20,52 @@ commit c6ef493ca33215a98600c0dd0fbe76659df94648 run 38124693579
       Adding windows-strings v0.5.1
       Adding windows-threading v0.2.1
  Downloading crates ...
-  Downloaded unicode-ident v1.0.26
-  Downloaded windows-collections v0.3.2
-  Downloaded windows-threading v0.2.1
-  Downloaded windows-strings v0.5.1
-  Downloaded windows-implement v0.60.2
-  Downloaded windows-result v0.4.1
-  Downloaded windows-interface v0.59.3
-  Downloaded windows-link v0.2.1
-  Downloaded windows-numerics v0.3.1
   Downloaded quote v1.0.47
+  Downloaded windows-numerics v0.3.1
+  Downloaded windows-strings v0.5.1
   Downloaded windows-future v0.3.2
+  Downloaded windows-link v0.2.1
+  Downloaded windows-collections v0.3.2
+  Downloaded windows-interface v0.59.3
+  Downloaded windows-result v0.4.1
   Downloaded windows-core v0.62.2
+  Downloaded windows-implement v0.60.2
   Downloaded proc-macro2 v1.0.107
+  Downloaded unicode-ident v1.0.26
+  Downloaded windows-threading v0.2.1
   Downloaded syn v2.0.119
   Downloaded windows v0.62.2
    Compiling proc-macro2 v1.0.107
-   Compiling unicode-ident v1.0.26
    Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.26
     Checking windows-link v0.2.1
-    Checking windows-strings v0.5.1
     Checking windows-result v0.4.1
+    Checking windows-strings v0.5.1
     Checking windows-threading v0.2.1
     Checking urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
    Compiling syn v2.0.119
-   Compiling windows-implement v0.60.2
    Compiling windows-interface v0.59.3
+   Compiling windows-implement v0.60.2
     Checking windows-core v0.62.2
     Checking windows-future v0.3.2
-    Checking windows-numerics v0.3.1
     Checking windows-collections v0.3.2
+    Checking windows-numerics v0.3.1
     Checking windows v0.62.2
     Checking urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
-error: called `unwrap_err` on `first` after checking its variant with `is_ok`
-   --> crates\win\src\audio.rs:258:28
+    Checking urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
+error: casting raw pointers to the same type and constness is unnecessary (`*mut std::ffi::c_void` -> `*mut std::ffi::c_void`)
+   --> crates\cli\src\main.rs:244:58
     |
-243 |         let client = if first.is_ok() {
-    |                      ---------------- help: try: `if let Err(<item>) = first`
-...
-258 |                 return Err(first.unwrap_err());
-    |                            ^^^^^^^^^^^^^^^^^^
+244 |     println!("job_bound={}", urec_win::bind_child_to_app(s.process.raw_handle() as *mut std::ffi::c_void));
+    |                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: try: `s.process.raw_handle()`
     |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_unwrap
-    = note: `-D clippy::unnecessary-unwrap` implied by `-D warnings`
-    = help: to override `-D warnings` add `#[allow(clippy::unnecessary_unwrap)]`
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#unnecessary_cast
+    = note: `-D clippy::unnecessary-cast` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::unnecessary_cast)]`
 
-error: could not compile `urec-win` (lib) due to 1 previous error
+error: could not compile `urec-cli` (bin "urec-cli" test) due to 1 previous error
 warning: build failed, waiting for other jobs to finish...
-error: could not compile `urec-win` (lib test) due to 1 previous error
-error: could not compile `urec-win` (lib) due to 1 previous error
+error: could not compile `urec-cli` (bin "urec-cli") due to 1 previous error
 ## clippy FAILED
 ## test
    Compiling windows-link v0.2.1
@@ -77,13 +74,13 @@ error: could not compile `urec-win` (lib) due to 1 previous error
    Compiling windows-strings v0.5.1
    Compiling windows-core v0.62.2
    Compiling windows-threading v0.2.1
+   Compiling windows-numerics v0.3.1
    Compiling windows-collections v0.3.2
    Compiling windows-future v0.3.2
-   Compiling windows-numerics v0.3.1
    Compiling windows v0.62.2
    Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 39.96s
+    Finished `release` profile [optimized] target(s) in 38.70s
      Running unittests src\main.rs (target\release\deps\urec_cli-977b4d60eb1b07f8.exe)
 
 running 0 tests
@@ -93,20 +90,19 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
      Running unittests src\lib.rs (target\release\deps\urec_engine-7b56bc09cc9d8a35.exe)
 
 running 21 tests
-test encoder::tests::args_have_rate_and_keyframes ... ok
-test encoder::tests::failure_messages ... ok
 test encoder::tests::names_and_candidates ... ok
+test encoder::tests::failure_messages ... ok
+test encoder::tests::args_have_rate_and_keyframes ... ok
 test hotkey::tests::finds_conflicts ... ok
 test hotkey::tests::roundtrip ... ok
 test naming::tests::stamps ... ok
 test naming::tests::sanitizes ... ok
 test pipeline::tests::audio_and_replay_output ... ok
 test pipeline::tests::gpu_scaling_stays_on_gpu ... ok
-test pipeline::tests::region_crops ... ok
 test pipeline::tests::system_path_downloads_once ... ok
+test pipeline::tests::region_crops ... ok
 test pipeline::tests::zero_copy_native_has_no_filters ... ok
 test process::tests::parses_progress_blocks ... ok
-test naming::tests::unique_names ... ok
 test replay::tests::parses_and_selects ... ok
 test replay::tests::ring_math ... ok
 test video::tests::bitrate_scales ... ok
@@ -114,6 +110,7 @@ test video::tests::bytes_formatting ... ok
 test video::tests::output_size_never_upscales ... ok
 test video::tests::presets_respect_machine ... ok
 test video::tests::validate_catches_limits ... ok
+test naming::tests::unique_names ... ok
 
 test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
@@ -139,14 +136,14 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 ## build
    Compiling windows-link v0.2.1
    Compiling urec-engine v0.1.0 (D:\a\uRec\uRec\crates\engine)
-   Compiling windows-strings v0.5.1
    Compiling windows-result v0.4.1
+   Compiling windows-strings v0.5.1
    Compiling windows-threading v0.2.1
    Compiling windows-core v0.62.2
    Compiling windows-collections v0.3.2
-   Compiling windows-future v0.3.2
    Compiling windows-numerics v0.3.1
+   Compiling windows-future v0.3.2
    Compiling windows v0.62.2
    Compiling urec-win v0.1.0 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.1.0 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 30.30s
+    Finished `release` profile [optimized] target(s) in 29.66s
