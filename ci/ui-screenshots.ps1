@@ -7,6 +7,17 @@ $env:UREC_FFMPEG = (& "$PSScriptRoot\get-ffmpeg.ps1" | Select-Object -Last 1)
 $pages = "home", "library", "settings:general", "settings:recording", "settings:video", "settings:audio", "settings:instantreplay", "settings:hotkeys", "settings:storage", "settings:appearance", "settings:advanced"
 $env:RUST_BACKTRACE = "1"
 $b = [System.Windows.Forms.Screen]::PrimaryScreen.Bounds
+# Diagnostic variants of the home page
+foreach ($v in @(@{n = "noov"; k = "UREC_NO_OVERLAY"; val = "1" }, @{n = "glow"; k = "UREC_RENDERER"; val = "glow" })) {
+    Set-Item "env:$($v.k)" $v.val
+    $env:UREC_PAGE = "home"
+    $proc = Start-Process $Exe -PassThru -RedirectStandardError (Join-Path $Out "stderr-$($v.n).txt")
+    Start-Sleep -Seconds 8
+    "variant $($v.n) alive=$(-not $proc.HasExited) $(if ($proc.HasExited) { "exit $($proc.ExitCode)" })"
+    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+    Remove-Item "env:$($v.k)"
+    Start-Sleep -Seconds 1
+}
 foreach ($pg in $pages) {
     $env:UREC_PAGE = $pg
     $err = Join-Path $Out ("stderr-{0}.txt" -f ($pg -replace ':', '-'))

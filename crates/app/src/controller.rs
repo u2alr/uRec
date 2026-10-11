@@ -253,7 +253,11 @@ impl Worker {
             hotkeys,
             overlay: {
                 log("controller: creating overlay");
-                let o = urec_win::Overlay::new();
+                let o = if std::env::var_os("UREC_NO_OVERLAY").is_some() {
+                    urec_win::Overlay::disabled()
+                } else {
+                    urec_win::Overlay::new()
+                };
                 log("controller: overlay ready");
                 o
             },

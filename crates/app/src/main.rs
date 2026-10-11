@@ -52,6 +52,10 @@ fn main() -> eframe::Result {
             .with_min_inner_size([w.min(880.0), h.min(560.0)])
             .with_icon(Arc::new(icon))
             .with_visible(!minimized),
+        renderer: match std::env::var("UREC_RENDERER").as_deref() {
+            Ok("glow") => eframe::Renderer::Glow,
+            _ => eframe::Renderer::Wgpu,
+        },
         ..Default::default()
     };
     // Development/CI: open a specific page, e.g. UREC_PAGE=settings:video

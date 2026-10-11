@@ -185,6 +185,11 @@ impl Overlay {
         Overlay { hwnd: hwnd_slot, last: Mutex::new(OverlayState::default()), thread }
     }
 
+    /// An overlay that never shows (for troubleshooting).
+    pub fn disabled() -> Overlay {
+        Overlay { hwnd: Arc::new(Mutex::new(None)), last: Mutex::new(OverlayState::default()), thread: None }
+    }
+
     /// Update what the overlay shows. Cheap to call often; only repaints on change.
     pub fn set(&self, st: OverlayState) {
         {

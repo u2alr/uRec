@@ -110,5 +110,8 @@ impl Overlay {
     pub fn new() -> Self {
         Overlay
     }
+    pub fn disabled() -> Self {
+        Overlay
+    }
     pub fn set(&self, _st: crate::OverlayState) {}
 }
