@@ -150,3 +150,6 @@ pub fn show_toast(_xml: &str) -> Result<(), String> {
 pub fn toast_history_count() -> Option<u32> {
     None
 }
+pub fn work_area() -> Option<(f32, f32, f32, f32)> {
+    None
+}

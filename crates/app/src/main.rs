@@ -60,22 +60,28 @@ fn main() -> eframe::Result {
     let ctl = Controller::start(settings.clone());
     controller::log("startup: controller started");
 
-    // Fit small screens (laptops at 1366×768, VMs at 1024×768).
-    let (w, h) = urec_win::monitors()
-        .into_iter()
-        .find(|m| m.primary)
-        .map(|m| ((m.bounds.width as f32 * 0.92).min(1060.0), (m.bounds.height as f32 * 0.88).min(720.0)))
+    // Fit small screens (laptops at 1366×768, VMs at 1024×768): size and centre the window in
+    // the usable area, so its bottom never ends up behind the taskbar.
+    const TITLE_BAR: f32 = 32.0;
+    let work = urec_win::work_area();
+    let (w, h) = work
+        .map(|(_, _, ww, wh)| ((ww * 0.92).min(1060.0), ((wh - TITLE_BAR) * 0.94).min(720.0)))
         .unwrap_or((1060.0, 720.0));
+    let position = work.map(|(x, y, ww, wh)| [x + (ww - w) / 2.0, y + (wh - h - TITLE_BAR) / 2.0]);
     let icon = egui::IconData { rgba: include_bytes!("../assets/icon_64.rgba").to_vec(), width: 64, height: 64 };
+    let mut viewport = egui::ViewportBuilder::default()
+        .with_title(ui::WINDOW_TITLE)
+        .with_app_id("uRec")
+        .with_inner_size([w, h])
+        .with_min_inner_size([w.min(880.0), h.min(560.0)])
+        .with_icon(Arc::new(icon))
+        .with_visible(!minimized);
+    if let Some(pos) = position {
+        viewport = viewport.with_position(pos);
+    }
     let options = eframe::NativeOptions {
-        viewport: egui::ViewportBuilder::default()
-            .with_title(ui::WINDOW_TITLE)
-            .with_app_id("uRec")
-            .with_inner_size([w, h])
-            .with_min_inner_size([w.min(880.0), h.min(560.0)])
-            .with_icon(Arc::new(icon))
-            .with_visible(!minimized),
-        centered: true,
+        viewport,
+        centered: position.is_none(),
         renderer: match std::env::var("UREC_RENDERER").as_deref() {
             Ok("glow") => eframe::Renderer::Glow,
             _ => eframe::Renderer::Wgpu,

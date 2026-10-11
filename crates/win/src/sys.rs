@@ -248,6 +248,27 @@ pub fn open_file(path: &Path) {
     }
 }
 
+/// The main display's usable area (without the taskbar), in logical pixels (x, y, w, h).
+pub fn work_area() -> Option<(f32, f32, f32, f32)> {
+    use windows::Win32::Foundation::RECT;
+    use windows::Win32::UI::HiDpi::GetDpiForSystem;
+    use windows::Win32::UI::WindowsAndMessaging::{
+        SystemParametersInfoW, SPI_GETWORKAREA, SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS,
+    };
+    let mut r = RECT::default();
+    unsafe {
+        SystemParametersInfoW(
+            SPI_GETWORKAREA,
+            0,
+            Some(&mut r as *mut _ as *mut std::ffi::c_void),
+            SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS(0),
+        )
+        .ok()?;
+        let k = (GetDpiForSystem() as f32 / 96.0).max(1.0);
+        Some((r.left as f32 / k, r.top as f32 / k, (r.right - r.left) as f32 / k, (r.bottom - r.top) as f32 / k))
+    }
+}
+
 /// True when Windows' "Animation effects" (Settings › Accessibility › Visual effects) is off.
 pub fn system_reduced_motion() -> bool {
     use windows::Win32::UI::WindowsAndMessaging::{
