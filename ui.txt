@@ -1,5 +1,5 @@
 sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 16.28.19.mp4 size=694476
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 17.55.57.mp4 size=698401
 light home alive=True
 light library alive=True
 light settings:general alive=True
