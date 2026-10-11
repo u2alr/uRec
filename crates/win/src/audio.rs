@@ -240,9 +240,7 @@ fn open_device(loopback: bool, id: Option<&str>) -> windows::core::Result<Opened
             &want,
             None,
         );
-        let client = if first.is_ok() {
-            client
-        } else {
+        let client = if let Err(first_err) = first {
             // Fall back to the device's own format and convert ourselves.
             let client: IAudioClient = dev.Activate(CLSCTX_ALL, None)?;
             let mix = client.GetMixFormat()?;
@@ -255,7 +253,7 @@ fn open_device(loopback: bool, id: Option<&str>) -> windows::core::Result<Opened
                 });
             if !is_float || fmt.wBitsPerSample != 32 {
                 CoTaskMemFree(Some(mix as *const _));
-                return Err(first.unwrap_err());
+                return Err(first_err);
             }
             convert = Some(Converter {
                 rate: fmt.nSamplesPerSec,
@@ -266,6 +264,8 @@ fn open_device(loopback: bool, id: Option<&str>) -> windows::core::Result<Opened
             let r = client.Initialize(AUDCLNT_SHAREMODE_SHARED, loop_flag, buffer_100ns, 0, mix, None);
             CoTaskMemFree(Some(mix as *const _));
             r?;
+            client
+        } else {
             client
         };
         let capture: IAudioCaptureClient = client.GetService()?;
