@@ -78,5 +78,31 @@ foreach ($theme in "light", "dark") {
     }
 }
 Remove-Item env:UREC_THEME
+
+# Long window title in Settings > Recording (must be shortened, not overlap the label).
+$longName = Join-Path $env:TEMP "A very long document name that keeps going and going for testing the window picker.txt"
+"x" | Out-File $longName
+$np = Start-Process notepad.exe -ArgumentList "`"$longName`"" -PassThru
+Start-Sleep -Seconds 3
+$title = (Get-Process -Id $np.Id).MainWindowTitle
+$settingsPath = Join-Path $env:APPDATA "uRec\settings.json"
+if ((Test-Path $settingsPath) -and $title) {
+    $backup = Get-Content $settingsPath -Raw
+    $sj = $backup | ConvertFrom-Json
+    $sj.capture.kind = "window"; $sj.capture.window_title = $title; $sj.capture.window_exe = "notepad.exe"
+    [IO.File]::WriteAllText($settingsPath, ($sj | ConvertTo-Json -Depth 8))
+    foreach ($pg in "settings:recording", "home") {
+        $env:UREC_PAGE = $pg
+        $proc = Start-Process $Exe -PassThru
+        Start-Sleep -Seconds 5
+        Shot ("long-title-" + ($pg -replace ':', '-'))
+        if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+        Start-Sleep -Seconds 1
+    }
+    [IO.File]::WriteAllText($settingsPath, $backup)
+    "long window title: $($title.Length) chars"
+}
+Stop-Process -Id $np.Id -Force -ErrorAction SilentlyContinue
+
 $log = Join-Path $env:LOCALAPPDATA "uRec\logs\urec.log"
 if (Test-Path $log) { Copy-Item $log (Join-Path $Out "urec.log") }

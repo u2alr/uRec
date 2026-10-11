@@ -379,7 +379,8 @@ pub fn render(
     let accent = frame.kind.accent();
     let fill_dark = (22u8, 22u8, 24u8);
     // The status colour gives way to the dark body early, so mid-animation frames stay clean.
-    let fe = ease_out((e / 0.45).min(1.0));
+    // Only the last moments of the shrink show the dot's colour, never a muddy in-between.
+    let fe = ease_out((e / 0.15).min(1.0));
     let fill = (
         mix(dot_color.0 as f32, fill_dark.0 as f32, fe) as u8,
         mix(dot_color.1 as f32, fill_dark.1 as f32, fe) as u8,
@@ -424,7 +425,8 @@ pub fn render(
             }
             let (tx, ty) = (fx - text_x0, fy - text_y0);
             if tx >= 0.0 && ty >= 0.0 && (tx as usize) < mask.w && (ty as usize) < mask.h {
-                let c = mask.cov[ty as usize * mask.w + tx as usize] as f32 / 255.0;
+                // A slight gamma lifts GDI's thin greyscale edges so light text reads crisply.
+                let c = (mask.cov[ty as usize * mask.w + tx as usize] as f32 / 255.0).powf(0.8);
                 over(&mut px, i, (236, 236, 238), c * frame.content * body);
             }
         }
