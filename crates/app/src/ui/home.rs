@@ -144,6 +144,34 @@ fn describe_capture(app: &App, st: &Status) -> String {
     format!("{src} at {size}, {fps}, using {enc}")
 }
 
+pub fn codec_short(c: urec_engine::video::Codec) -> &'static str {
+    match c {
+        urec_engine::video::Codec::H264 => "H.264",
+        urec_engine::video::Codec::Hevc => "HEVC",
+        urec_engine::video::Codec::Av1 => "AV1",
+    }
+}
+
+pub fn encoder_short(b: Backend) -> &'static str {
+    match b {
+        Backend::Nvenc => "NVIDIA NVENC",
+        Backend::Amf => "AMD AMF",
+        Backend::Qsv => "Intel Quick Sync",
+        Backend::MediaFoundationHw => "the Windows hardware encoder",
+        Backend::Software => "x264 on the CPU",
+        Backend::MediaFoundation => "the Windows encoder on the CPU",
+    }
+}
+
+fn method_short(m: urec_engine::pipeline::CaptureMethod) -> &'static str {
+    match m {
+        urec_engine::pipeline::CaptureMethod::Wgc => "Windows Graphics Capture",
+        urec_engine::pipeline::CaptureMethod::Dda => "Desktop Duplication",
+        urec_engine::pipeline::CaptureMethod::Gdi => "GDI",
+        urec_engine::pipeline::CaptureMethod::Test => "a test pattern",
+    }
+}
+
 pub fn source_label(app: &App) -> String {
     let c = &app.s.capture;
     match c.kind.as_str() {

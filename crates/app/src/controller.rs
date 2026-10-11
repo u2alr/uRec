@@ -1110,8 +1110,12 @@ impl Worker {
 
 // ------------------------------------------------------------------ helpers
 
+/// Name of the app in front, used to name clips. uRec itself counts as "Desktop".
 fn foreground_app() -> String {
-    urec_win::foreground_window().map(|w| w.app_name()).unwrap_or_else(|| "Desktop".into())
+    urec_win::foreground_window()
+        .filter(|w| !w.exe.eq_ignore_ascii_case("uRec"))
+        .map(|w| w.app_name())
+        .unwrap_or_else(|| "Desktop".into())
 }
 
 fn last_line(s: &str) -> String {
@@ -1143,7 +1147,7 @@ pub fn explain_audio_failure(reason: &str) -> String {
     if r.contains("access is denied") {
         "Windows is blocking microphone access. Turn on Settings › Privacy & security › Microphone › Let desktop apps access your microphone.".into()
     } else if r.contains("element not found") || r.contains("not found") {
-        "the device wasn't found. It may be unplugged or disabled.".into()
+        "The device wasn't found. It may be unplugged or disabled.".into()
     } else {
         reason.to_string()
     }

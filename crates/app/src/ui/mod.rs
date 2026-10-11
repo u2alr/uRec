@@ -206,6 +206,12 @@ impl App {
         if self.applied_theme != Some(key) {
             self.p = if dark { theme::DARK } else { theme::LIGHT };
             theme::apply(ctx, &self.p, self.s.appearance.ui_scale);
+            // Match the Windows title bar to the theme.
+            ctx.send_viewport_cmd(egui::ViewportCommand::SetTheme(if dark {
+                egui::SystemTheme::Dark
+            } else {
+                egui::SystemTheme::Light
+            }));
             self.applied_theme = Some(key);
         }
     }
@@ -234,31 +240,25 @@ impl App {
         }
     }
 
-    fn tally(&self, ui: &mut egui::Ui, st: &Status) {
+    /// The "tally light": a 3 px strip across the top, red while recording, amber while buffering.
+    fn tally(&self, ui: &egui::Ui, rect: egui::Rect, st: &Status) {
         let color = if st.recording.is_some() || st.finishing {
-            Some(self.p.rec)
+            self.p.rec
         } else if st.replay == ReplayState::On {
-            Some(self.p.replay)
+            self.p.replay
         } else {
-            None
+            self.p.bg
         };
-        egui::Panel::top("tally")
-            .exact_size(3.0)
-            .resizable(false)
-            .frame(egui::Frame::new().fill(color.unwrap_or(self.p.bg)))
-            .show_separator_line(false)
-            .show(ui, |_| {});
+        ui.painter().rect_filled(rect, CornerRadius::ZERO, color);
     }
 
     fn nav(&mut self, ui: &mut egui::Ui, st: &Status) {
         let p = self.p;
         let ctx = ui.ctx().clone();
-        egui::Panel::left("nav")
-            .exact_size(184.0)
-            .resizable(false)
-            .show_separator_line(false)
-            .frame(egui::Frame::new().fill(p.bg).inner_margin(egui::Margin { left: 16, right: 8, top: 18, bottom: 16 }))
-            .show(ui, |ui| {
+        egui::Frame::new().fill(p.bg).inner_margin(egui::Margin { left: 16, right: 8, top: 18, bottom: 16 }).show(
+            ui,
+            |ui| {
+                ui.set_min_size(ui.available_size());
                 ui.label(RichText::new("uRec").font(theme::semibold(18.0)).color(p.text));
                 ui.add_space(22.0);
                 for (page, label) in [(Page::Home, "Home"), (Page::Library, "Library"), (Page::Settings, "Settings")] {
@@ -305,7 +305,8 @@ impl App {
                         );
                     }
                 });
-            });
+            },
+        );
     }
 
     fn notices(&mut self, ctx: &egui::Context, st: &Status) {
