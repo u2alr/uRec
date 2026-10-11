@@ -82,19 +82,25 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     ui.painter().rect_filled(done, CornerRadius::same(1), p.text);
     ui.add_space(16.0);
 
-    // Room for the footer: spacing, hairline and a button row.
-    let footer_h = 76.0;
-    let body_h = (ui.available_height() - footer_h).max(120.0);
-    egui::ScrollArea::vertical().max_height(body_h).auto_shrink([false, false]).show(ui, |ui| {
-        ui.set_max_width((ui.available_width() - 16.0).min(720.0));
-        match step {
-            0 => found(app, ui, st),
-            1 => quality(app, ui, st),
-            2 => storage(app, ui, st),
-            _ => test(app, ui, st),
-        }
+    // Explicit rectangles: the footer is pinned to the bottom, the steps scroll above it.
+    let rest = ui.available_rect_before_wrap();
+    let footer_h = 58.0;
+    let body = egui::Rect::from_min_max(rest.min, egui::pos2(rest.max.x, rest.max.y - footer_h));
+    let footer = egui::Rect::from_min_max(egui::pos2(rest.min.x, rest.max.y - footer_h), rest.max);
+    ui.scope_builder(egui::UiBuilder::new().max_rect(body).id_salt("setup_body"), |ui| {
+        egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
+            ui.set_max_width((ui.available_width() - 16.0).min(720.0));
+            match step {
+                0 => found(app, ui, st),
+                1 => quality(app, ui, st),
+                2 => storage(app, ui, st),
+                _ => test(app, ui, st),
+            }
+        });
     });
     // Footer: back / next.
+    let mut fui = ui.new_child(egui::UiBuilder::new().max_rect(footer).layout(Layout::top_down(Align::Min)));
+    let ui = &mut fui;
     ui.add_space(8.0);
     theme::hairline(ui, &p);
     ui.add_space(10.0);

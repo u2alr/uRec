@@ -52,4 +52,6 @@ Newest-version notes:
 | WASAPI loopback + AUTOCONVERTPCM | 10 | Converts the device's own float format |
 | `WDA_EXCLUDEFROMCAPTURE` (overlay hidden from recordings) | 10 version 2004 (build 19041) | Overlay may appear in recordings; the UI says so |
 | WinHTTP (update checks and downloads) | 7 | Updates unavailable; uRec works normally |
+| Toast notifications (WinRT `Windows.UI.Notifications`, only when the overlay is off) | 10 | Result shown in the app only (also if notifications are turned off for uRec or Focus Assist hides them) |
+| `SPI_GETCLIENTAREAANIMATION` ("Animation effects", for reduced motion) | Vista | Full animations |
 | Installer `MinVersion` | 10 version 1809 (build 17763) | |

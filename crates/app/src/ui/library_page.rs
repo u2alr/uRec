@@ -54,11 +54,11 @@ fn still_there(app: &mut App, item: &Item) -> bool {
 
 /// Outline or filled star, drawn (no font glyph needed).
 fn star(ui: &mut egui::Ui, p: &theme::Palette, on: bool) -> egui::Response {
-    let (rect, resp) = ui.allocate_exact_size(Vec2::splat(18.0), Sense::click());
+    let (rect, resp) = ui.allocate_exact_size(Vec2::splat(16.0), Sense::click());
     let c = rect.center();
     let pts: Vec<egui::Pos2> = (0..10)
         .map(|i| {
-            let r = if i % 2 == 0 { 7.5 } else { 3.2 };
+            let r = if i % 2 == 0 { 6.8 } else { 2.9 };
             let a = std::f32::consts::PI * (i as f32 / 5.0) - std::f32::consts::FRAC_PI_2;
             c + Vec2::new(a.cos() * r, a.sin() * r)
         })
@@ -202,7 +202,7 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, _st: &Status) {
     );
     ui.add_space(6.0);
     let offset = utc_offset();
-    egui::ScrollArea::vertical().auto_shrink([false, false]).show_rows(ui, 92.0, items.len(), |ui, range| {
+    egui::ScrollArea::vertical().auto_shrink([false, false]).show_rows(ui, 104.0, items.len(), |ui, range| {
         for item in &items[range] {
             row(app, ui, item, offset);
         }
@@ -213,11 +213,11 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, _st: &Status) {
 fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
     let p = app.p;
     let width = ui.available_width();
-    let (rect, resp) = ui.allocate_exact_size(Vec2::new(width, 88.0), Sense::hover());
+    let (rect, resp) = ui.allocate_exact_size(Vec2::new(width, 100.0), Sense::hover());
     if resp.hovered() {
         ui.painter().rect_filled(rect, CornerRadius::same(8), p.panel);
     }
-    let thumb = egui::Rect::from_min_size(rect.left_top() + Vec2::new(6.0, 6.0), Vec2::new(135.0, 76.0));
+    let thumb = egui::Rect::from_min_size(rect.left_top() + Vec2::new(6.0, 12.0), Vec2::new(135.0, 76.0));
     if let Some(tex) = item.thumb.as_ref().and_then(|t| app.thumb(ui.ctx(), t)) {
         ui.painter().image(
             tex,
