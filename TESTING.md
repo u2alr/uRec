@@ -44,7 +44,7 @@ The results below are copied from those runs. Nothing is estimated.
 | T14 | Separate audio tracks: one track per working source | ✅ |
 | T15 | Microphone blocked by Windows privacy: recording continues, mic honestly reported as not recording, no fake track | ✅ |
 | T16 | Window capture (Notepad only, 754 × 512) | ✅ |
-| T17 | **A/V sync**: screen flashes white and a beep plays every 2 s; in the recording audio leads video by 22–55 ms (median 26 ms, under one frame at 30 FPS) | ✅ |
+| T17 | **A/V sync**: screen flashes white and a beep plays every 2 s; in the recording audio leads video by 6–55 ms (median 26–44 ms across runs, about one frame at 30 FPS; includes the test's own playback and GDI capture latency) | ✅ |
 
 ## App tests (automated)
 
