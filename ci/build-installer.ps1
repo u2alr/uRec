@@ -37,7 +37,9 @@ Lightweight screen and game recorder for Windows 10/11.
 Default hotkeys: Alt+F9 start/stop recording, Alt+F10 save Instant Replay,
 Alt+Shift+F10 turn Instant Replay on/off, Ctrl+Alt+M mute microphone.
 Recordings are saved to Videos\uRec. Settings are in %APPDATA%\uRec.
-Nothing is uploaded and no account is needed.
+Nothing is uploaded and no account is needed. Once a day uRec checks GitHub
+for a new version (Settings > General > Updates). This portable copy only tells you
+about new versions; the installed version updates itself.
 https://github.com/u2alr/uRec
 "@ | Out-File -Encoding utf8 $dist\README.txt
 

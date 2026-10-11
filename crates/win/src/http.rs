@@ -13,6 +13,9 @@ use windows::Win32::Networking::WinHttp::{
     WINHTTP_QUERY_FLAG_NUMBER, WINHTTP_QUERY_STATUS_CODE,
 };
 
+/// Receives each chunk of the body plus the total length, if the server sent one.
+type Sink<'a> = &'a mut dyn FnMut(&[u8], Option<u64>) -> Result<(), String>;
+
 struct Handle(*mut c_void);
 
 impl Drop for Handle {
@@ -52,12 +55,7 @@ fn split_url(url: &str) -> Result<(String, String), String> {
 }
 
 /// Perform a GET and stream the body to `sink`. Returns (status, content length if known).
-fn get(
-    url: &str,
-    user_agent: &str,
-    headers: &[&str],
-    sink: &mut dyn FnMut(&[u8], Option<u64>) -> Result<(), String>,
-) -> Result<u32, String> {
+fn get(url: &str, user_agent: &str, headers: &[&str], sink: Sink<'_>) -> Result<u32, String> {
     let (host, path) = split_url(url)?;
     let ua = wide(user_agent);
     let host_w = wide(&host);

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+- **Updates:** uRec checks GitHub once a day for a new version. The installed app downloads it in the background, verifies its SHA-256 against the published checksums and installs it silently when you quit, or the next time it starts. **Restart now** installs it right away. It never installs during a recording or while Instant Replay is on. Find it in **Settings › General › Updates**, where both the check and automatic install can be turned off. Portable copies only show that an update is available.
+- Releases now include `SHA256SUMS.txt`.
+
 ## 0.1.1
 
 Fixes from first testing:

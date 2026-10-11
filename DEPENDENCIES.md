@@ -51,4 +51,5 @@ Newest-version notes:
 | Desktop Duplication (via FFmpeg `ddagrab`) | 8 | GDI |
 | WASAPI loopback + AUTOCONVERTPCM | 10 | Converts the device's own float format |
 | `WDA_EXCLUDEFROMCAPTURE` (overlay hidden from recordings) | 10 version 2004 (build 19041) | Overlay may appear in recordings; the UI says so |
+| WinHTTP (update checks and downloads) | 7 | Updates unavailable; uRec works normally |
 | Installer `MinVersion` | 10 version 1809 (build 17763) | |

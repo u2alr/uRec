@@ -10,7 +10,8 @@ Please report security issues privately through GitHub: **Security › Report a 
 
 ## What uRec does and doesn't do
 
-- **No network:** it makes no connections, with no telemetry, no update checks and no uploads.
+- **One network connection, for updates:** once a day (unless turned off) it requests `https://api.github.com/repos/u2alr/uRec/releases/latest` with a `uRec/<version>` user agent. No telemetry, no identifiers, no uploads. It uses Windows' own HTTPS stack (WinHTTP), so certificate checks and proxy settings come from Windows.
+- **Update integrity:** only `https://github.com/u2alr/uRec/releases/download/...` URLs are accepted. The installer is downloaded to `%LOCALAPPDATA%\uRec\updates` and its SHA-256 must match the release's `SHA256SUMS.txt`. It is checked again right before it runs, and a mismatch deletes it. Only a strictly newer version (no pre-releases) is ever installed. The installer is not code-signed yet. The checksum protects against corrupted or swapped downloads, but not against someone who controls the GitHub repository itself.
 - **Normal user rights:** it runs without administrator rights and installs per-user by default.
 - **No game injection:** capture uses Windows APIs (Windows Graphics Capture, Desktop Duplication, GDI). It never injects into games and doesn't interact with anti-cheat software.
 - **One external program:** it starts only its bundled `ffmpeg.exe`, from its own folder, with arguments it builds itself. FFmpeg is tied to uRec through a Windows job object, so it can't keep running if uRec exits or crashes.

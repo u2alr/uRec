@@ -1,6 +1,6 @@
 # uRec
 
-A lightweight screen and game recorder for Windows 10 and 11. Press a hotkey to record, or keep Instant Replay running and save the last moments after they happen. Everything stays on your PC: no account, no uploads, no telemetry.
+A lightweight screen and game recorder for Windows 10 and 11. Press a hotkey to record, or keep Instant Replay running and save the last moments after they happen. Everything stays on your PC: no account, no uploads, no telemetry. It keeps itself up to date.
 
 ## Install
 
@@ -67,7 +67,16 @@ Hotkeys work while a game has focus. Change them in **Settings › Hotkeys**.
 
 ## Privacy
 
-uRec makes no network connections. It has no account, no telemetry and no update checks. Recordings, settings and logs stay on your PC.
+uRec has no account, no telemetry and no uploads. Recordings, settings and logs stay on your PC.
+
+Its only network connection is the update check: once a day it asks GitHub (`api.github.com`) for the latest uRec release. The request carries nothing but a `uRec/<version>` user agent. Turn it off in **Settings › General › Check for updates**.
+
+## Updates
+
+When a newer version exists, the installed app downloads it in the background and checks its SHA-256 against the `SHA256SUMS.txt` published with the release. A file that doesn't match is deleted. The verified update installs silently when you quit uRec or the next time it starts. You can also press **Restart now** in Settings › General. It never installs while you're recording or Instant Replay is on, and your settings and recordings are kept.
+
+- Turn off **Install updates automatically** to only be told about new versions.
+- The portable zip never updates itself. It only shows that a new version is available.
 
 ## Uninstall
 
