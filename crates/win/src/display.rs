@@ -84,10 +84,10 @@ pub fn monitors() -> Vec<MonitorInfo> {
         }
         list.push(MonitorInfo {
             name: format!(
-                "{name} · {}×{}{}",
+                "{name}, {} × {}{}",
                 bounds.width,
                 bounds.height,
-                refresh.map(|r| format!(" · {r} Hz")).unwrap_or_default()
+                refresh.map(|r| format!(", {r} Hz")).unwrap_or_default()
             ),
             device,
             hmonitor: hm,

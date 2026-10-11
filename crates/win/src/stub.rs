@@ -76,3 +76,29 @@ impl Hotkeys {
     }
     pub fn stop(&mut self) {}
 }
+
+pub fn local_time() -> (i32, u32, u32, u32, u32, u32) {
+    let secs =
+        std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs() as i64).unwrap_or(0);
+    let s = urec_engine::naming::Stamp::from_unix(secs, 0);
+    (s.year, s.month, s.day, s.hour, s.minute, s.second)
+}
+pub fn play_ding() {}
+pub fn recycle(path: &Path) -> bool {
+    std::fs::remove_file(path).is_ok()
+}
+pub fn show_window_titled(_title: &str) -> bool {
+    false
+}
+pub fn hide_window_titled(_title: &str) -> bool {
+    false
+}
+pub fn find_window(_title: &str) -> Option<u64> {
+    None
+}
+pub fn claim_single_instance(_name: &str) -> bool {
+    true
+}
+pub fn pick_folder(_title: &str, _start: Option<&Path>) -> Option<std::path::PathBuf> {
+    None
+}

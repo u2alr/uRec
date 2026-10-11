@@ -52,6 +52,13 @@ jobs:
         run: |
           ./ci/integration.ps1 -Cli target/release/urec-cli.exe *>&1 | Tee-Object -FilePath integration.txt
           if (Select-String -Path integration.txt -Pattern '^passed=\d+ failed=0$' -Quiet) { exit 0 } else { exit 1 }
+      - name: UI screenshots
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path target/release/uRec.exe) { ./ci/ui-screenshots.ps1 -Exe target/release/uRec.exe -Out screenshots *>&1 | Tee-Object -FilePath ui.txt }
+          New-Item -ItemType Directory -Force screenshots | Out-Null
+          Copy-Item Cargo.lock screenshots/Cargo.lock -ErrorAction SilentlyContinue
       - name: Publish results
         if: always()
         shell: pwsh
@@ -60,5 +67,5 @@ jobs:
         run: |
           $all = "ci-report.txt"
           "commit $env:GITHUB_SHA run $env:GITHUB_RUN_ID" | Out-File $all
-          foreach ($f in "checks.txt", "integration.txt") { if (Test-Path $f) { Get-Content $f | Out-File -Append $all } }
-          ./ci/publish-results.ps1 -Name ci -File $all
+          foreach ($f in "checks.txt", "integration.txt", "ui.txt") { if (Test-Path $f) { Get-Content $f | Out-File -Append $all } }
+          ./ci/publish-results.ps1 -Name ci -File $all -Dir screenshots

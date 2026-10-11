@@ -73,7 +73,7 @@ pub struct Encoder {
 
 impl fmt::Display for Encoder {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{} · {}", self.backend.label(), self.codec)
+        write!(f, "{} ({})", self.backend.label(), self.codec)
     }
 }
 

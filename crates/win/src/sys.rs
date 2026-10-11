@@ -236,3 +236,116 @@ pub(crate) fn process_image(pid: u32) -> Option<String> {
         ok.then(|| String::from_utf16_lossy(&buf[..len as usize]))
     }
 }
+
+/// Local wall-clock time: (year, month, day, hour, minute, second).
+pub fn local_time() -> (i32, u32, u32, u32, u32, u32) {
+    let t = unsafe { windows::Win32::System::SystemInformation::GetLocalTime() };
+    (t.wYear as i32, t.wMonth as u32, t.wDay as u32, t.wHour as u32, t.wMinute as u32, t.wSecond as u32)
+}
+
+/// Short confirmation sound (the Windows "notification" sound).
+pub fn play_ding() {
+    unsafe {
+        let _ = windows::Win32::UI::WindowsAndMessaging::MessageBeep(
+            windows::Win32::UI::WindowsAndMessaging::MB_ICONASTERISK,
+        );
+    }
+}
+
+/// Move a file to the Recycle Bin (never deletes permanently).
+pub fn recycle(path: &Path) -> bool {
+    use windows::Win32::UI::Shell::{
+        SHFileOperationW, FOF_ALLOWUNDO, FOF_NOCONFIRMATION, FOF_NOERRORUI, FOF_SILENT, FO_DELETE, SHFILEOPSTRUCTW,
+    };
+    let mut from: Vec<u16> = wide_path(path);
+    from.push(0); // double-null terminated list
+    let mut op = SHFILEOPSTRUCTW {
+        wFunc: FO_DELETE,
+        pFrom: PCWSTR(from.as_ptr()),
+        fFlags: (FOF_ALLOWUNDO | FOF_NOCONFIRMATION | FOF_NOERRORUI | FOF_SILENT).0 as u16,
+        ..Default::default()
+    };
+    unsafe { SHFileOperationW(&mut op) == 0 && !op.fAnyOperationsAborted.as_bool() }
+}
+
+/// Bring a window titled `title` to the front (used by the tray and second-instance launch).
+pub fn show_window_titled(title: &str) -> bool {
+    use windows::Win32::UI::WindowsAndMessaging::{FindWindowW, SetForegroundWindow, ShowWindow, SW_RESTORE, SW_SHOW};
+    let t = wide(title);
+    unsafe {
+        let Ok(h) = FindWindowW(PCWSTR::null(), PCWSTR(t.as_ptr())) else { return false };
+        if h.0.is_null() {
+            return false;
+        }
+        let _ = ShowWindow(h, SW_SHOW);
+        let _ = ShowWindow(h, SW_RESTORE);
+        let _ = SetForegroundWindow(h);
+        true
+    }
+}
+
+/// Hide a window titled `title` (minimize-to-tray).
+pub fn hide_window_titled(title: &str) -> bool {
+    use windows::Win32::UI::WindowsAndMessaging::{FindWindowW, ShowWindow, SW_HIDE};
+    let t = wide(title);
+    unsafe {
+        match FindWindowW(PCWSTR::null(), PCWSTR(t.as_ptr())) {
+            Ok(h) if !h.0.is_null() => ShowWindow(h, SW_HIDE).as_bool() || true,
+            _ => false,
+        }
+    }
+}
+
+/// Native handle of a window with this exact title.
+pub fn find_window(title: &str) -> Option<u64> {
+    use windows::Win32::UI::WindowsAndMessaging::FindWindowW;
+    let t = wide(title);
+    unsafe {
+        FindWindowW(PCWSTR::null(), PCWSTR(t.as_ptr())).ok().filter(|h| !h.0.is_null()).map(|h| h.0 as usize as u64)
+    }
+}
+
+/// Single-instance guard. Returns false if another uRec is already running.
+pub fn claim_single_instance(name: &str) -> bool {
+    use windows::Win32::Foundation::{GetLastError, ERROR_ALREADY_EXISTS};
+    use windows::Win32::System::Threading::CreateMutexW;
+    let n = wide(name);
+    unsafe {
+        let h = CreateMutexW(None, true, PCWSTR(n.as_ptr()));
+        let exists = GetLastError() == ERROR_ALREADY_EXISTS;
+        // Keep the mutex for the life of the process.
+        std::mem::forget(h);
+        !exists
+    }
+}
+
+/// Windows folder picker. Returns None if cancelled. Call from the UI thread.
+pub fn pick_folder(title: &str, start: Option<&Path>) -> Option<std::path::PathBuf> {
+    use windows::Win32::System::Com::{
+        CoCreateInstance, CoInitializeEx, CLSCTX_INPROC_SERVER, COINIT_APARTMENTTHREADED,
+    };
+    use windows::Win32::UI::Shell::{
+        FileOpenDialog, IFileOpenDialog, IShellItem, SHCreateItemFromParsingName, FOS_FORCEFILESYSTEM, FOS_PICKFOLDERS,
+        SIGDN_FILESYSPATH,
+    };
+    unsafe {
+        let _ = CoInitializeEx(None, COINIT_APARTMENTTHREADED);
+        let dialog: IFileOpenDialog = CoCreateInstance(&FileOpenDialog, None, CLSCTX_INPROC_SERVER).ok()?;
+        let opts = dialog.GetOptions().ok()?;
+        dialog.SetOptions(opts | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM).ok()?;
+        let t = wide(title);
+        let _ = dialog.SetTitle(PCWSTR(t.as_ptr()));
+        if let Some(dir) = start.filter(|d| d.exists()) {
+            let w = wide_path(dir);
+            if let Ok(item) = SHCreateItemFromParsingName::<_, _, IShellItem>(PCWSTR(w.as_ptr()), None) {
+                let _ = dialog.SetFolder(&item);
+            }
+        }
+        dialog.Show(None).ok()?;
+        let item = dialog.GetResult().ok()?;
+        let name = item.GetDisplayName(SIGDN_FILESYSPATH).ok()?;
+        let s = name.to_string().ok();
+        windows::Win32::System::Com::CoTaskMemFree(Some(name.0 as *const _));
+        s.map(std::path::PathBuf::from)
+    }
+}
