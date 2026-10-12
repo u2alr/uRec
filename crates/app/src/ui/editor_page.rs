@@ -268,7 +268,7 @@ fn frame(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, st: &Status) -> bo
 }
 
 fn keyboard(ed: &mut EditorUi, ui: &egui::Ui) {
-    if ui.ctx().wants_keyboard_input() || ed.dialog.is_some() {
+    if ui.ctx().egui_wants_keyboard_input() || ed.dialog.is_some() {
         return;
     }
     let Some(pr) = ed.project.as_mut() else { return };
