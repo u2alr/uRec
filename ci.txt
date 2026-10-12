@@ -1,4 +1,4 @@
-commit 645e62c16a5aac8ccfecbf73d2d4271201c44973 run 38200195473
+commit 8f2238288dbf71ba72a559206cf739f8c36d12d6 run 38200647837
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -58,14 +58,14 @@ error: using `chunks_exact` with a constant chunk size
     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#chunks_exact_to_as_chunks
 
 error: this `if` statement can be collapsed
-   --> crates\app\src\ui\editor_page.rs:350:5
+   --> crates\app\src\ui\editor_page.rs:361:5
     |
-350 | /     if PLAY_REQUEST.with(|r| r.replace(false)) {
-351 | |         if ed.player.take().is_none() {
-352 | |             let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
-353 | |             ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
-354 | |         }
-355 | |     }
+361 | /     if PLAY_REQUEST.with(|r| r.replace(false)) {
+362 | |         if ed.player.take().is_none() {
+363 | |             let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
+364 | |             ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
+365 | |         }
+366 | |     }
     | |_____^
     |
     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#collapsible_if
@@ -73,16 +73,16 @@ error: this `if` statement can be collapsed
     = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
 help: collapse nested if block
     |
-350 ~     if PLAY_REQUEST.with(|r| r.replace(false))
-351 ~         && ed.player.take().is_none() {
-352 |             let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
-353 |             ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
-354 ~         }
+361 ~     if PLAY_REQUEST.with(|r| r.replace(false))
+362 ~         && ed.player.take().is_none() {
+363 |             let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
+364 |             ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
+365 ~         }
     |
 
-error: could not compile `urec` (bin "uRec") due to 6 previous errors
-warning: build failed, waiting for other jobs to finish...
 error: could not compile `urec` (bin "uRec" test) due to 6 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `urec` (bin "uRec") due to 6 previous errors
 ## clippy FAILED
 ## test
    Compiling urec-engine v0.3.0 (D:\a\uRec\uRec\crates\engine)
