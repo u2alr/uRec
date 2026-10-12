@@ -399,12 +399,13 @@ fn audio_row(app: &mut App, ui: &mut egui::Ui, st: &Status) {
             source(ui, label, app.s.audio.mic, &st.audio.1, if st.mic_muted { 0.0 } else { st.levels.1 })
         });
         ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-            ui.add_enabled_ui(app.s.audio.mic, |ui| {
+            // Only offered when a microphone is recorded (a disabled button is just noise).
+            if app.s.audio.mic {
                 let text = if st.mic_muted { "Unmute mic" } else { "Mute mic" };
                 if theme::quiet_button(ui, &p, text).clicked() {
                     app.ctl.send(Command::ToggleMicMute);
                 }
-            });
+            }
         });
     });
     ui.add_space(10.0);

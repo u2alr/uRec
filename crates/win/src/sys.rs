@@ -448,3 +448,61 @@ pub fn pick_folder(title: &str, start: Option<&Path>) -> Option<std::path::PathB
         s.map(std::path::PathBuf::from)
     }
 }
+
+/// Put files on the clipboard the way Explorer's Copy does (CF_HDROP), so they can be pasted
+/// into Discord, a chat, an email or a folder.
+pub fn copy_files_to_clipboard(paths: &[std::path::PathBuf]) -> Result<(), String> {
+    use windows::Win32::Foundation::HGLOBAL;
+    use windows::Win32::System::DataExchange::{CloseClipboard, EmptyClipboard, OpenClipboard, SetClipboardData};
+    use windows::Win32::System::Memory::{GlobalAlloc, GlobalFree, GlobalLock, GlobalUnlock, GMEM_MOVEABLE};
+    const CF_HDROP: u32 = 15;
+    if paths.is_empty() {
+        return Err("Nothing to copy.".into());
+    }
+    // DROPFILES header (20 bytes): offset of the file list, drop point, fNC, fWide = 1 (UTF-16).
+    let mut bytes: Vec<u8> = Vec::new();
+    for v in [20u32, 0, 0, 0, 1] {
+        bytes.extend_from_slice(&v.to_le_bytes());
+    }
+    for p in paths {
+        let abs = std::path::absolute(p).unwrap_or_else(|_| p.clone());
+        for u in abs.as_os_str().encode_wide().chain(std::iter::once(0)) {
+            bytes.extend_from_slice(&u.to_le_bytes());
+        }
+    }
+    bytes.extend_from_slice(&0u16.to_le_bytes()); // list ends with an empty string
+    unsafe {
+        let mem: HGLOBAL = GlobalAlloc(GMEM_MOVEABLE, bytes.len()).map_err(|e| e.message())?;
+        let ptr = GlobalLock(mem) as *mut u8;
+        if ptr.is_null() {
+            let _ = GlobalFree(Some(mem));
+            return Err("Couldn't prepare the clipboard.".into());
+        }
+        std::ptr::copy_nonoverlapping(bytes.as_ptr(), ptr, bytes.len());
+        let _ = GlobalUnlock(mem);
+        // Another app may hold the clipboard for a moment.
+        let mut opened = false;
+        for _ in 0..10 {
+            if OpenClipboard(None).is_ok() {
+                opened = true;
+                break;
+            }
+            std::thread::sleep(std::time::Duration::from_millis(30));
+        }
+        if !opened {
+            let _ = GlobalFree(Some(mem));
+            return Err("The clipboard is busy. Try again.".into());
+        }
+        let _ = EmptyClipboard();
+        let r = SetClipboardData(CF_HDROP, Some(HANDLE(mem.0)));
+        let _ = CloseClipboard();
+        match r {
+            // The clipboard owns the memory now.
+            Ok(_) => Ok(()),
+            Err(e) => {
+                let _ = GlobalFree(Some(mem));
+                Err(e.message())
+            }
+        }
+    }
+}

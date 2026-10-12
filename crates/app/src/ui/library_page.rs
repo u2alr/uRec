@@ -233,6 +233,27 @@ fn selection_bar(app: &mut App, ui: &mut egui::Ui, items: &[Item]) {
     let p = app.p;
     let n = app.lib.selected.len();
     let bytes: u64 = items.iter().filter(|i| app.lib.selected.contains(&i.path)).map(|i| i.size).sum();
+    // Keyboard: Ctrl+A selects everything shown, Delete asks to delete, Esc leaves select mode.
+    if !ui.ctx().egui_wants_keyboard_input() && app.lib.confirm_delete.is_none() {
+        let (all, del, esc) = ui.input_mut(|i| {
+            (
+                i.consume_key(egui::Modifiers::COMMAND, egui::Key::A),
+                i.consume_key(egui::Modifiers::NONE, egui::Key::Delete),
+                i.consume_key(egui::Modifiers::NONE, egui::Key::Escape),
+            )
+        });
+        if all {
+            app.lib.selected = items.iter().map(|i| i.path.clone()).collect();
+        }
+        if del && n > 0 {
+            app.lib.confirm_delete = Some(Pending::Many(app.lib.selected.iter().cloned().collect()));
+        }
+        if esc {
+            app.lib.selecting = false;
+            app.lib.selected.clear();
+            return;
+        }
+    }
     ui.horizontal(|ui| {
         let text = if n == 0 {
             "Click recordings to select them".to_string()
@@ -251,6 +272,21 @@ fn selection_bar(app: &mut App, ui: &mut egui::Ui, items: &[Item]) {
             let r = ui.add_enabled_ui(n > 0, |ui| theme::danger_button(ui, &p, "Delete")).inner;
             if r.clicked() {
                 app.lib.confirm_delete = Some(Pending::Many(app.lib.selected.iter().cloned().collect()));
+            }
+            let r = ui
+                .add_enabled_ui(n > 0, |ui| theme::quiet_button(ui, &p, "Copy"))
+                .inner
+                .on_hover_text("Copies the videos themselves: paste them into Discord, a chat or a folder");
+            if r.clicked() {
+                let paths: Vec<PathBuf> =
+                    items.iter().filter(|i| app.lib.selected.contains(&i.path)).map(|i| i.path.clone()).collect();
+                match urec_win::copy_files_to_clipboard(&paths) {
+                    Ok(()) => app.push_notice(
+                        Level::Info,
+                        format!("Copied {} video{}.", paths.len(), if paths.len() == 1 { "" } else { "s" }),
+                    ),
+                    Err(e) => app.push_notice(Level::Error, format!("Couldn't copy: {e}")),
+                }
             }
             // Edit the selection as one video, oldest first.
             let r = ui
@@ -471,6 +507,19 @@ fn details(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64, selecting
             ui.set_min_width(150.0);
             if ui.button("Rename").clicked() {
                 app.lib.renaming = Some((item.path.clone(), item.name.clone()));
+                ui.close();
+            }
+            if ui
+                .button("Copy")
+                .on_hover_text("Copies the video itself: paste it into Discord, a chat or a folder")
+                .clicked()
+            {
+                if still_there(app, item) {
+                    match urec_win::copy_files_to_clipboard(std::slice::from_ref(&item.path)) {
+                        Ok(()) => app.push_notice(Level::Info, "Copied. Paste it into a chat or a folder.".into()),
+                        Err(e) => app.push_notice(Level::Error, format!("Couldn't copy the video: {e}")),
+                    }
+                }
                 ui.close();
             }
             if ui.button("Copy path").clicked() {

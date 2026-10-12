@@ -311,6 +311,15 @@ $ok1 = $open1 -contains $target
 $ok2 = $open2 -contains (Join-Path $work "ring")
 Add-Result "T18" "Show in folder (path with spaces) and Open folder open the right Explorer folder" ($ok1 -and $ok2) ("explorer windows: " + (($open2 | Select-Object -Unique) -join " | "))
 
+# T27: Copy puts the real files on the clipboard (what Discord, chats and Explorer paste).
+$c1 = Join-Path $work "copy me 1.mp4"; $c2 = Join-Path $work "copy me 2.mp4"
+Copy-Item $file $c1; Copy-Item $file $c2
+& $Cli copy-files $c1 $c2 | Out-Null
+$clipCode = $LASTEXITCODE
+$got = @(powershell.exe -NoProfile -STA -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.Clipboard]::GetFileDropList()")
+$okCopy = $clipCode -eq 0 -and $got.Count -eq 2 -and $got -contains $c1 -and $got -contains $c2
+Add-Result "T27" "Copy puts the video files on the clipboard (paste into a chat or folder)" $okCopy ("clipboard: " + ($got -join " | "))
+
 "=== Summary"
 $results | Format-Table -AutoSize -Wrap | Out-String -Width 250
 $failed = @($results | Where-Object Result -eq "FAIL").Count

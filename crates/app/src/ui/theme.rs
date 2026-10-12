@@ -4,8 +4,8 @@
 //! red while recording, amber while Instant Replay is buffering.
 
 use eframe::egui::{
-    self, Align, Color32, CornerRadius, FontData, FontDefinitions, FontFamily, FontId, Layout, Margin, Response,
-    RichText, Sense, Stroke, TextStyle, Ui, Vec2,
+    self, Align, Color32, CornerRadius, FontData, FontDefinitions, FontFamily, FontId, Layout, Margin, Pos2, Rect,
+    Response, RichText, Sense, Stroke, TextStyle, Ui, Vec2,
 };
 use std::sync::Arc;
 
@@ -203,8 +203,12 @@ pub fn row(ui: &mut Ui, p: &Palette, label: &str, help: &str, control: impl FnOn
     ui.add_space(6.0);
     ui.horizontal(|ui| {
         let avail = ui.available_width();
-        // The label column never reaches into the control column (controls are up to ~270 px).
-        let left = (avail * 0.52).clamp(200.0, 380.0).min(avail - 290.0).max(150.0);
+        // The label column takes what the control leaves. The control's width is measured each
+        // frame (a switch needs ~40 px, a dropdown ~270), so short controls don't force labels
+        // like "Keep running in the tray when closed" onto two lines.
+        let id = ui.id().with(("row-control", label));
+        let control_w: f32 = ui.ctx().data(|d| d.get_temp(id)).unwrap_or(270.0);
+        let left = (avail - control_w - 28.0).clamp(150.0, 440.0);
         ui.allocate_ui_with_layout(Vec2::new(left, 0.0), Layout::top_down(Align::Min), |ui| {
             ui.set_width(left);
             ui.label(RichText::new(label).color(p.text));
@@ -212,7 +216,12 @@ pub fn row(ui: &mut Ui, p: &Palette, label: &str, help: &str, control: impl FnOn
                 ui.label(RichText::new(help).small().color(p.muted));
             }
         });
-        ui.with_layout(Layout::right_to_left(Align::Center), control);
+        let r = ui.with_layout(Layout::right_to_left(Align::Center), control);
+        let w = r.response.rect.width().ceil();
+        if (w - control_w).abs() > 1.0 && w > 0.0 {
+            ui.ctx().data_mut(|d| d.insert_temp(id, w));
+            ui.ctx().request_repaint();
+        }
     });
     ui.add_space(6.0);
     hairline(ui, p);
@@ -341,4 +350,65 @@ pub fn meter(ui: &mut Ui, p: &Palette, level: f32, width: f32, active: bool) {
 /// Label that wraps, in the muted colour.
 pub fn note(ui: &mut Ui, p: &Palette, text: &str) {
     ui.add(egui::Label::new(RichText::new(text).color(p.muted)).wrap());
+}
+
+/// Thin slider in the app's style: a 4 px rail, the filled part in the text colour and a small
+/// round knob. Click or drag to set; arrow keys nudge it when focused. `step` snaps the value
+/// (e.g. 1.0 for whole numbers). The response reports `changed()` like egui's own widgets.
+pub fn slider(
+    ui: &mut Ui,
+    p: &Palette,
+    value: &mut f32,
+    range: std::ops::RangeInclusive<f32>,
+    width: f32,
+    step: Option<f32>,
+) -> Response {
+    let (lo, hi) = (*range.start(), *range.end());
+    let (rect, mut resp) = ui.allocate_exact_size(Vec2::new(width, 22.0), Sense::click_and_drag());
+    let enabled = ui.is_enabled();
+    let rail = Rect::from_center_size(rect.center(), Vec2::new(rect.width() - 14.0, 4.0));
+    let snap = |v: f32| {
+        let v = v.clamp(lo, hi);
+        match step {
+            Some(s) if s > 0.0 => (lo + ((v - lo) / s).round() * s).clamp(lo, hi),
+            _ => v,
+        }
+    };
+    let old = *value;
+    if enabled {
+        if let Some(pos) = resp.interact_pointer_pos() {
+            if resp.is_pointer_button_down_on() {
+                let f = ((pos.x - rail.min.x) / rail.width()).clamp(0.0, 1.0);
+                *value = snap(lo + f * (hi - lo));
+            }
+        }
+        if resp.has_focus() {
+            let nudge = step.unwrap_or((hi - lo) / 100.0);
+            let (l, r) = ui.input(|i| (i.key_pressed(egui::Key::ArrowLeft), i.key_pressed(egui::Key::ArrowRight)));
+            if l {
+                *value = snap(*value - nudge);
+            }
+            if r {
+                *value = snap(*value + nudge);
+            }
+        }
+    }
+    if *value != old {
+        resp.mark_changed();
+    }
+    let f = if hi > lo { ((*value - lo) / (hi - lo)).clamp(0.0, 1.0) } else { 0.0 };
+    let x = rail.min.x + f * rail.width();
+    let painter = ui.painter();
+    let fill = if enabled { p.text } else { p.faint };
+    painter.rect_filled(rail, CornerRadius::same(2), p.raised);
+    painter.rect_filled(Rect::from_min_max(rail.min, Pos2::new(x, rail.max.y)), CornerRadius::same(2), fill);
+    let knob = if resp.hovered() || resp.dragged() { 7.5 } else { 6.5 };
+    painter.circle_filled(Pos2::new(x, rect.center().y), knob, fill);
+    if resp.has_focus() {
+        painter.circle_stroke(Pos2::new(x, rect.center().y), knob + 3.0, Stroke::new(1.0, p.muted));
+    }
+    if enabled && (resp.hovered() || resp.dragged()) {
+        ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
+    }
+    resp
 }

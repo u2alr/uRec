@@ -393,15 +393,24 @@ fn video_page(app: &mut App, ui: &mut egui::Ui, st: &Status) {
     let src = (caps.source_width, caps.source_height);
     theme::row(ui, &p, "Resolution", &resolution_help(&app.s, src), |ui| {
         let mut choice: u32 = if app.s.video.custom { 1 } else { app.s.video.height };
-        let o: Vec<(u32, String)> = vec![
-            (0, "Native".into()),
-            (2160, "3840 × 2160 (4K)".into()),
-            (1440, "2560 × 1440".into()),
-            (1080, "1920 × 1080".into()),
-            (900, "1600 × 900".into()),
-            (720, "1280 × 720".into()),
-            (1, "Custom".into()),
-        ];
+        // Each choice shows the size it really records at on this display. uRec never upscales,
+        // so sizes at or above the display's own are left out (they'd just be "Native").
+        let (nw, nh) = video::output_size(video::Resolution::Native, src.0, src.1);
+        let native = if src.1 == 0 { "Native".to_string() } else { format!("Native · {nw} × {nh}") };
+        let mut o: Vec<(u32, String)> = vec![(0, native)];
+        for h in [2160u32, 1440, 1080, 900, 720] {
+            if src.1 == 0 || h < src.1 || h == choice {
+                let name = if h == 2160 { "4K".to_string() } else { format!("{h}p") };
+                let label = if src.1 == 0 {
+                    name
+                } else {
+                    let (w, hh) = video::output_size(video::Resolution::Height(h), src.0, src.1);
+                    format!("{name} · {w} × {hh}")
+                };
+                o.push((h, label));
+            }
+        }
+        o.push((1, "Custom".into()));
         combo(ui, "res", &mut choice, &o, 200.0);
         app.s.video.custom = choice == 1;
         if choice != 1 {
@@ -446,7 +455,11 @@ fn video_page(app: &mut App, ui: &mut egui::Ui, st: &Status) {
             "Quality level",
             "Higher looks better and takes more space. Still or simple scenes stay small either way.",
             |ui| {
-                ui.add(egui::Slider::new(&mut app.s.video.quality, 1..=10));
+                let mut q = app.s.video.quality as f32;
+                ui.label(RichText::new(format!("{}", app.s.video.quality)).color(p.muted));
+                if theme::slider(ui, &p, &mut q, 1.0..=10.0, 160.0, Some(1.0)).changed() {
+                    app.s.video.quality = q as u8;
+                }
             },
         );
     }
@@ -608,10 +621,8 @@ fn audio(app: &mut App, ui: &mut egui::Ui) {
             combo(ui, "spk", &mut a.system_device, &o, 260.0);
         });
         theme::row(ui, &p, "Volume", "", |ui| {
-            ui.add(
-                egui::Slider::new(&mut a.system_volume, 0.0..=2.0)
-                    .custom_formatter(|v, _| format!("{:.0}%", v * 100.0)),
-            );
+            ui.label(RichText::new(format!("{:.0}%", a.system_volume * 100.0)).color(p.muted));
+            theme::slider(ui, &p, &mut a.system_volume, 0.0..=2.0, 160.0, Some(0.05));
         });
     });
     theme::group_title(ui, &p, "Microphone");
@@ -625,9 +636,8 @@ fn audio(app: &mut App, ui: &mut egui::Ui) {
             combo(ui, "mic", &mut a.mic_device, &o, 260.0);
         });
         theme::row(ui, &p, "Volume", "", |ui| {
-            ui.add(
-                egui::Slider::new(&mut a.mic_volume, 0.0..=2.0).custom_formatter(|v, _| format!("{:.0}%", v * 100.0)),
-            );
+            ui.label(RichText::new(format!("{:.0}%", a.mic_volume * 100.0)).color(p.muted));
+            theme::slider(ui, &p, &mut a.mic_volume, 0.0..=2.0, 160.0, Some(0.05));
         });
         let help = if a.mic_mode == "push_to_talk" {
             "Silent until you hold the push-to-talk key (Settings › Hotkeys). The key still works in your game."
@@ -1184,7 +1194,11 @@ fn appearance(app: &mut App, ui: &mut egui::Ui) {
             "Dot opacity",
             "Save messages always appear at full strength so they stay readable.",
             |ui| {
-                ui.add(egui::Slider::new(&mut a.overlay_opacity, 30..=100).suffix("%"));
+                let mut o = a.overlay_opacity as f32;
+                ui.label(RichText::new(format!("{}%", a.overlay_opacity)).color(p.muted));
+                if theme::slider(ui, &p, &mut o, 30.0..=100.0, 160.0, Some(5.0)).changed() {
+                    a.overlay_opacity = o as u32;
+                }
             },
         );
     });

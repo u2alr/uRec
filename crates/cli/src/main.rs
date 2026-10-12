@@ -8,6 +8,7 @@
 //!                 [--volume 1.5] [--lossless] [--encoder software|auto|...]
 //!   urec-cli overlay --events saving@0,saved@1500 [--corner top_right] [--hold N] [--reduced] [--hidden]
 //!   urec-cli toast [--file CLIP] [--fail] | toast --count
+//!   urec-cli copy-files FILE...   (put files on the clipboard, like the Library's Copy)
 //!
 //! Options: --method auto|wgc|dda|gdi|test  --encoder auto|nvenc|amf|qsv|mf_hw|software|mf
 //!          --codec h264|hevc|av1  --res native|2160|1440|1080|900|720|WxH  --fps N
@@ -110,6 +111,20 @@ fn main() -> ExitCode {
     }
     if args.cmd == "toast" {
         return cmd_toast(&args);
+    }
+    if args.cmd == "copy-files" {
+        // Same call as the Library's Copy: puts the files on the clipboard (CF_HDROP).
+        let paths: Vec<std::path::PathBuf> = std::env::args().skip(2).map(Into::into).collect();
+        return match urec_win::copy_files_to_clipboard(&paths) {
+            Ok(()) => {
+                println!("copied={}", paths.len());
+                ExitCode::SUCCESS
+            }
+            Err(e) => {
+                eprintln!("copy failed: {e}");
+                ExitCode::FAILURE
+            }
+        };
     }
     if args.cmd == "reveal" {
         // Same call the app's "Show in folder" / "Open folder" buttons make.

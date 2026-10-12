@@ -67,6 +67,8 @@ pub struct EditorUi {
     playhead: f64,
     selected: Option<usize>,
     zoom: f32,
+    /// The timeline shows the whole video (until the user zooms in); stays true across cuts.
+    fit: bool,
     scroll: f32,
     drag: Option<Drag>,
     crop_mode: bool,
@@ -98,6 +100,7 @@ impl EditorUi {
             playhead: 0.0,
             selected: None,
             zoom: 0.0,
+            fit: true,
             scroll: 0.0,
             drag: None,
             crop_mode: false,
@@ -636,8 +639,8 @@ fn controls(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect, _ff
     }
     ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
         let mut vol = pr.state.volume;
-        ui.spacing_mut().slider_width = 110.0;
-        let r = ui.add_enabled(!pr.state.mute, egui::Slider::new(&mut vol, 0.0..=2.0).show_value(false));
+        let muted = pr.state.mute;
+        let r = ui.add_enabled_ui(!muted, |ui| theme::slider(ui, &p, &mut vol, 0.0..=2.0, 110.0, Some(0.05))).inner;
         if r.drag_started() {
             ed.volume_before = Some(pr.state.clone());
         }
@@ -650,9 +653,10 @@ fn controls(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect, _ff
             }
         }
         ui.label(RichText::new(format!("{:.0}%", pr.state.volume * 100.0)).small().color(p.muted));
-        let mut mute = pr.state.mute;
-        if ui.checkbox(&mut mute, "Mute").changed() {
-            pr.set_mute(mute);
+        // Plain text toggle, like the other editor controls.
+        let label = if pr.state.mute { "Unmute" } else { "Mute" };
+        if theme::link_button(ui, &p, label).clicked() {
+            pr.set_mute(!pr.state.mute);
             ed.player = None;
         }
     });
@@ -663,11 +667,13 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
     let Some(pr) = ed.project.as_ref() else { return };
     let dur = pr.duration().max(0.1);
     let width = area.width();
-    if ed.zoom <= 0.0 {
-        ed.zoom = (width - 2.0) / dur as f32; // fit everything at first
-    }
-    // Zoomed all the way out, the whole timeline fits.
+    // Zoomed all the way out, the whole timeline fits. While fitted, it keeps fitting when cuts
+    // change the length or the window is resized.
     let min_zoom = (width - 2.0) / dur as f32;
+    if ed.zoom <= 0.0 || ed.fit || ed.zoom < min_zoom {
+        ed.zoom = min_zoom;
+        ed.fit = true;
+    }
     let resp = ui.interact(area, ui.id().with("timeline"), Sense::click_and_drag());
     // Wheel: scroll; Ctrl+wheel: zoom around the pointer.
     if resp.hovered() {
@@ -676,6 +682,7 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
             let px = pointer.map(|q| q.x - area.min.x).unwrap_or(width / 2.0);
             let t_at = (px + ed.scroll) / ed.zoom;
             ed.zoom = (ed.zoom * (1.0 + scroll.y * 0.003)).clamp(min_zoom, 400.0);
+            ed.fit = ed.zoom <= min_zoom * 1.001;
             ed.scroll = t_at * ed.zoom - px;
         } else if scroll.y != 0.0 || scroll.x != 0.0 {
             ed.scroll -= scroll.y + scroll.x;
@@ -687,7 +694,7 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
     if ed.player.is_some() {
         let x = ed.playhead as f32 * ed.zoom - ed.scroll;
         if x > width * 0.9 || x < 0.0 {
-            ed.scroll = (ed.playhead as f32 * ed.zoom - width * 0.2).max(0.0);
+            ed.scroll = (ed.playhead as f32 * ed.zoom - width * 0.2).clamp(0.0, (content - width + 2.0).max(0.0));
         }
     }
     let x_of = |t: f64, scroll: f32, zoom: f32| area.min.x + t as f32 * zoom - scroll;
@@ -710,7 +717,7 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
             painter.text(
                 Pos2::new(x + 3.0, ruler.min.y + 2.0),
                 Align2::LEFT_TOP,
-                if step < 1.0 { format!("{t:.1}s") } else { format_secs(t.round() as u32) },
+                if step < 1.0 { format!("{t:.1} s") } else { format_secs(t.round() as u32) },
                 FontId::proportional(10.5),
                 p.faint,
             );

@@ -181,3 +181,7 @@ impl AudioOut {
         true
     }
 }
+
+pub fn copy_files_to_clipboard(_paths: &[std::path::PathBuf]) -> Result<(), String> {
+    Err("The clipboard is only available on Windows.".into())
+}
