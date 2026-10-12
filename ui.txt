@@ -1,24 +1,19 @@
-sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-11 21.42.31.mp4 size=915862
-setup test log: setup test: Capture and encoder start = Some(true) (CPU (x264/x265), H.264 (AVC) via GDI (compatibility), 960×720 at 30 FPS)
-setup test log: setup test: Game and desktop sound = Some(false) (The device wasn't found. It may be unplugged or disabled.)
-setup test log: setup test: Microphone = None (Turned off in Settings › Audio.)
-setup test log: setup test: Recording ran for 5 seconds = Some(true) (149 frames encoded, 8 frames dropped)
-setup test log: setup test: File saved and finalized = Some(true) (534 KB written, crash-safe MP4)
-setup test log: setup test: Video plays back = Some(true) (171 frames of h264 960×720 decoded without errors (5.7 s))
-light home alive=True
-light library alive=True
-light settings:general alive=True
-light settings:recording alive=True
-light settings:video alive=True
-light settings:audio alive=True
-light settings:instantreplay alive=True
-light settings:hotkeys alive=True
-light settings:storage alive=True
-light settings:appearance alive=True
-light settings:advanced alive=True
-dark home alive=True
-dark library alive=True
-dark settings:video alive=True
-dark settings:audio alive=True
-long window title: 90 chars
+    Updating crates.io index
+   Compiling urec-engine v0.3.0 (D:\a\uRec\uRec\crates\engine)
+   Compiling urec v0.3.0 (D:\a\uRec\uRec\crates\app)
+   Compiling urec-win v0.3.0 (D:\a\uRec\uRec\crates\win)
+   Compiling urec-cli v0.3.0 (D:\a\uRec\uRec\crates\cli)
+error[E0599]: no method named `wants_keyboard_input` found for reference `&eframe::egui::Context` in the current scope
+   --> crates\app\src\ui\editor_page.rs:271:17
+    |
+271 |     if ui.ctx().wants_keyboard_input() || ed.dialog.is_some() {
+    |                 ^^^^^^^^^^^^^^^^^^^^
+    |
+help: there is a method `egui_wants_keyboard_input` with a similar name
+    |
+271 |     if ui.ctx().egui_wants_keyboard_input() || ed.dialog.is_some() {
+    |                 +++++
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `urec` (bin "uRec") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
