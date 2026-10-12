@@ -1,11 +1,11 @@
 sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-12 13.51.10.mp4 size=727500
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-12 14.12.27.mp4 size=626690
 setup test log: setup test: Capture and encoder start = Some(true) (CPU (x264/x265), H.264 (AVC) via GDI (compatibility), 960×720 at 30 FPS)
 setup test log: setup test: Game and desktop sound = Some(true) (Captured from Speakers (VB-Audio Virtual Cable).)
 setup test log: setup test: Microphone = None (Turned off in Settings › Audio.)
-setup test log: setup test: Recording ran for 5 seconds = Some(true) (151 frames encoded, 20 frames dropped)
-setup test log: setup test: File saved and finalized = Some(true) (442 KB written, crash-safe MP4)
-setup test log: setup test: Video plays back = Some(true) (174 frames of h264 960×720 decoded without errors (5.8 s))
+setup test log: setup test: Recording ran for 5 seconds = Some(true) (152 frames encoded)
+setup test log: setup test: File saved and finalized = Some(true) (421 KB written, crash-safe MP4)
+setup test log: setup test: Video plays back = Some(true) (177 frames of h264 960×720 decoded without errors (5.9 s))
 setup test log: setup test: Audio tracks in the file = Some(true) (1 audio track(s) in the file, 1 expected)
 light home alive=True
 light library alive=True
@@ -24,7 +24,7 @@ dark settings:video alive=True
 dark settings:audio alive=True
 library clicks: thumbnail=PASS play=PASS reveal=PASS edit=PASS
 editor alive while playing=True
-editor preview sound: mean -24.6 dB on the output device (silence is about -91 dB)
-  log: 2026-10-12 13:54:48 editor: preview sound fed 3.5 s, played 2.9 s
-  log: 2026-10-12 13:54:59 editor: preview sound fed 8.0 s, played 7.4 s
+editor preview sound: mean -24.4 dB on the output device (silence is about -91 dB)
+  log: 2026-10-12 14:16:16 editor: preview sound fed 3.5 s, played 2.9 s
+  log: 2026-10-12 14:16:27 editor: preview sound fed 8.0 s, played 7.4 s
 long window title: 90 chars
