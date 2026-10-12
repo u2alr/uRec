@@ -163,3 +163,21 @@ impl PushToTalk {
 pub fn verify_p256(_public_xy: &[u8; 64], _hash: &[u8; 32], _sig: &[u8; 64]) -> bool {
     false
 }
+pub const OUT_RATE: u32 = 48_000;
+pub const OUT_CHANNELS: u32 = 2;
+pub struct AudioOut;
+impl AudioOut {
+    pub fn open() -> Result<AudioOut, String> {
+        Err("sound output is only implemented on Windows".into())
+    }
+    pub fn push(&self, _samples: &[f32]) -> bool {
+        false
+    }
+    pub fn finish(&self) {}
+    pub fn position(&self) -> f64 {
+        0.0
+    }
+    pub fn done(&self) -> bool {
+        true
+    }
+}

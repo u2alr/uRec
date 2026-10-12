@@ -252,6 +252,19 @@ fn selection_bar(app: &mut App, ui: &mut egui::Ui, items: &[Item]) {
             if r.clicked() {
                 app.lib.confirm_delete = Some(Pending::Many(app.lib.selected.iter().cloned().collect()));
             }
+            // Edit the selection as one video, oldest first.
+            let r = ui
+                .add_enabled_ui(n > 0, |ui| theme::quiet_button(ui, &p, "Edit together"))
+                .inner
+                .on_hover_text("Join the selected clips in the editor, oldest first");
+            if r.clicked() {
+                let mut picked: Vec<&Item> = items.iter().filter(|i| app.lib.selected.contains(&i.path)).collect();
+                picked.sort_by_key(|i| i.modified);
+                let paths = picked.into_iter().map(|i| i.path.clone()).collect();
+                app.lib.selecting = false;
+                app.lib.selected.clear();
+                app.open_editor(paths);
+            }
         });
     });
 }
@@ -412,6 +425,12 @@ fn details(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64, selecting
     ui.horizontal_wrapped(|ui| {
         if theme::link_button(ui, &p, "Play").clicked() && still_there(app, item) {
             open_file(&item.path);
+        }
+        ui.add_space(6.0);
+        if theme::link_button(ui, &p, "Edit").on_hover_text("Cut, join and crop in uRec's editor").clicked()
+            && still_there(app, item)
+        {
+            app.open_editor(vec![item.path.clone()]);
         }
         ui.add_space(6.0);
         if theme::link_button(ui, &p, "Show in folder").clicked() && still_there(app, item) {

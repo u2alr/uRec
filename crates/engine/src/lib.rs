@@ -4,6 +4,7 @@
 //! capture and encoding. Windows-specific pieces (audio capture, hotkeys, monitor and window
 //! enumeration) live in the app and feed this crate plain data.
 
+pub mod edit;
 pub mod encoder;
 pub mod hotkey;
 pub mod mp4check;

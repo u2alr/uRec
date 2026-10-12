@@ -1,5 +1,6 @@
 //! Application window.
 
+mod editor_page;
 mod home;
 mod library_page;
 mod settings_page;
@@ -26,6 +27,8 @@ pub enum Page {
     Settings,
     /// First-run setup (full window, no navigation).
     Setup,
+    /// The clip editor (opened from the Library).
+    Editor,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -95,6 +98,8 @@ pub struct App {
     pub updater: crate::update::Updater,
     first_frame_logged: bool,
     pub setup_step: usize,
+    pub editor: Option<editor_page::EditorUi>,
+    ctx: egui::Context,
 }
 
 impl App {
@@ -150,12 +155,25 @@ impl App {
             updater,
             first_frame_logged: false,
             setup_step: 0,
+            editor: None,
+            ctx: cc.egui_ctx.clone(),
         };
         app.refresh_devices(true);
         if !app.s.setup_done {
             app.page = Page::Setup;
         }
         app
+    }
+
+    /// Something worker threads can call to wake the UI.
+    pub fn repaint_handle(&self) -> crate::editor::Repaint {
+        let ctx = self.ctx.clone();
+        std::sync::Arc::new(move || ctx.request_repaint())
+    }
+
+    /// Open the clip editor on these recordings.
+    pub fn open_editor(&mut self, paths: Vec<PathBuf>) {
+        editor_page::open(self, paths);
     }
 
     /// Open a page by name ("home", "library", "settings:video").
@@ -500,6 +518,7 @@ impl eframe::App for App {
             Page::Library => library_page::show(self, ui, &st),
             Page::Settings => settings_page::show(self, ui, &st),
             Page::Setup => {}
+            Page::Editor => editor_page::show(self, ui, &st),
         });
         self.notices(&ctx, &st);
 

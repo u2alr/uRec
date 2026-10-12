@@ -213,7 +213,7 @@ pub fn concat_list(files: &[PathBuf]) -> String {
 /// Temporary name next to the final clip. Never shown in the library and removed at startup.
 pub const TEMP_SUFFIX: &str = ".urec-tmp.mp4";
 
-fn temp_path(out: &Path) -> PathBuf {
+pub fn temp_path(out: &Path) -> PathBuf {
     let stem = out.file_stem().map(|s| s.to_string_lossy().to_string()).unwrap_or_else(|| "clip".into());
     out.with_file_name(format!("{stem}.{}-{}{TEMP_SUFFIX}", std::process::id(), next_id()))
 }

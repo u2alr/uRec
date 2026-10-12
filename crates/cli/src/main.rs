@@ -4,6 +4,8 @@
 //!   urec-cli record --out FILE --seconds N [options]
 //!   urec-cli replay --dir DIR --out FILE --run-seconds N --save-seconds N [options]
 //!   urec-cli devices
+//!   urec-cli edit --in A.mp4[,B.mp4] --out OUT.mp4 [--cut 10-20,40-45] [--crop 9:16] [--mute]
+//!                 [--volume 1.5] [--lossless] [--encoder software|auto|...]
 //!   urec-cli overlay --events saving@0,saved@1500 [--corner top_right] [--hold N] [--reduced] [--hidden]
 //!   urec-cli toast [--file CLIP] [--fail] | toast --count
 //!
@@ -123,6 +125,7 @@ fn main() -> ExitCode {
         "probe" => cmd_probe(&ffmpeg, &args),
         "record" => cmd_record(&ffmpeg, &args),
         "replay" => cmd_replay(&ffmpeg, &args),
+        "edit" => cmd_edit(&ffmpeg, &args),
         _ => {
             println!(
                 "{}",
@@ -516,4 +519,99 @@ fn cmd_toast(args: &Args) -> ExitCode {
     std::thread::sleep(Duration::from_millis(1500));
     println!("toast_history={}", urec_win::toast_history_count().map(|n| n as i64).unwrap_or(-1));
     ExitCode::SUCCESS
+}
+
+/// Cut, join, crop and export clips with the editor engine (same code as the app's editor).
+fn cmd_edit(ffmpeg: &Path, args: &Args) -> ExitCode {
+    use urec_engine::edit::{self, Crop, ExportJob, ExportMode, Project};
+    let (Some(ins), Some(out)) = (args.get("in"), args.get("out")) else {
+        eprintln!("--in and --out are required");
+        return ExitCode::from(2);
+    };
+    let mut sources = Vec::new();
+    for p in ins.split(',') {
+        match edit::probe_source(ffmpeg, Path::new(p)) {
+            Ok(s) => {
+                println!(
+                    "source={} duration={:.3} size={}x{} audio={}",
+                    p, s.duration, s.width, s.height, s.audio_streams
+                );
+                sources.push(s)
+            }
+            Err(e) => {
+                eprintln!("{p}: {e}");
+                return ExitCode::from(2);
+            }
+        }
+    }
+    let mut project = Project::new(sources);
+    // --cut a-b,c-d: remove these timeline ranges (seconds of the joined timeline, applied last first).
+    if let Some(cuts) = args.get("cut") {
+        let mut ranges: Vec<(f64, f64)> = cuts
+            .split(',')
+            .filter_map(|r| r.split_once('-'))
+            .filter_map(|(a, b)| Some((a.parse().ok()?, b.parse().ok()?)))
+            .collect();
+        ranges.sort_by(|a, b| b.0.total_cmp(&a.0));
+        for (a, b) in ranges {
+            project.split_at(b);
+            project.split_at(a);
+            if let Some((i, _)) = project.locate((a + b) / 2.0) {
+                project.delete(i);
+            }
+        }
+    }
+    if let Some(c) = args.get("crop") {
+        let (w, h) = project.frame_size();
+        let ratio = c.split_once(':').and_then(|(a, b)| Some(a.parse::<f32>().ok()? / b.parse::<f32>().ok()?));
+        project.set_crop(ratio.map(|r| Crop::centered(r, w, h)));
+    }
+    project.set_mute(args.flag("mute"));
+    if let Some(v) = args.get("volume").and_then(|v| v.parse().ok()) {
+        project.set_volume(v, true);
+    }
+    let mode = if args.flag("lossless") { ExportMode::Lossless } else { ExportMode::Exact };
+    let codec = project.sources[0].video_codec.as_str();
+    let codec = if codec == "hevc" { Codec::Hevc } else { Codec::H264 };
+    let backend = Backend::from_id(args.get("encoder").unwrap_or("software")).unwrap_or(Backend::Software);
+    let mut v = VideoSettings { codec, ..VideoSettings::default() };
+    v.rate_control = urec_engine::video::RateControl::Quality;
+    v.quality = 8;
+    let fps = project.fps().round() as u32;
+    let video_args = Encoder::new(backend, codec).args(&v, fps.max(1));
+    println!(
+        "timeline={:.3} pieces={} output={}x{}",
+        project.duration(),
+        project.pieces().len(),
+        project.output_size().0,
+        project.output_size().1
+    );
+    let t0 = Instant::now();
+    let cancel = std::sync::atomic::AtomicBool::new(false);
+    let mut last = -1i64;
+    let job = ExportJob { mode, video_args: &video_args, audio_kbps: 160, out: Path::new(out) };
+    let res = edit::run_export(
+        ffmpeg,
+        &project,
+        &job,
+        &mut |d, t| {
+            let pct = if t > 0.0 { (d / t * 100.0) as i64 } else { 0 };
+            if pct / 25 != last / 25 {
+                last = pct;
+                println!("progress={pct}");
+            }
+        },
+        &cancel,
+    );
+    println!("export_ms={}", t0.elapsed().as_millis());
+    match res {
+        Ok(p) => {
+            println!("output={}", p.display());
+            ExitCode::SUCCESS
+        }
+        Err(e) => {
+            eprintln!("{e}");
+            ExitCode::from(1)
+        }
+    }
 }

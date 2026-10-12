@@ -18,6 +18,8 @@ pub mod notify;
 mod overlay;
 pub mod pill;
 #[cfg(windows)]
+mod playback;
+#[cfg(windows)]
 mod sig;
 #[cfg(windows)]
 mod sys;
@@ -37,6 +39,8 @@ pub use hotkeys::{Hotkeys, PushToTalk};
 pub use http::{https_download, https_get};
 #[cfg(windows)]
 pub use overlay::Overlay;
+#[cfg(windows)]
+pub use playback::{AudioOut, OUT_CHANNELS, OUT_RATE};
 #[cfg(windows)]
 pub use sig::verify_p256;
 #[cfg(windows)]
