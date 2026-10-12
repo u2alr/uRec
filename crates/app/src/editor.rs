@@ -137,7 +137,17 @@ impl Player {
         let frame = Arc::new(Mutex::new(None));
         let children = Arc::new(Mutex::new(Vec::new()));
         let mut threads = Vec::new();
-        let audio = if project.state.mute { None } else { urec_win::AudioOut::open().ok().map(Arc::new) };
+        let audio = if project.state.mute {
+            None
+        } else {
+            match urec_win::AudioOut::open() {
+                Ok(a) => Some(Arc::new(a)),
+                Err(e) => {
+                    crate::controller::log(&format!("editor: no preview sound ({e}); playing silently"));
+                    None
+                }
+            }
+        };
         let clock = Arc::new(Clock {
             audio: Mutex::new(audio.clone()),
             started: Instant::now(),
@@ -154,6 +164,7 @@ impl Player {
                     let mut buf = vec![0u8; 32 * 1024];
                     let mut carry: Vec<u8> = Vec::new();
                     let mut samples = Vec::with_capacity(8192);
+                    let mut total: usize = 0;
                     while !stop2.load(Ordering::Relaxed) {
                         let n = match stdout.read(&mut buf) {
                             Ok(0) | Err(_) => break,
@@ -164,13 +175,20 @@ impl Player {
                         samples.clear();
                         samples.extend(carry[..whole].as_chunks::<4>().0.iter().map(|b| f32::from_le_bytes(*b)));
                         carry.drain(..whole);
+                        total += samples.len();
                         if !out.push(&samples) {
                             break;
                         }
                     }
                     out.finish();
+                    crate::controller::log(&format!(
+                        "editor: preview sound fed {:.1} s, played {:.1} s",
+                        total as f64 / (urec_win::OUT_RATE * urec_win::OUT_CHANNELS) as f64,
+                        out.position()
+                    ));
                 }));
             } else {
+                crate::controller::log("editor: preview sound decoder didn't start");
                 clock.wall.store(true, Ordering::Relaxed);
             }
         }

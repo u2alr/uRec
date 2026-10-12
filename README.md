@@ -50,6 +50,10 @@ Hotkeys work while a game has focus. Change them in **Settings › Hotkeys**.
   - You can search, sort, star favorites, play, rename, copy the path, show in Explorer, or delete.
   - **Select** mode lets you remove many recordings at once. Deleting always moves files to the Recycle Bin.
   - Damaged or unfinished files are marked. Files moved or deleted outside uRec are handled without errors.
+- **Editor:** **Edit** on any recording, or **Edit together** for several, opens a simple editor.
+  - Cut out as many parts as you like: split at the playhead (S), delete pieces, trim edges, reorder.
+  - Preview with sound. Crop to 16:9, 9:16, 1:1 or freely. Mute or change the volume.
+  - Export to a new file, either frame-exact or lossless. Originals are never changed.
 - **Overlay** is a small dot in a screen corner: red while recording, amber while Instant Replay is on.
   - When an Instant Replay clip is saved, the dot briefly opens into "Instant Replay Saved" with a green check, then closes again. If a save fails, it shows "Instant Replay Failed" with a red cross.
   - The dot dims gently while a save is in progress. Nothing animates while idle.

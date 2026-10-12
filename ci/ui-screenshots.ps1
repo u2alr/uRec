@@ -109,6 +109,7 @@ if ($clip) {
     $vd = (& $env:UREC_FFMPEG -hide_banner -i $heard -af volumedetect -vn -f null - 2>&1 | Out-String)
     $mean = if ($vd -match "mean_volume: (-?[0-9.]+) dB") { [double]$Matches[1] } else { -999 }
     "editor preview sound: mean $mean dB on the output device (silence is about -91 dB)"
+    Select-String -Path (Join-Path $env:LOCALAPPDATA "uRec\logs\urec.log") -Pattern "editor:" | Select-Object -Last 6 | ForEach-Object { "  log: " + $_.Line }
 
     Start-Sleep -Seconds 1
 }

@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.4.0
+
+**Clip editor**
+- **Edit** any recording from the Library, or select several clips and choose **Edit together** to join them into one video.
+- **Cut anything out:** split at the playhead (S), delete pieces (Delete), drag a piece's edges to trim, and drag pieces to reorder. Undo and redo cover every step.
+- **Timeline:** thumbnails and a waveform, so loud moments are easy to find. Ctrl+wheel zooms and the wheel scrolls.
+- **Preview** plays in the app with sound. Space plays and pauses, the arrow keys step one frame (Shift: one second), and clicking the timeline jumps there.
+- **Crop:** free, 16:9, 9:16 for Shorts/TikTok/Reels, 1:1 or 4:5, with a draggable box.
+- **Audio:** mute, or change the volume.
+- **Export** always makes a new file next to the original, which is never changed.
+  - **Exact:** frame-accurate cuts, re-encoded with your graphics card when possible, in H.264 or HEVC.
+  - **Lossless and fast:** no quality loss, done in moments. Each piece may start up to 2 s early, because a copy has to start on a keyframe.
+  - Progress bar and Cancel. A finished export is checked for damage and never replaces an existing file.
+
 ## 0.3.0
 
 **Smaller files**
