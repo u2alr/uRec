@@ -52,6 +52,7 @@ The results below are copied from those runs. Nothing is estimated.
 | T24 | **Editor: join two different clips** (1280×720 with two audio tracks + 960×540 without sound) with a 9:16 crop: exactly 18.0 s, 404×720, decodes cleanly | ✅ |
 | T25 | **Editor: lossless export** keeps both audio tracks and decodes cleanly. 17.4 s instead of 15 s, because each piece starts at its keyframe, as the export dialog says | ✅ |
 | T26 | **Editor: no overwrite** (a second export to the same name becomes "(2)", the first is untouched); muted export has no sound | ✅ |
+| T27 | **Copy to clipboard:** two videos go on the clipboard as files (what Discord, chats and Explorer paste), read back with Windows' own clipboard API | ✅ |
 | T17 | **A/V sync**: screen flashes white and a beep plays every 2 s; in the recording audio leads video by 6–55 ms (median 26–44 ms across runs, about one frame at 30 FPS; includes the test's own playback and GDI capture latency). Two runs once caught too few flash/beep pairs (the offsets they did catch were normal): the helper window sometimes appeared late because PowerShell started slowly. The test now waits for the window before recording; latest run 6 of 6 pairs, median −36 ms | ✅ |
 | T18 | Show in folder / Open folder open the right Explorer folder (path with spaces) | ✅ |
 | T19 | **4 simultaneous Instant Replay saves to the same name** (real FFmpeg): 4 separate complete clips (`… Replay.mp4`, `(2)`, `(3)`, `(4)`), each decodes without errors, no temp files or staging folders left; 1.9 s for all four | ✅ |

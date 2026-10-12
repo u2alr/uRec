@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.4.2
+
+**New**
+- **Copy a video** (Library › More › Copy, or Copy in Select mode for several): puts the video file on the clipboard, so you can paste it straight into Discord, a chat, an email or a folder.
+- Select mode: Ctrl+A selects all, Delete asks to delete the selection, Esc leaves.
+
+**Fixed and polished**
+- Resolution choices show the size they really record at on your display (e.g. "720p · 960 × 720" on a 4:3 screen) and no longer offer sizes above your display, which uRec never upscales to.
+- Settings: labels use the room short controls leave (no more two-line "Keep running in the tray when closed"), and every label is centred with its control.
+- Sliders (volume, quality, overlay opacity, editor volume) are thin and match the rest of the app.
+- Editor: the timeline stays fitted after cuts, with no empty strip while playing; ruler labels read "0.5 s" like the rest.
+- Home: the "Mute mic" button only appears when a microphone is being recorded.
+
 ## 0.4.1
 
 - **Fixed:** in the Library, Play, Edit, Show in folder and clicking a thumbnail did nothing (since 0.3.0). The row's click area for Select mode sat on top of its buttons; it's now only active while selecting. CI now clicks these with the real mouse on every build.
