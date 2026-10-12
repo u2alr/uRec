@@ -358,6 +358,20 @@ fn graph(
     with_audio: bool,
     apply_crop: bool,
 ) -> (Vec<String>, String) {
+    graph_with(p, pieces, (out_w, out_h), fps, true, with_audio, apply_crop)
+}
+
+/// Like `graph`, optionally without the picture (FFmpeg refuses graphs with unused outputs,
+/// so an audio-only preview must not build the video branch at all).
+fn graph_with(
+    p: &Project,
+    pieces: &[Piece],
+    (out_w, out_h): (u32, u32),
+    fps: f64,
+    with_video: bool,
+    with_audio: bool,
+    apply_crop: bool,
+) -> (Vec<String>, String) {
     let (fw, fh) = p.frame_size();
     let mut inputs = Vec::new();
     let mut chains = Vec::new();
@@ -373,19 +387,28 @@ fn graph(
             src.path.to_string_lossy().to_string(),
         ]);
         // Every piece is brought to the timeline's frame size and rate so they can be joined.
-        chains.push(format!(
-            "[{k}:v:0]setpts=PTS-STARTPTS,scale={fw}:{fh}:force_original_aspect_ratio=decrease,pad={fw}:{fh}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps={fps:.3},format=yuv420p[v{k}]"
-        ));
-        concat_in += &format!("[v{k}]");
+        if with_video {
+            chains.push(format!(
+                "[{k}:v:0]setpts=PTS-STARTPTS,scale={fw}:{fh}:force_original_aspect_ratio=decrease,pad={fw}:{fh}:(ow-iw)/2:(oh-ih)/2,setsar=1,fps={fps:.3},format=yuv420p[v{k}]"
+            ));
+            concat_in += &format!("[v{k}]");
+        }
         if with_audio {
             chains.push(piece_audio(k, src, piece.len(), p.state.volume));
             concat_in += &format!("[a{k}]");
         }
     }
     let n = pieces.len();
-    let outs = if with_audio { "[vc][a]" } else { "[vc]" };
+    let outs = match (with_video, with_audio) {
+        (true, true) => "[vc][a]",
+        (true, false) => "[vc]",
+        _ => "[a]",
+    };
     let mut g = chains.join(";");
-    g += &format!(";{concat_in}concat=n={n}:v=1:a={}{outs}", u8::from(with_audio));
+    g += &format!(";{concat_in}concat=n={n}:v={}:a={}{outs}", u8::from(with_video), u8::from(with_audio));
+    if !with_video {
+        return (inputs, g);
+    }
     let mut post = Vec::new();
     let mut base = (fw / 2 * 2, fh / 2 * 2);
     if let (Some(c), true) = (p.state.crop, apply_crop) {
@@ -496,7 +519,7 @@ pub fn preview_audio_args(p: &Project, from: f64, rate: u32, channels: u32) -> V
     if pieces.is_empty() || p.state.mute {
         return Vec::new();
     }
-    let (inputs, g) = graph(p, &pieces, (64, 64), 10.0, true, false);
+    let (inputs, g) = graph_with(p, &pieces, (64, 64), 10.0, false, true, false);
     let mut a: Vec<String> = ["-hide_banner", "-nostdin", "-loglevel", "error"].iter().map(|s| s.to_string()).collect();
     a.extend(inputs);
     a.extend(["-filter_complex".into(), g, "-map".into(), "[a]".into()]);

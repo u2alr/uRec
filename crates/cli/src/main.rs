@@ -570,6 +570,18 @@ fn cmd_edit(ffmpeg: &Path, args: &Args) -> ExitCode {
     if let Some(v) = args.get("volume").and_then(|v| v.parse().ok()) {
         project.set_volume(v, true);
     }
+    // --preview-audio / --preview-video: print the editor's preview command (for testing).
+    if args.flag("preview-audio") || args.flag("preview-video") {
+        let a = if args.flag("preview-audio") {
+            edit::preview_audio_args(&project, 0.0, 48000, 2)
+        } else {
+            edit::preview_video_args(&project, 0.0, 320, 180, 30.0)
+        };
+        for x in a {
+            println!("{x}");
+        }
+        return ExitCode::SUCCESS;
+    }
     let mode = if args.flag("lossless") { ExportMode::Lossless } else { ExportMode::Exact };
     let codec = project.sources[0].video_codec.as_str();
     let codec = if codec == "hevc" { Codec::Hevc } else { Codec::H264 };
