@@ -201,28 +201,43 @@ fn lerp(a: Color32, b: Color32, t: f32) -> Color32 {
 /// A settings row: label (+ optional help text) on the left, control on the right.
 pub fn row(ui: &mut Ui, p: &Palette, label: &str, help: &str, control: impl FnOnce(&mut Ui)) {
     ui.add_space(6.0);
-    ui.horizontal(|ui| {
-        let avail = ui.available_width();
-        // The label column takes what the control leaves. The control's width is measured each
-        // frame (a switch needs ~40 px, a dropdown ~270), so short controls don't force labels
-        // like "Keep running in the tray when closed" onto two lines.
-        let id = ui.id().with(("row-control", label));
-        let control_w: f32 = ui.ctx().data(|d| d.get_temp(id)).unwrap_or(270.0);
-        let left = (avail - control_w - 28.0).clamp(150.0, 440.0);
-        ui.allocate_ui_with_layout(Vec2::new(left, 0.0), Layout::top_down(Align::Min), |ui| {
+    // Sizes from the last frame: the control's width and height and the label column's height.
+    // The label column takes the width the control leaves (a switch needs ~40 px, a dropdown
+    // ~270), and both sides are centred on the same line.
+    let id = ui.id().with(("row-sizes", label));
+    let (control_w, control_h, label_h): (f32, f32, f32) =
+        ui.ctx().data(|d| d.get_temp(id)).unwrap_or((270.0, 32.0, 18.0));
+    let row_h = control_h.max(label_h);
+    let avail = ui.available_width();
+    let left = (avail - control_w - 28.0).clamp(150.0, 440.0);
+    let mut measured = (control_w, control_h, label_h);
+    ui.horizontal_top(|ui| {
+        let l = ui.allocate_ui_with_layout(Vec2::new(left, row_h), Layout::top_down(Align::Min), |ui| {
             ui.set_width(left);
-            ui.label(RichText::new(label).color(p.text));
-            if !help.is_empty() {
-                ui.label(RichText::new(help).small().color(p.muted));
-            }
+            ui.add_space(((row_h - label_h) / 2.0).max(0.0).floor());
+            ui.vertical(|ui| {
+                ui.label(RichText::new(label).color(p.text));
+                if !help.is_empty() {
+                    ui.label(RichText::new(help).small().color(p.muted));
+                }
+            })
+            .response
+            .rect
+            .height()
         });
-        let r = ui.with_layout(Layout::right_to_left(Align::Center), control);
-        let w = r.response.rect.width().ceil();
-        if (w - control_w).abs() > 1.0 && w > 0.0 {
-            ui.ctx().data_mut(|d| d.insert_temp(id, w));
-            ui.ctx().request_repaint();
-        }
+        measured.2 = l.inner.ceil();
+        let w = ui.available_width();
+        let r = ui.allocate_ui_with_layout(Vec2::new(w, row_h), Layout::right_to_left(Align::Center), control);
+        measured.0 = r.response.rect.width().ceil();
+        measured.1 = r.response.rect.height().ceil();
     });
+    let changed = (measured.0 - control_w).abs() > 1.0
+        || (measured.1 - control_h).abs() > 1.0
+        || (measured.2 - label_h).abs() > 1.0;
+    if changed && measured.0 > 0.0 && measured.1 > 0.0 {
+        ui.ctx().data_mut(|d| d.insert_temp(id, measured));
+        ui.ctx().request_repaint();
+    }
     ui.add_space(6.0);
     hairline(ui, p);
 }
