@@ -1,4 +1,4 @@
-commit 8f2238288dbf71ba72a559206cf739f8c36d12d6 run 38200647837
+commit 2fcdc9ac1cf2232726f6c8dbf38f69fcc91d6b46 run 38201304669
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -8,81 +8,20 @@ commit 8f2238288dbf71ba72a559206cf739f8c36d12d6 run 38200647837
     Checking urec-win v0.3.0 (D:\a\uRec\uRec\crates\win)
     Checking urec-cli v0.3.0 (D:\a\uRec\uRec\crates\cli)
 error: field `t` is never read
-  --> crates\app\src\editor.rs:25:9
-   |
-20 | pub struct Frame {
-   |            ----- field in this struct
+   --> crates\app\src\editor.rs:242:5
+    |
+239 | struct StillRequest {
+    |        ------------ field in this struct
 ...
-25 |     pub t: f64,
-   |         ^
-   |
-   = note: `Frame` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+242 |     t: f64,
+    |     ^
+    |
+    = note: `-D dead-code` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-error: field `started` is never read
-   --> crates\app\src\editor.rs:396:9
-    |
-391 | pub struct Export {
-    |            ------ field in this struct
-...
-396 |     pub started: Instant,
-    |         ^^^^^^^
-
-error: very complex type used. Consider factoring parts into `type` definitions
-  --> crates\app\src\editor.rs:63:17
-   |
-63 |     pub result: Arc<Mutex<Option<Result<Vec<Source>, String>>>>,
-   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |
-   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#type_complexity
-   = note: `-D clippy::type-complexity` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[allow(clippy::type_complexity)]`
-
-error: using `chunks_exact` with a constant chunk size
-   --> crates\app\src\editor.rs:166:44
-    |
-166 | ...                   carry[..whole].chunks_exact(4).map(|b| f32::from_le_bytes([b[0], b[1], b[2], b[3]])),
-    |                                      ^^^^^^^^^^^^^^^ help: consider using `as_chunks` instead: `as_chunks::<4>().0.iter()`
-    |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#chunks_exact_to_as_chunks
-    = note: `-D clippy::chunks-exact-to-as-chunks` implied by `-D warnings`
-    = help: to override `-D warnings` add `#[allow(clippy::chunks_exact_to_as_chunks)]`
-
-error: using `chunks_exact` with a constant chunk size
-   --> crates\app\src\editor.rs:352:49
-    |
-352 | ...                   let s: Vec<i16> = b.chunks_exact(2).map(|c| i16::from_le_bytes([c[0], c[1]])).collect();
-    |                                           ^^^^^^^^^^^^^^^ help: consider using `as_chunks` instead: `as_chunks::<2>().0.iter()`
-    |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#chunks_exact_to_as_chunks
-
-error: this `if` statement can be collapsed
-   --> crates\app\src\ui\editor_page.rs:361:5
-    |
-361 | /     if PLAY_REQUEST.with(|r| r.replace(false)) {
-362 | |         if ed.player.take().is_none() {
-363 | |             let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
-364 | |             ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
-365 | |         }
-366 | |     }
-    | |_____^
-    |
-    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#collapsible_if
-    = note: `-D clippy::collapsible-if` implied by `-D warnings`
-    = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
-help: collapse nested if block
-    |
-361 ~     if PLAY_REQUEST.with(|r| r.replace(false))
-362 ~         && ed.player.take().is_none() {
-363 |             let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
-364 |             ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
-365 ~         }
-    |
-
-error: could not compile `urec` (bin "uRec" test) due to 6 previous errors
+error: could not compile `urec` (bin "uRec" test) due to 1 previous error
 warning: build failed, waiting for other jobs to finish...
-error: could not compile `urec` (bin "uRec") due to 6 previous errors
+error: could not compile `urec` (bin "uRec") due to 1 previous error
 ## clippy FAILED
 ## test
    Compiling urec-engine v0.3.0 (D:\a\uRec\uRec\crates\engine)
@@ -90,28 +29,18 @@ error: could not compile `urec` (bin "uRec") due to 6 previous errors
    Compiling urec-win v0.3.0 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.3.0 (D:\a\uRec\uRec\crates\cli)
 error: field `t` is never read
-  --> crates\app\src\editor.rs:25:9
-   |
-20 | pub struct Frame {
-   |            ----- field in this struct
-...
-25 |     pub t: f64,
-   |         ^
-   |
-   = note: `Frame` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
-
-error: field `started` is never read
-   --> crates\app\src\editor.rs:396:9
+   --> crates\app\src\editor.rs:242:5
     |
-391 | pub struct Export {
-    |            ------ field in this struct
+239 | struct StillRequest {
+    |        ------------ field in this struct
 ...
-396 |     pub started: Instant,
-    |         ^^^^^^^
+242 |     t: f64,
+    |     ^
+    |
+    = note: `-D dead-code` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-error: could not compile `urec` (bin "uRec" test) due to 2 previous errors
+error: could not compile `urec` (bin "uRec" test) due to 1 previous error
 warning: build failed, waiting for other jobs to finish...
 ## test FAILED
 ## build
@@ -120,27 +49,17 @@ warning: build failed, waiting for other jobs to finish...
    Compiling urec v0.3.0 (D:\a\uRec\uRec\crates\app)
    Compiling urec-cli v0.3.0 (D:\a\uRec\uRec\crates\cli)
 error: field `t` is never read
-  --> crates\app\src\editor.rs:25:9
-   |
-20 | pub struct Frame {
-   |            ----- field in this struct
-...
-25 |     pub t: f64,
-   |         ^
-   |
-   = note: `Frame` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
-   = note: `-D dead-code` implied by `-D warnings`
-   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
-
-error: field `started` is never read
-   --> crates\app\src\editor.rs:396:9
+   --> crates\app\src\editor.rs:242:5
     |
-391 | pub struct Export {
-    |            ------ field in this struct
+239 | struct StillRequest {
+    |        ------------ field in this struct
 ...
-396 |     pub started: Instant,
-    |         ^^^^^^^
+242 |     t: f64,
+    |     ^
+    |
+    = note: `-D dead-code` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-error: could not compile `urec` (bin "uRec") due to 2 previous errors
+error: could not compile `urec` (bin "uRec") due to 1 previous error
 warning: build failed, waiting for other jobs to finish...
 ## build FAILED
