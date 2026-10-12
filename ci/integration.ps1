@@ -239,8 +239,13 @@ Add-Result "T15" "Microphone: recorded only if it really initialized; recording 
 
 "=== Audio/video sync"
 if ($hasOut -gt 0) {
-    $flash = Start-Process pwsh -ArgumentList "-NoProfile", "-STA", "-File", "$PSScriptRoot\av-flash.ps1", "-Seconds", "16" -PassThru
-    Start-Sleep -Seconds 2
+    $ready = Join-Path $work "flash-ready.txt"
+    Remove-Item $ready -ErrorAction SilentlyContinue
+    $flash = Start-Process pwsh -ArgumentList "-NoProfile", "-STA", "-File", "$PSScriptRoot\av-flash.ps1", "-Seconds", "16", "-Ready", $ready -PassThru
+    # PowerShell can take several seconds to start on a busy runner: wait for the window itself.
+    $w = [Diagnostics.Stopwatch]::StartNew()
+    while (-not (Test-Path $ready) -and $w.Elapsed.TotalSeconds -lt 20) { Start-Sleep -Milliseconds 100 }
+    "  flash window up after $([math]::Round($w.Elapsed.TotalSeconds, 1)) s"
     $out = Join-Path $work "T17.mp4"
     $r = Invoke-Cli @("record", "--out", $out, "--source", $src, "--method", "gdi", "--encoder", "software", "--res", "720", "--fps", "30", "--seconds", "11", "--audio", "system")
     $flash | Wait-Process -Timeout 25 -ErrorAction SilentlyContinue

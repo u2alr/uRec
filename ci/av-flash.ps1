@@ -1,6 +1,6 @@
 # Full-screen black window that flashes white and beeps at the same instant every 2 s.
 # Used to measure audio/video sync of a recording. Run with: pwsh -STA -File av-flash.ps1
-param([int]$Seconds = 14)
+param([int]$Seconds = 14, [string]$Ready = "")
 Add-Type -AssemblyName System.Windows.Forms, System.Drawing
 $rate = 48000; $n = [int]($rate * 0.25)
 $ms = New-Object System.IO.MemoryStream
@@ -24,5 +24,6 @@ $t.Add_Tick({ $player.Play(); $f.BackColor = [System.Drawing.Color]::White; $f.R
 $end = New-Object System.Windows.Forms.Timer
 $end.Interval = $Seconds * 1000
 $end.Add_Tick({ $f.Close() })
-$f.Add_Shown({ $t.Start(); $end.Start() })
+# Tell the test the window is up (it starts recording only then).
+$f.Add_Shown({ $t.Start(); $end.Start(); if ($Ready) { "shown" | Out-File $Ready } })
 [System.Windows.Forms.Application]::Run($f)
