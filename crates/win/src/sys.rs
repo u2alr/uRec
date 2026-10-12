@@ -452,9 +452,9 @@ pub fn pick_folder(title: &str, start: Option<&Path>) -> Option<std::path::PathB
 /// Put files on the clipboard the way Explorer's Copy does (CF_HDROP), so they can be pasted
 /// into Discord, a chat, an email or a folder.
 pub fn copy_files_to_clipboard(paths: &[std::path::PathBuf]) -> Result<(), String> {
-    use windows::Win32::Foundation::HGLOBAL;
+    use windows::Win32::Foundation::{GlobalFree, HGLOBAL};
     use windows::Win32::System::DataExchange::{CloseClipboard, EmptyClipboard, OpenClipboard, SetClipboardData};
-    use windows::Win32::System::Memory::{GlobalAlloc, GlobalFree, GlobalLock, GlobalUnlock, GMEM_MOVEABLE};
+    use windows::Win32::System::Memory::{GlobalAlloc, GlobalLock, GlobalUnlock, GMEM_MOVEABLE};
     const CF_HDROP: u32 = 15;
     if paths.is_empty() {
         return Err("Nothing to copy.".into());
