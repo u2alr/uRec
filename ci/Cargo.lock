@@ -2420,7 +2420,7 @@ checksum = "b4ac048d71ede7ee76d585517add45da530660ef4390e49b098733c6e897f254"
 
 [[package]]
 name = "urec"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "eframe",
  "embed-resource",
@@ -2433,7 +2433,7 @@ dependencies = [
 
 [[package]]
 name = "urec-cli"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "urec-engine",
  "urec-win",
@@ -2441,11 +2441,11 @@ dependencies = [
 
 [[package]]
 name = "urec-engine"
-version = "0.3.0"
+version = "0.4.0"
 
 [[package]]
 name = "urec-win"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "urec-engine",
  "windows",
