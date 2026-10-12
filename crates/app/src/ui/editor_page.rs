@@ -358,11 +358,10 @@ fn preview(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect, ffmp
     let (pw, ph) = editor::fit(fw, fh, PREVIEW_MAX.0, PREVIEW_MAX.1);
 
     // Play / pause requests.
-    if PLAY_REQUEST.with(|r| r.replace(false)) {
-        if ed.player.take().is_none() {
-            let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
-            ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
-        }
+    // (take() pauses when playing; otherwise playback starts.)
+    if PLAY_REQUEST.with(|r| r.replace(false)) && ed.player.take().is_none() {
+        let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
+        ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
     }
     // Follow the player; stop at the end.
     let mut shown: Option<Frame> = None;

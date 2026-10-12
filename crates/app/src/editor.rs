@@ -21,8 +21,6 @@ pub struct Frame {
     pub w: usize,
     pub h: usize,
     pub rgba: Arc<Vec<u8>>,
-    /// Timeline time it shows.
-    pub t: f64,
     /// Changes whenever a new picture is published (to refresh the texture).
     pub generation: u64,
 }
@@ -59,8 +57,10 @@ pub fn fit(w: u32, h: u32, max_w: u32, max_h: u32) -> (u32, u32) {
 // ------------------------------------------------------------------ opening
 
 /// Read the clips' details in the background.
+type OpenResult = Arc<Mutex<Option<Result<Vec<Source>, String>>>>;
+
 pub struct Opening {
-    pub result: Arc<Mutex<Option<Result<Vec<Source>, String>>>>,
+    pub result: OpenResult,
 }
 
 impl Opening {
@@ -162,9 +162,7 @@ impl Player {
                         carry.extend_from_slice(&buf[..n]);
                         let whole = carry.len() / 4 * 4;
                         samples.clear();
-                        samples.extend(
-                            carry[..whole].chunks_exact(4).map(|b| f32::from_le_bytes([b[0], b[1], b[2], b[3]])),
-                        );
+                        samples.extend(carry[..whole].as_chunks::<4>().0.iter().map(|b| f32::from_le_bytes(*b)));
                         carry.drain(..whole);
                         if !out.push(&samples) {
                             break;
@@ -202,13 +200,8 @@ impl Player {
                         }
                         std::thread::sleep(Duration::from_millis(3));
                     }
-                    *frame2.lock().unwrap() = Some(Frame {
-                        w: w as usize,
-                        h: h as usize,
-                        rgba: Arc::new(px),
-                        t: from + t,
-                        generation: next_gen(),
-                    });
+                    *frame2.lock().unwrap() =
+                        Some(Frame { w: w as usize, h: h as usize, rgba: Arc::new(px), generation: next_gen() });
                     repaint();
                 }
                 ended2.store(true, Ordering::Relaxed);
@@ -280,13 +273,8 @@ impl Stills {
             let args = edit::frame_args(&req.path, req.src_t, req.w, req.h, req.fast);
             let size = (req.w * req.h * 4) as usize;
             if let Some(px) = edit::read_stdout(&ffmpeg, &args, Some(size)) {
-                *f2.lock().unwrap() = Some(Frame {
-                    w: req.w as usize,
-                    h: req.h as usize,
-                    rgba: Arc::new(px),
-                    t: req.t,
-                    generation: next_gen(),
-                });
+                *f2.lock().unwrap() =
+                    Some(Frame { w: req.w as usize, h: req.h as usize, rgba: Arc::new(px), generation: next_gen() });
                 repaint();
             }
         });
@@ -349,7 +337,7 @@ impl Strips {
                 } else {
                     edit::read_stdout(&ffmpeg, &args, None)
                         .map(|b| {
-                            let s: Vec<i16> = b.chunks_exact(2).map(|c| i16::from_le_bytes([c[0], c[1]])).collect();
+                            let s: Vec<i16> = b.as_chunks::<2>().0.iter().map(|c| i16::from_le_bytes(*c)).collect();
                             edit::peaks(&s, rate as usize / PEAKS_PER_SEC)
                         })
                         .unwrap_or_default()
@@ -393,7 +381,6 @@ pub struct Export {
     pub progress: Arc<Mutex<(f64, f64)>>,
     pub result: Arc<Mutex<Option<Result<PathBuf, String>>>>,
     cancel: Arc<AtomicBool>,
-    pub started: Instant,
 }
 
 impl Export {
@@ -432,7 +419,7 @@ impl Export {
             *r2.lock().unwrap() = Some(res);
             repaint();
         });
-        Export { progress, result, cancel, started: Instant::now() }
+        Export { progress, result, cancel }
     }
 
     pub fn cancel(&self) {
