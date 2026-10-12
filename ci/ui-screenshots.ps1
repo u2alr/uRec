@@ -181,3 +181,6 @@ Stop-Process -Id $np.Id -Force -ErrorAction SilentlyContinue
 
 $log = Join-Path $env:LOCALAPPDATA "uRec\logs\urec.log"
 if (Test-Path $log) { Copy-Item $log (Join-Path $Out "urec.log") }
+
+# Fail the step only for a real UI failure (not the exit code of whatever command ran last).
+if ($results -match "FAIL") { exit 1 } else { exit 0 }

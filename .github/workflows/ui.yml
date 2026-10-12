@@ -25,6 +25,8 @@ jobs:
           $env:CARGO_PROFILE_RELEASE_DEBUG = "1"; $env:CARGO_PROFILE_RELEASE_STRIP = "false"
           cargo build --release -p urec -p urec-cli *>&1 | Tee-Object build.txt | Select-String -Pattern "^(error|warning)" -Context 0,4
           if ($LASTEXITCODE -ne 0) { exit 1 }
+      - name: Virtual audio device
+        uses: LABSN/sound-ci-helpers@v1
       - name: Screenshots
         if: always()
         shell: pwsh
