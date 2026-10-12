@@ -1,11 +1,12 @@
 sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-12 06.30.29.mp4 size=764617
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-12 06.48.19.mp4 size=642916
 setup test log: setup test: Capture and encoder start = Some(true) (CPU (x264/x265), H.264 (AVC) via GDI (compatibility), 960×720 at 30 FPS)
-setup test log: setup test: Game and desktop sound = Some(false) (The device didn't respond.)
+setup test log: setup test: Game and desktop sound = Some(true) (Captured from Speakers (VB-Audio Virtual Cable).)
 setup test log: setup test: Microphone = None (Turned off in Settings › Audio.)
-setup test log: setup test: Recording ran for 5 seconds = Some(true) (149 frames encoded, 1 frames dropped)
-setup test log: setup test: File saved and finalized = Some(true) (485 KB written, crash-safe MP4)
-setup test log: setup test: Video plays back = Some(true) (171 frames of h264 960×720 decoded without errors (5.7 s))
+setup test log: setup test: Recording ran for 5 seconds = Some(true) (153 frames encoded, 23 frames dropped)
+setup test log: setup test: File saved and finalized = Some(true) (426 KB written, crash-safe MP4)
+setup test log: setup test: Video plays back = Some(true) (175 frames of h264 960×720 decoded without errors (5.8 s))
+setup test log: setup test: Audio tracks in the file = Some(true) (1 audio track(s) in the file, 1 expected)
 light home alive=True
 light library alive=True
 light settings:general alive=True
@@ -23,7 +24,7 @@ dark settings:video alive=True
 dark settings:audio alive=True
 library clicks: thumbnail=PASS play=PASS reveal=PASS edit=PASS
 editor alive while playing=True
-editor preview sound: mean -999 dB on the output device (silence is about -91 dB)
-  log: 2026-10-12 06:34:04 editor: no preview sound (Element not found.); playing silently
-  log: 2026-10-12 06:34:10 editor: no preview sound (Element not found.); playing silently
+editor preview sound: mean -24.4 dB on the output device (silence is about -91 dB)
+  log: 2026-10-12 06:51:55 editor: preview sound fed 3.5 s, played 2.9 s
+  log: 2026-10-12 06:52:06 editor: preview sound fed 8.0 s, played 7.4 s
 long window title: 90 chars
