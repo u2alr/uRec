@@ -79,6 +79,46 @@ foreach ($theme in "light", "dark") {
 }
 Remove-Item env:UREC_THEME
 
+# Library clicks with the real mouse: the thumbnail, Play, Show in folder and Edit on the first
+# row must each reach their action. (In 0.3/0.4 an invisible row area sat on top and took them all.)
+Add-Type @"
+using System; using System.Runtime.InteropServices;
+public static class UrecMouse {
+    [DllImport("user32.dll")] public static extern bool SetCursorPos(int x, int y);
+    [DllImport("user32.dll")] public static extern void mouse_event(uint f, uint dx, uint dy, uint d, UIntPtr e);
+    public static void Click(int x, int y) {
+        SetCursorPos(x, y); System.Threading.Thread.Sleep(150);
+        mouse_event(2, 0, 0, 0, UIntPtr.Zero); System.Threading.Thread.Sleep(60);
+        mouse_event(4, 0, 0, 0, UIntPtr.Zero);
+    }
+}
+"@
+$hit = Join-Path $env:TEMP "urec-hitmap.txt"
+Remove-Item $hit, "$hit.clicks" -ErrorAction SilentlyContinue
+$env:UREC_HITMAP = $hit; $env:UREC_PAGE = "library"
+$results = @()
+foreach ($control in "thumbnail", "play", "reveal", "edit") {
+    $proc = Start-Process $Exe -PassThru
+    Start-Sleep -Seconds 6
+    $pos = if (Test-Path $hit) { Get-Content $hit | Where-Object { $_ -like "$control *" } | Select-Object -First 1 } else { $null }
+    if ($pos) {
+        $parts = $pos -split " "
+        [UrecMouse]::Click([int]$parts[1], [int]$parts[2])
+        Start-Sleep -Seconds 3
+        if ($control -eq "edit") { Shot "library-click-edit" }
+    }
+    $got = (Test-Path "$hit.clicks") -and (@(Get-Content "$hit.clicks") -contains $control)
+    $results += "$control=$(if ($got) { 'PASS' } else { 'FAIL' })$(if (-not $pos) { ' (no position)' })"
+    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+    # Close whatever the click opened (a player or "open with" window, a folder window).
+    $since = $proc.StartTime
+    Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -and $_.ProcessName -notin "explorer", "pwsh", "powershell" -and $(try { $_.StartTime -ge $since } catch { $false }) } | Stop-Process -Force -ErrorAction SilentlyContinue
+    try { (New-Object -ComObject Shell.Application).Windows() | ForEach-Object { $_.Quit() } } catch {}
+    Start-Sleep -Seconds 1
+}
+"library clicks: $($results -join ' ')"
+Remove-Item env:UREC_HITMAP
+
 # Clip editor on a real recording: open, split, play (with sound), screenshots.
 $clip = Get-ChildItem $videos -Recurse -Filter *.mp4 | Sort-Object Length -Descending | Select-Object -First 1
 if ($clip) {

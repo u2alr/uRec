@@ -221,8 +221,8 @@ pub fn show(app: &mut App, ui: &mut egui::Ui, _st: &Status) {
     ui.add_space(6.0);
     let offset = utc_offset();
     egui::ScrollArea::vertical().auto_shrink([false, false]).show(ui, |ui| {
-        for item in &items {
-            row(app, ui, item, offset);
+        for (i, item) in items.iter().enumerate() {
+            row(app, ui, item, offset, i == 0);
         }
     });
     delete_dialog(app, ui.ctx());
@@ -283,7 +283,7 @@ fn check_box(ui: &mut egui::Ui, p: &theme::Palette, rect: egui::Rect, on: bool) 
     }
 }
 
-fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
+fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64, first: bool) {
     let p = app.p;
     let selecting = app.lib.selecting;
     let selected = app.lib.selected.contains(&item.path);
@@ -297,16 +297,20 @@ fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
                 let (r, _) = ui.allocate_exact_size(Vec2::new(26.0, 76.0), Sense::hover());
                 check_box(ui, &p, egui::Rect::from_center_size(r.center(), Vec2::splat(18.0)), selected);
             }
-            thumbnail(app, ui, item, selecting);
+            thumbnail(app, ui, item, selecting, first);
             ui.add_space(12.0);
             ui.vertical(|ui| {
                 ui.set_width(ui.available_width());
-                details(app, ui, item, offset, selecting);
+                details(app, ui, item, offset, selecting, first);
             });
         });
     });
     let rect = inner.response.rect;
-    let resp = ui.interact(rect, ui.id().with(("row", &item.path)), Sense::click());
+    // The whole row is clickable only while selecting. Outside select mode it must only sense
+    // hover: it's added after the row's buttons, so a clickable row would sit on top of them
+    // and take every click (Play, Edit, Show in folder and the thumbnail did nothing in 0.3/0.4).
+    let sense = if selecting { Sense::click() } else { Sense::hover() };
+    let resp = ui.interact(rect, ui.id().with(("row", &item.path)), sense);
     if selecting && resp.clicked() {
         if selected {
             app.lib.selected.remove(&item.path);
@@ -325,7 +329,7 @@ fn row(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64) {
     ui.add_space(4.0);
 }
 
-fn thumbnail(app: &mut App, ui: &mut egui::Ui, item: &Item, selecting: bool) {
+fn thumbnail(app: &mut App, ui: &mut egui::Ui, item: &Item, selecting: bool, first: bool) {
     let p = app.p;
     let (thumb, thumb_resp) = ui.allocate_exact_size(Vec2::new(135.0, 76.0), Sense::click());
     if let Some(tex) = item.thumb.as_ref().and_then(|t| app.thumb(ui.ctx(), t)) {
@@ -349,15 +353,21 @@ fn thumbnail(app: &mut App, ui: &mut egui::Ui, item: &Item, selecting: bool) {
     if selecting {
         return;
     }
-    if thumb_resp.clicked() && still_there(app, item) {
-        open_file(&item.path);
+    if first {
+        hitmap::place(ui, "thumbnail", thumb);
+    }
+    if thumb_resp.clicked() {
+        hitmap::clicked(first, "thumbnail");
+        if still_there(app, item) {
+            open_file(&item.path);
+        }
     }
     if thumb_resp.hovered() {
         ui.ctx().set_cursor_icon(egui::CursorIcon::PointingHand);
     }
 }
 
-fn details(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64, selecting: bool) {
+fn details(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64, selecting: bool, first: bool) {
     let p = app.p;
     let renaming = app.lib.renaming.as_ref().is_some_and(|(p2, _)| p2 == &item.path);
     if renaming {
@@ -423,18 +433,37 @@ fn details(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64, selecting
     }
     ui.add_space(6.0);
     ui.horizontal_wrapped(|ui| {
-        if theme::link_button(ui, &p, "Play").clicked() && still_there(app, item) {
-            open_file(&item.path);
+        let r = theme::link_button(ui, &p, "Play");
+        if first {
+            hitmap::place(ui, "play", r.rect);
+        }
+        if r.clicked() {
+            hitmap::clicked(first, "play");
+            if still_there(app, item) {
+                open_file(&item.path);
+            }
         }
         ui.add_space(6.0);
-        if theme::link_button(ui, &p, "Edit").on_hover_text("Cut, join and crop in uRec's editor").clicked()
-            && still_there(app, item)
-        {
-            app.open_editor(vec![item.path.clone()]);
+        let r = theme::link_button(ui, &p, "Edit").on_hover_text("Cut, join and crop in uRec's editor");
+        if first {
+            hitmap::place(ui, "edit", r.rect);
+        }
+        if r.clicked() {
+            hitmap::clicked(first, "edit");
+            if still_there(app, item) {
+                app.open_editor(vec![item.path.clone()]);
+            }
         }
         ui.add_space(6.0);
-        if theme::link_button(ui, &p, "Show in folder").clicked() && still_there(app, item) {
-            urec_win::reveal_in_explorer(&item.path);
+        let r = theme::link_button(ui, &p, "Show in folder");
+        if first {
+            hitmap::place(ui, "reveal", r.rect);
+        }
+        if r.clicked() {
+            hitmap::clicked(first, "reveal");
+            if still_there(app, item) {
+                urec_win::reveal_in_explorer(&item.path);
+            }
         }
         ui.add_space(6.0);
         let more = egui::Button::new(RichText::new("More").color(p.muted).underline()).frame(false);
@@ -524,5 +553,43 @@ fn delete_dialog(app: &mut App, ctx: &egui::Context) {
     }
     if close || resp.should_close() {
         app.lib.confirm_delete = None;
+    }
+}
+
+/// CI only: with `UREC_HITMAP=<file>`, writes where the first row's controls are on screen (in
+/// pixels) and appends each click that reaches them to `<file>.clicks`, so a test can click them
+/// with the real mouse and see the click arrive. Does nothing otherwise.
+mod hitmap {
+    use eframe::egui;
+    use std::collections::BTreeMap;
+    use std::sync::{Mutex, OnceLock};
+
+    fn target() -> Option<&'static str> {
+        static T: OnceLock<Option<String>> = OnceLock::new();
+        T.get_or_init(|| std::env::var("UREC_HITMAP").ok().filter(|s| !s.is_empty())).as_deref()
+    }
+
+    pub fn place(ui: &egui::Ui, name: &str, r: egui::Rect) {
+        let Some(path) = target() else { return };
+        static LAST: Mutex<BTreeMap<String, (i32, i32)>> = Mutex::new(BTreeMap::new());
+        let (inner, ppp) = ui.ctx().input(|i| (i.viewport().inner_rect, i.pixels_per_point));
+        let Some(inner) = inner else { return };
+        let c = (inner.min + r.center().to_vec2()) * ppp;
+        let pos = (c.x.round() as i32, c.y.round() as i32);
+        let mut last = LAST.lock().unwrap();
+        if last.get(name) != Some(&pos) {
+            last.insert(name.to_string(), pos);
+            let text: String = last.iter().map(|(k, (x, y))| format!("{k} {x} {y}\n")).collect();
+            let _ = std::fs::write(path, text);
+        }
+    }
+
+    pub fn clicked(first: bool, name: &str) {
+        if let (true, Some(path)) = (first, target()) {
+            use std::io::Write;
+            if let Ok(mut f) = std::fs::OpenOptions::new().create(true).append(true).open(format!("{path}.clicks")) {
+                let _ = writeln!(f, "{name}");
+            }
+        }
     }
 }
