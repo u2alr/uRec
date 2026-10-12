@@ -239,7 +239,6 @@ impl Drop for Player {
 struct StillRequest {
     path: PathBuf,
     src_t: f64,
-    t: f64,
     w: u32,
     h: u32,
     fast: bool,
@@ -286,7 +285,7 @@ impl Stills {
         let Some((i, src_t)) = project.locate(t) else { return };
         let src = &project.sources[project.pieces()[i].source];
         let (lock, cv) = &*self.pending;
-        *lock.lock().unwrap() = Some(StillRequest { path: src.path.clone(), src_t, t, w, h, fast });
+        *lock.lock().unwrap() = Some(StillRequest { path: src.path.clone(), src_t, w, h, fast });
         cv.notify_one();
     }
 }
