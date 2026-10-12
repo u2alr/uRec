@@ -4,7 +4,7 @@ Every push to `main` runs these on a real Windows machine (GitHub Actions `windo
 
 - formatting, clippy (warnings are errors) and unit tests
 - real screen-capture integration tests (`ci/integration.ps1`)
-- the UI smoke test (`ci/ui-screenshots.ps1`), including the first-run setup and its real test recording
+- the UI smoke test (`ci/ui-screenshots.ps1`), including the first-run setup and its real test recording, and real mouse clicks on the Library's thumbnail, Play, Edit and Show in folder (each click must reach its action)
 - the Instant Replay indicator and notification tests (`ci/indicator-test.ps1`), which film the real overlay
 - on release, the installer test (`ci/install-test.ps1`) and `cargo audit`, then the automatic update test (`ci/update-test.ps1`) against the release that was just published
 

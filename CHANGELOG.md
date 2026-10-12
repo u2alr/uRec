@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1
+
+- **Fixed:** in the Library, Play, Edit, Show in folder and clicking a thumbnail did nothing (since 0.3.0). The row's click area for Select mode sat on top of its buttons; it's now only active while selecting. CI now clicks these with the real mouse on every build.
+
 ## 0.4.0
 
 **Clip editor**
