@@ -1,11 +1,11 @@
 sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-12 03.43.35.mp4 size=801190
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-12 03.52.51.mp4 size=787280
 setup test log: setup test: Capture and encoder start = Some(true) (CPU (x264/x265), H.264 (AVC) via GDI (compatibility), 960×720 at 30 FPS)
 setup test log: setup test: Game and desktop sound = Some(false) (The device wasn't found. It may be unplugged or disabled.)
 setup test log: setup test: Microphone = None (Turned off in Settings › Audio.)
-setup test log: setup test: Recording ran for 5 seconds = Some(true) (151 frames encoded, 2 frames dropped)
-setup test log: setup test: File saved and finalized = Some(true) (503 KB written, crash-safe MP4)
-setup test log: setup test: Video plays back = Some(true) (175 frames of h264 960×720 decoded without errors (5.8 s))
+setup test log: setup test: Recording ran for 5 seconds = Some(true) (153 frames encoded)
+setup test log: setup test: File saved and finalized = Some(true) (514 KB written, crash-safe MP4)
+setup test log: setup test: Video plays back = Some(true) (177 frames of h264 960×720 decoded without errors (5.9 s))
 light home alive=True
 light library alive=True
 light settings:general alive=True
@@ -22,4 +22,3 @@ dark library alive=True
 dark settings:video alive=True
 dark settings:audio alive=True
 editor alive while playing=True
-long window title: 90 chars
