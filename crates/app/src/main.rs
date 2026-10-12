@@ -105,6 +105,10 @@ fn main() -> eframe::Result {
             if let Some(p) = start_page {
                 app.open_page(&p);
             }
+            // CI: open the editor on these files ("a.mp4|b.mp4").
+            if let Ok(files) = std::env::var("UREC_EDIT") {
+                app.open_editor(files.split('|').map(std::path::PathBuf::from).collect());
+            }
             Ok(Box::new(app))
         }),
     );

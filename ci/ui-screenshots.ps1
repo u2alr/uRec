@@ -79,6 +79,26 @@ foreach ($theme in "light", "dark") {
 }
 Remove-Item env:UREC_THEME
 
+# Clip editor on a real recording: open, split, play (with sound), screenshots.
+$clip = Get-ChildItem $videos -Recurse -Filter *.mp4 | Sort-Object Length -Descending | Select-Object -First 1
+if ($clip) {
+    $env:UREC_PAGE = "library"; $env:UREC_EDIT = $clip.FullName
+    $proc = Start-Process $Exe -PassThru
+    Start-Sleep -Seconds 7
+    Shot "editor-open"
+    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+    Start-Sleep -Seconds 1
+    $env:UREC_EDIT_PLAY = "1"
+    $proc = Start-Process $Exe -PassThru
+    Start-Sleep -Seconds 5
+    Shot "editor-playing"
+    "editor alive while playing=$(-not $proc.HasExited)"
+    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+    Remove-Item env:UREC_EDIT, env:UREC_EDIT_PLAY
+    Start-Sleep -Seconds 1
+}
+
+
 # Long window title in Settings > Recording (must be shortened, not overlap the label).
 $longTitle = "A very long window title that keeps going and going, for testing the window picker in uRec"
 $np = Start-Process powershell.exe -ArgumentList "-NoProfile", "-Command", "Add-Type -AssemblyName System.Windows.Forms; `$f = New-Object System.Windows.Forms.Form; `$f.Text = '$longTitle'; `$f.ShowDialog()" -PassThru

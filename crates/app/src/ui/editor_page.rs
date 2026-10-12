@@ -162,6 +162,17 @@ fn frame(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, st: &Status) -> bo
                 ed.project = Some(Project::new(sources));
                 ed.opening = None;
                 ed.still_for = None;
+                // CI: split and play by itself (UREC_EDIT_PLAY=1).
+                if std::env::var_os("UREC_EDIT_PLAY").is_some() {
+                    if let Some(pr) = ed.project.as_mut() {
+                        let d = pr.duration();
+                        pr.split_at(d / 3.0);
+                        pr.split_at(d * 2.0 / 3.0);
+                        pr.delete(1);
+                        ed.selected = Some(1);
+                    }
+                    toggle_play(ed);
+                }
             }
             Some(Err(e)) => {
                 ed.error = Some(e);

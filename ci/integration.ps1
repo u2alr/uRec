@@ -159,6 +159,28 @@ $ssimAll = if ($ssim -match "All:([0-9.]+)") { [double]$Matches[1] } else { 0 }
 $ratio = if ($mv -and $mv.SizeMB -gt 0) { [math]::Round($mq.SizeMB / $mv.SizeMB, 2) } else { 0 }
 Add-Result "T22" "Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported" ($rv.Code -eq 0 -and $rq.Code -eq 0 -and $mv -and $mq -and -not $mv.DecodeErrors -and -not $mq.DecodeErrors) "VBR $($mv.SizeMB) MB, constant quality $($mq.SizeMB) MB (ratio $ratio); SSIM between them $ssimAll"
 
+"=== Clip editor (same engine as the app's editor)"
+$edA = Join-Path $work "ed-a.mp4"; $edB = Join-Path $work "ed-b.mp4"
+# Clip A: 20 s with two audio tracks (like "separate tracks"); clip B: 8 s, other size, no sound.
+& $ff -hide_banner -loglevel error -y -f lavfi -i "testsrc2=s=1280x720:r=30:d=20" -f lavfi -i "sine=f=440:d=20" -f lavfi -i "sine=f=880:d=20" -map 0 -map 1 -map 2 -c:v libx264 -g 60 -pix_fmt yuv420p -c:a aac $edA
+& $ff -hide_banner -loglevel error -y -f lavfi -i "testsrc=s=960x540:r=30:d=8" -c:v libx264 -g 60 -pix_fmt yuv420p $edB
+$o1 = Join-Path $work "ed-cut.mp4"
+$e1 = Invoke-Cli @("edit", "--in", $edA, "--out", $o1, "--cut", "2-5,9-11,15-17")
+$m1 = Get-MediaInfo $o1
+Add-Result "T23" "Editor: cut three pieces out of a 20 s clip -> exactly 13 s, sound kept, decodes cleanly" ($e1.Code -eq 0 -and $m1 -and [math]::Abs($m1.Duration - 13.0) -lt 0.1 -and $m1.AudioTracks -eq 1 -and -not $m1.DecodeErrors) "duration=$($m1.Duration)s audio=$($m1.AudioTracks) $($m1.Width)x$($m1.Height) export=$($e1.Kv['export_ms'])ms"
+$o2 = Join-Path $work "ed-join.mp4"
+$e2 = Invoke-Cli @("edit", "--in", "$edA,$edB", "--out", $o2, "--cut", "4-14", "--crop", "9:16")
+$m2 = Get-MediaInfo $o2
+Add-Result "T24" "Editor: join two different clips (one silent) with a 9:16 crop -> 18 s, 404x720, decodes cleanly" ($e2.Code -eq 0 -and $m2 -and [math]::Abs($m2.Duration - 18.0) -lt 0.1 -and $m2.Width -eq 404 -and $m2.Height -eq 720 -and -not $m2.DecodeErrors) "duration=$($m2.Duration)s $($m2.Width)x$($m2.Height) audio=$($m2.AudioTracks) export=$($e2.Kv['export_ms'])ms"
+$o3 = Join-Path $work "ed-ll.mp4"
+$e3 = Invoke-Cli @("edit", "--in", $edA, "--out", $o3, "--cut", "2-5,9-11", "--lossless")
+$m3 = Get-MediaInfo $o3
+Add-Result "T25" "Editor: lossless export keeps both tracks, decodes cleanly, at most one keyframe interval per piece longer" ($e3.Code -eq 0 -and $m3 -and $m3.Duration -ge 14.9 -and $m3.Duration -le 19.5 -and $m3.AudioTracks -eq 2 -and -not $m3.DecodeErrors) "duration=$($m3.Duration)s (exact would be 15) audio=$($m3.AudioTracks) export=$($e3.Kv['export_ms'])ms"
+$e4 = Invoke-Cli @("edit", "--in", $edA, "--out", $o1, "--cut", "1-2", "--mute")
+$o4 = $e4.Kv['output']
+$m4 = Get-MediaInfo $o4
+Add-Result "T26" "Editor: exporting to an existing name never overwrites it; muted export has no sound" ($e4.Code -eq 0 -and $o4 -like "*ed-cut (2).mp4" -and (Get-MediaInfo $o1).Duration -gt 12.9 -and $m4.AudioTracks -eq 0) "second file: $(Split-Path $o4 -Leaf), audio=$($m4.AudioTracks); first still $((Get-MediaInfo $o1).Duration)s"
+
 "=== Repeated start/stop"
 $cycleOk = $true; $cycleDetail = @()
 for ($i = 1; $i -le 5; $i++) {
