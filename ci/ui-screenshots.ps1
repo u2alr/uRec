@@ -95,6 +95,21 @@ if ($clip) {
     "editor alive while playing=$(-not $proc.HasExited)"
     if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
     Remove-Item env:UREC_EDIT, env:UREC_EDIT_PLAY
+
+    # Preview sound: play a 1 kHz tone clip in the editor and record what the speakers output.
+    $tone = Join-Path $env:TEMP "urec-editor-tone.mp4"
+    & $env:UREC_FFMPEG -hide_banner -loglevel error -y -f lavfi -i "testsrc2=s=640x360:r=30:d=12" -f lavfi -i "sine=f=1000:d=12" -c:v libx264 -pix_fmt yuv420p -c:a aac -shortest $tone
+    $env:UREC_EDIT = $tone; $env:UREC_EDIT_PLAY = "1"; $env:UREC_PAGE = "library"
+    $proc = Start-Process $Exe -PassThru
+    Start-Sleep -Seconds 3
+    $heard = Join-Path $env:TEMP "urec-editor-heard.mp4"
+    if ($Cli) { & $Cli record --out $heard --method gdi --encoder software --res 720 --fps 15 --seconds 4 --audio system | Out-Null }
+    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+    Remove-Item env:UREC_EDIT, env:UREC_EDIT_PLAY
+    $vd = (& $env:UREC_FFMPEG -hide_banner -i $heard -af volumedetect -vn -f null - 2>&1 | Out-String)
+    $mean = if ($vd -match "mean_volume: (-?[0-9.]+) dB") { [double]$Matches[1] } else { -999 }
+    "editor preview sound: mean $mean dB on the output device (silence is about -91 dB)"
+
     Start-Sleep -Seconds 1
 }
 

@@ -636,6 +636,7 @@ fn controls(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect, _ff
     }
     ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
         let mut vol = pr.state.volume;
+        ui.spacing_mut().slider_width = 110.0;
         let r = ui.add_enabled(!pr.state.mute, egui::Slider::new(&mut vol, 0.0..=2.0).show_value(false));
         if r.drag_started() {
             ed.volume_before = Some(pr.state.clone());
@@ -665,7 +666,8 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
     if ed.zoom <= 0.0 {
         ed.zoom = (width - 2.0) / dur as f32; // fit everything at first
     }
-    let min_zoom = ((width - 2.0) / dur as f32).min(40.0);
+    // Zoomed all the way out, the whole timeline fits.
+    let min_zoom = (width - 2.0) / dur as f32;
     let resp = ui.interact(area, ui.id().with("timeline"), Sense::click_and_drag());
     // Wheel: scroll; Ctrl+wheel: zoom around the pointer.
     if resp.hovered() {
@@ -708,7 +710,7 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
             painter.text(
                 Pos2::new(x + 3.0, ruler.min.y + 2.0),
                 Align2::LEFT_TOP,
-                format_secs(t as u32),
+                if step < 1.0 { format!("{t:.1}s") } else { format_secs(t.round() as u32) },
                 FontId::proportional(10.5),
                 p.faint,
             );
@@ -904,7 +906,7 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
         ));
     }
     // Hint line.
-    let hint = if ed.zoom <= min_zoom + 0.01 {
+    let hint = if ed.zoom <= min_zoom * 1.05 {
         "Space play · S split · Delete remove piece · drag edges to trim, pieces to reorder · Ctrl+wheel zoom"
     } else {
         "Wheel scrolls · Ctrl+wheel zooms"
