@@ -1,4 +1,4 @@
-commit 82602c1be5fcdd5525d9c6ff1a304b17165cc8aa run 38199967826
+commit 645e62c16a5aac8ccfecbf73d2d4271201c44973 run 38200195473
 ## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
 ## fmt
 ## clippy
@@ -7,40 +7,111 @@ commit 82602c1be5fcdd5525d9c6ff1a304b17165cc8aa run 38199967826
    Compiling urec v0.3.0 (D:\a\uRec\uRec\crates\app)
     Checking urec-win v0.3.0 (D:\a\uRec\uRec\crates\win)
     Checking urec-cli v0.3.0 (D:\a\uRec\uRec\crates\cli)
-error[E0599]: no method named `wants_keyboard_input` found for reference `&eframe::egui::Context` in the current scope
-   --> crates\app\src\ui\editor_page.rs:271:17
-    |
-271 |     if ui.ctx().wants_keyboard_input() || ed.dialog.is_some() {
-    |                 ^^^^^^^^^^^^^^^^^^^^
-    |
-help: there is a method `egui_wants_keyboard_input` with a similar name
-    |
-271 |     if ui.ctx().egui_wants_keyboard_input() || ed.dialog.is_some() {
-    |                 +++++
+error: field `t` is never read
+  --> crates\app\src\editor.rs:25:9
+   |
+20 | pub struct Frame {
+   |            ----- field in this struct
+...
+25 |     pub t: f64,
+   |         ^
+   |
+   = note: `Frame` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-For more information about this error, try `rustc --explain E0599`.
-error: could not compile `urec` (bin "uRec" test) due to 1 previous error
+error: field `started` is never read
+   --> crates\app\src\editor.rs:396:9
+    |
+391 | pub struct Export {
+    |            ------ field in this struct
+...
+396 |     pub started: Instant,
+    |         ^^^^^^^
+
+error: very complex type used. Consider factoring parts into `type` definitions
+  --> crates\app\src\editor.rs:63:17
+   |
+63 |     pub result: Arc<Mutex<Option<Result<Vec<Source>, String>>>>,
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#type_complexity
+   = note: `-D clippy::type-complexity` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::type_complexity)]`
+
+error: using `chunks_exact` with a constant chunk size
+   --> crates\app\src\editor.rs:166:44
+    |
+166 | ...                   carry[..whole].chunks_exact(4).map(|b| f32::from_le_bytes([b[0], b[1], b[2], b[3]])),
+    |                                      ^^^^^^^^^^^^^^^ help: consider using `as_chunks` instead: `as_chunks::<4>().0.iter()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#chunks_exact_to_as_chunks
+    = note: `-D clippy::chunks-exact-to-as-chunks` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::chunks_exact_to_as_chunks)]`
+
+error: using `chunks_exact` with a constant chunk size
+   --> crates\app\src\editor.rs:352:49
+    |
+352 | ...                   let s: Vec<i16> = b.chunks_exact(2).map(|c| i16::from_le_bytes([c[0], c[1]])).collect();
+    |                                           ^^^^^^^^^^^^^^^ help: consider using `as_chunks` instead: `as_chunks::<2>().0.iter()`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#chunks_exact_to_as_chunks
+
+error: this `if` statement can be collapsed
+   --> crates\app\src\ui\editor_page.rs:350:5
+    |
+350 | /     if PLAY_REQUEST.with(|r| r.replace(false)) {
+351 | |         if ed.player.take().is_none() {
+352 | |             let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
+353 | |             ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
+354 | |         }
+355 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#collapsible_if
+    = note: `-D clippy::collapsible-if` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::collapsible_if)]`
+help: collapse nested if block
+    |
+350 ~     if PLAY_REQUEST.with(|r| r.replace(false))
+351 ~         && ed.player.take().is_none() {
+352 |             let from = if ed.playhead >= pr.duration() - 0.05 { 0.0 } else { ed.playhead };
+353 |             ed.player = Some(Player::start(ffmpeg, pr, from, pw, ph, app.repaint_handle()));
+354 ~         }
+    |
+
+error: could not compile `urec` (bin "uRec") due to 6 previous errors
 warning: build failed, waiting for other jobs to finish...
-error: could not compile `urec` (bin "uRec") due to 1 previous error
+error: could not compile `urec` (bin "uRec" test) due to 6 previous errors
 ## clippy FAILED
 ## test
    Compiling urec-engine v0.3.0 (D:\a\uRec\uRec\crates\engine)
    Compiling urec v0.3.0 (D:\a\uRec\uRec\crates\app)
    Compiling urec-win v0.3.0 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.3.0 (D:\a\uRec\uRec\crates\cli)
-error[E0599]: no method named `wants_keyboard_input` found for reference `&eframe::egui::Context` in the current scope
-   --> crates\app\src\ui\editor_page.rs:271:17
-    |
-271 |     if ui.ctx().wants_keyboard_input() || ed.dialog.is_some() {
-    |                 ^^^^^^^^^^^^^^^^^^^^
-    |
-help: there is a method `egui_wants_keyboard_input` with a similar name
-    |
-271 |     if ui.ctx().egui_wants_keyboard_input() || ed.dialog.is_some() {
-    |                 +++++
+error: field `t` is never read
+  --> crates\app\src\editor.rs:25:9
+   |
+20 | pub struct Frame {
+   |            ----- field in this struct
+...
+25 |     pub t: f64,
+   |         ^
+   |
+   = note: `Frame` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-For more information about this error, try `rustc --explain E0599`.
-error: could not compile `urec` (bin "uRec" test) due to 1 previous error
+error: field `started` is never read
+   --> crates\app\src\editor.rs:396:9
+    |
+391 | pub struct Export {
+    |            ------ field in this struct
+...
+396 |     pub started: Instant,
+    |         ^^^^^^^
+
+error: could not compile `urec` (bin "uRec" test) due to 2 previous errors
 warning: build failed, waiting for other jobs to finish...
 ## test FAILED
 ## build
@@ -48,18 +119,28 @@ warning: build failed, waiting for other jobs to finish...
    Compiling urec-win v0.3.0 (D:\a\uRec\uRec\crates\win)
    Compiling urec v0.3.0 (D:\a\uRec\uRec\crates\app)
    Compiling urec-cli v0.3.0 (D:\a\uRec\uRec\crates\cli)
-error[E0599]: no method named `wants_keyboard_input` found for reference `&eframe::egui::Context` in the current scope
-   --> crates\app\src\ui\editor_page.rs:271:17
-    |
-271 |     if ui.ctx().wants_keyboard_input() || ed.dialog.is_some() {
-    |                 ^^^^^^^^^^^^^^^^^^^^
-    |
-help: there is a method `egui_wants_keyboard_input` with a similar name
-    |
-271 |     if ui.ctx().egui_wants_keyboard_input() || ed.dialog.is_some() {
-    |                 +++++
+error: field `t` is never read
+  --> crates\app\src\editor.rs:25:9
+   |
+20 | pub struct Frame {
+   |            ----- field in this struct
+...
+25 |     pub t: f64,
+   |         ^
+   |
+   = note: `Frame` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
 
-For more information about this error, try `rustc --explain E0599`.
-error: could not compile `urec` (bin "uRec") due to 1 previous error
+error: field `started` is never read
+   --> crates\app\src\editor.rs:396:9
+    |
+391 | pub struct Export {
+    |            ------ field in this struct
+...
+396 |     pub started: Instant,
+    |         ^^^^^^^
+
+error: could not compile `urec` (bin "uRec") due to 2 previous errors
 warning: build failed, waiting for other jobs to finish...
 ## build FAILED
