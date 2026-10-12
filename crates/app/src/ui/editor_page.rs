@@ -887,7 +887,10 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
     }
     if resp.clicked() {
         if let Some(q) = resp.interact_pointer_pos() {
-            ed.player = None;
+            // Clicking while playing keeps playing from the new spot.
+            if ed.player.take().is_some() {
+                PLAY_REQUEST.with(|r| r.set(true));
+            }
             let t = t_of(q.x, ed.scroll, ed.zoom).clamp(0.0, dur - 0.001);
             ed.playhead = t;
             if q.y >= lane.min.y {
