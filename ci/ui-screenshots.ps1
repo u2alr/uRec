@@ -103,6 +103,7 @@ foreach ($control in "thumbnail", "play", "reveal", "edit") {
     $pos = if (Test-Path $hit) { Get-Content $hit | Where-Object { $_ -like "$control *" } | Select-Object -First 1 } else { $null }
     if ($pos) {
         $parts = $pos -split " "
+        Shot "library-before-$control"
         [UrecMouse]::Click([int]$parts[1], [int]$parts[2])
         Start-Sleep -Seconds 3
         if ($control -eq "edit") { Shot "library-click-edit" }
@@ -110,9 +111,8 @@ foreach ($control in "thumbnail", "play", "reveal", "edit") {
     $got = (Test-Path "$hit.clicks") -and (@(Get-Content "$hit.clicks") -contains $control)
     $results += "$control=$(if ($got) { 'PASS' } else { 'FAIL' })$(if (-not $pos) { ' (no position)' })"
     if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
-    # Close whatever the click opened (a player or "open with" window, a folder window).
-    $since = $proc.StartTime
-    Get-Process -ErrorAction SilentlyContinue | Where-Object { $_.MainWindowTitle -and $_.ProcessName -notin "explorer", "pwsh", "powershell" -and $(try { $_.StartTime -ge $since } catch { $false }) } | Stop-Process -Force -ErrorAction SilentlyContinue
+    # Close the folder window "Show in folder" opened. (With the test hook on, Play and the
+    # thumbnail record the click but don't open a player.)
     try { (New-Object -ComObject Shell.Application).Windows() | ForEach-Object { $_.Quit() } } catch {}
     Start-Sleep -Seconds 1
 }

@@ -358,7 +358,7 @@ fn thumbnail(app: &mut App, ui: &mut egui::Ui, item: &Item, selecting: bool, fir
     }
     if thumb_resp.clicked() {
         hitmap::clicked(first, "thumbnail");
-        if still_there(app, item) {
+        if still_there(app, item) && !hitmap::active() {
             open_file(&item.path);
         }
     }
@@ -439,7 +439,7 @@ fn details(app: &mut App, ui: &mut egui::Ui, item: &Item, offset: i64, selecting
         }
         if r.clicked() {
             hitmap::clicked(first, "play");
-            if still_there(app, item) {
+            if still_there(app, item) && !hitmap::active() {
                 open_file(&item.path);
             }
         }
@@ -567,6 +567,11 @@ mod hitmap {
     fn target() -> Option<&'static str> {
         static T: OnceLock<Option<String>> = OnceLock::new();
         T.get_or_init(|| std::env::var("UREC_HITMAP").ok().filter(|s| !s.is_empty())).as_deref()
+    }
+
+    /// The test only checks that clicks arrive; it doesn't open a video player on the CI machine.
+    pub fn active() -> bool {
+        target().is_some()
     }
 
     pub fn place(ui: &egui::Ui, name: &str, r: egui::Rect) {
