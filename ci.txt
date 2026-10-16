@@ -1,57 +1,556 @@
-commit 9acfbf02a6a05d1addeca572d41b9bd808270cfd run 38263038787
-## rustc: rustc 1.98.1 (48a229cea 2026-09-01)
+commit f12a6d9018dd8b280de061fb9c82b60bdc4b2c76 run 38841028865
+## rustc: rustc 1.99.0 (b940084d7 2026-09-28)
 ## fmt
 ## clippy
     Updating crates.io index
+ Downloading crates ...
+  Downloaded cursor-icon v1.2.0
+  Downloaded quick-error v2.0.1
+  Downloaded renderdoc-sys v1.1.0
+  Downloaded serde_spanned v1.1.2
+  Downloaded unicode-general-category v1.1.0
+  Downloaded adler2 v2.0.1
+  Downloaded byteorder-lite v0.1.0
+  Downloaded cfg-if v1.0.5
+  Downloaded semver v1.0.28
+  Downloaded unicode-ident v1.0.26
+  Downloaded static_assertions v1.1.0
+  Downloaded termcolor v1.4.1
+  Downloaded serde_derive v1.0.229
+  Downloaded dpi v0.1.2
+  Downloaded smallvec v1.16.3
+  Downloaded smol_str v0.2.2
+  Downloaded spirv v0.4.0+sdk-1.4.341.0
+  Downloaded cfg_aliases v0.2.2
+  Downloaded document-features v0.2.12
+  Downloaded embed-resource v3.0.12
+  Downloaded equivalent v1.0.2
+  Downloaded quote v1.0.47
+  Downloaded read-fonts v0.41.0
+  Downloaded scopeguard v1.2.0
+  Downloaded self_cell v1.3.0
+  Downloaded serde v1.0.229
+  Downloaded autocfg v1.5.1
+  Downloaded bytemuck_derive v1.12.1
+  Downloaded shlex v2.0.1
+  Downloaded skrifa v0.44.0
+  Downloaded range-alloc v0.1.5
+  Downloaded glutin_wgl_sys v0.6.1
+  Downloaded presser v0.3.1
+  Downloaded accesskit v0.24.1
+  Downloaded rustc-hash v2.1.3
+  Downloaded rustc_version v0.4.1
+  Downloaded serde_core v1.0.229
+  Downloaded serde_json v1.0.152
+  Downloaded either v1.19.0
+  Downloaded fax v0.2.7
+  Downloaded foldhash v0.2.0
+  Downloaded thiserror-impl v2.0.21
+  Downloaded ahash v0.8.12
+  Downloaded arrayvec v0.7.8
+  Downloaded raw-window-handle v0.6.2
+  Downloaded tracing-core v0.1.36
+  Downloaded zune-core v0.5.3
+  Downloaded simd-adler32 v0.3.10
+  Downloaded windows-strings v0.5.1
+  Downloaded toml v1.1.8+spec-1.1.0
+  Downloaded bit-set v0.10.0
+  Downloaded bit-vec v0.9.1
+  Downloaded gl_generator v0.14.0
+  Downloaded linebender_resource_handle v0.1.1
+  Downloaded naga-types v30.0.1
+  Downloaded vswhom-sys v0.1.3
+  Downloaded wgpu-naga-bridge v30.0.1
+  Downloaded windows-link v0.2.1
+  Downloaded windows-targets v0.52.6
+  Downloaded clipboard-win v5.4.1
+  Downloaded crc32fast v1.5.2
+  Downloaded error-code v3.4.0
+  Downloaded web-time v1.1.0
+  Downloaded glutin-winit v0.5.0
+  Downloaded glutin_egl_sys v0.7.1
+  Downloaded nohash-hasher v0.2.0
+  Downloaded pollster v1.0.1
+  Downloaded profiling v1.0.18
+  Downloaded itoa v1.0.18
+  Downloaded arboard v3.6.1
+  Downloaded bitflags v2.13.2
+  Downloaded bytemuck v1.25.2
+  Downloaded codespan-reporting v0.13.1
+  Downloaded glifo v0.2.0
+  Downloaded egui-winit v0.36.2
+  Downloaded guillotiere v0.7.0
+  Downloaded jobserver v0.1.35
+  Downloaded khronos-egl v6.0.0
+  Downloaded litrs v1.0.0
+  Downloaded lock_api v0.4.14
+  Downloaded ecolor v0.36.2
+  Downloaded version_check v0.9.5
+  Downloaded windows-collections v0.3.2
+  Downloaded windows-implement v0.60.2
+  Downloaded fdeflate v0.3.7
+  Downloaded libloading v0.8.9
+  Downloaded miniz_oxide v0.9.1
+  Downloaded peniko v0.6.1
+  Downloaded pkg-config v0.3.34
+  Downloaded polycool v0.4.0
+  Downloaded allocator-api2 v0.2.21
+  Downloaded color v0.3.3
+  Downloaded crossbeam-utils v0.8.23
+  Downloaded egui_glow v0.36.2
+  Downloaded emath v0.36.2
+  Downloaded font-types v0.12.6
+  Downloaded parking_lot_core v0.9.12
+  Downloaded pin-project-lite v0.2.17
+  Downloaded find-msvc-tools v0.1.14
+  Downloaded ordered-float v5.5.0
+  Downloaded windows-numerics v0.3.1
+  Downloaded windows-threading v0.2.1
+  Downloaded euclid v0.22.14
+  Downloaded half v2.7.1
+  Downloaded num-traits v0.2.19
+  Downloaded once_cell v1.21.4
+  Downloaded parking_lot v0.12.5
+  Downloaded proc-macro2 v1.0.107
+  Downloaded type-map v0.5.1
+  Downloaded vswhom v0.1.0
+  Downloaded wgpu-core-deps-windows-linux-android v30.0.1
+  Downloaded winapi-util v0.1.11
+  Downloaded windows-interface v0.59.3
+  Downloaded windows-result v0.4.1
+  Downloaded egui-wgpu v0.36.2
+  Downloaded log v0.4.34
+  Downloaded rustc-hash v1.1.0
+  Downloaded thiserror v2.0.21
+  Downloaded windows-core v0.62.2
+  Downloaded windows-targets v0.53.5
+  Downloaded crossbeam-channel v0.5.17
+  Downloaded glutin v0.32.3
+  Downloaded indexmap v2.14.2
+  Downloaded toml_datetime v1.1.2+spec-1.1.0
+  Downloaded toml_parser v1.1.5+spec-1.1.0
+  Downloaded tray-icon v0.26.1
+  Downloaded windows-future v0.3.2
+  Downloaded winreg v0.56.0
+  Downloaded xml-rs v0.8.29
+  Downloaded zmij v1.0.23
+  Downloaded toml_writer v1.1.3+spec-1.1.0
+  Downloaded unicode-segmentation v1.13.3
+  Downloaded weezl v0.1.12
+  Downloaded gpu-allocator v0.28.0
+  Downloaded miniz_oxide v0.8.9
+  Downloaded uuid v1.28.0
+  Downloaded zune-jpeg v0.5.15
+  Downloaded flate2 v1.1.10
+  Downloaded getrandom v0.4.3
+  Downloaded tiff v0.11.3
+  Downloaded memchr v2.8.3
+  Downloaded cc v1.7.0
+  Downloaded epaint v0.36.2
+  Downloaded eframe v0.36.2
+  Downloaded keyboard-types v0.8.3
+  Downloaded png v0.18.1
+  Downloaded vello_common v0.1.0
+  Downloaded vello_cpu v0.1.0
+  Downloaded zerocopy-derive v0.8.62
+  Downloaded hashbrown v0.17.1
+  Downloaded unicode-width v0.2.2
+  Downloaded wgpu-types v30.0.1
+  Downloaded glow v0.17.0
+  Downloaded libm v0.2.16
+  Downloaded muda v0.21.2
+  Downloaded hashbrown v0.16.1
+  Downloaded itertools v0.15.0
+  Downloaded kurbo v0.13.1
+  Downloaded moxcms v0.8.1
+  Downloaded winnow v1.0.4
+  Downloaded zlib-rs v0.6.8
+  Downloaded syn v2.0.119
+  Downloaded syn v3.0.7
+  Downloaded wgpu v30.0.1
+  Downloaded fearless_simd v0.4.1
+  Downloaded zerocopy v0.8.62
+  Downloaded harfrust v0.12.0
+  Downloaded image v0.25.10
+  Downloaded tracing v0.1.44
+  Downloaded wgpu-core v30.0.1
+  Downloaded ash v0.38.0+1.3.281
+  Downloaded egui v0.36.2
+  Downloaded wgpu-hal v30.0.1
+  Downloaded khronos_api v3.1.0
+  Downloaded winit v0.30.13
+  Downloaded epaint_default_fonts v0.36.2
+  Downloaded windows_x86_64_msvc v0.52.6
+  Downloaded libc v0.2.190
+  Downloaded windows_x86_64_msvc v0.53.1
+  Downloaded naga v30.0.1
+  Downloaded pxfm v0.1.30
+  Downloaded windows-sys v0.61.2
+  Downloaded windows-sys v0.60.2
+  Downloaded windows-sys v0.52.0
+  Downloaded windows v0.62.2
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.26
+   Compiling quote v1.0.47
+   Compiling libm v0.2.16
+   Compiling autocfg v1.5.1
+   Compiling num-traits v0.2.19
+   Compiling thiserror v2.0.21
+   Compiling cfg_aliases v0.2.2
+    Checking windows-link v0.2.1
+   Compiling zerocopy v0.8.62
+   Compiling khronos_api v3.1.0
+   Compiling parking_lot_core v0.9.12
+   Compiling xml-rs v0.8.29
+   Compiling log v0.4.34
+   Compiling libc v0.2.190
+    Checking bitflags v2.13.2
+   Compiling gl_generator v0.14.0
+   Compiling syn v3.0.7
+   Compiling syn v2.0.119
+   Compiling windows_x86_64_msvc v0.52.6
+    Checking cfg-if v1.0.5
+   Compiling glutin_wgl_sys v0.6.1
+    Checking once_cell v1.21.4
+    Checking foldhash v0.2.0
+   Compiling bytemuck_derive v1.12.1
+   Compiling thiserror-impl v2.0.21
+   Compiling naga v30.0.1
+   Compiling zerocopy-derive v0.8.62
+   Compiling windows-interface v0.59.3
+   Compiling windows-implement v0.60.2
+    Checking bytemuck v1.25.2
+   Compiling ash v0.38.0+1.3.281
+    Checking smallvec v1.16.3
+    Checking arrayvec v0.7.8
+   Compiling version_check v0.9.5
+    Checking hashbrown v0.17.1
+   Compiling ahash v0.8.12
+   Compiling khronos-egl v6.0.0
+   Compiling crc32fast v1.5.2
+   Compiling unicode-general-category v1.1.0
+    Checking windows-result v0.4.1
+    Checking windows-strings v0.5.1
+    Checking windows-core v0.62.2
+   Compiling wgpu-hal v30.0.1
+   Compiling windows_x86_64_msvc v0.53.1
+    Checking equivalent v1.0.2
+    Checking windows-threading v0.2.1
+   Compiling winit v0.30.13
+    Checking raw-window-handle v0.6.2
+    Checking scopeguard v1.2.0
+    Checking lock_api v0.4.14
+    Checking windows-future v0.3.2
+    Checking windows-collections v0.3.2
+    Checking windows-numerics v0.3.1
+    Checking libloading v0.8.9
+    Checking parking_lot v0.12.5
+    Checking windows v0.62.2
+    Checking indexmap v2.14.2
+    Checking polycool v0.4.0
+   Compiling glutin_egl_sys v0.7.1
+   Compiling wgpu-core v30.0.1
+    Checking profiling v1.0.18
+   Compiling crossbeam-utils v0.8.23
+   Compiling litrs v1.0.0
+    Checking rustc-hash v1.1.0
+    Checking naga-types v30.0.1
+    Checking kurbo v0.13.1
+   Compiling document-features v0.2.12
+    Checking color v0.3.3
+    Checking font-types v0.12.6
+    Checking euclid v0.22.14
+    Checking unicode-width v0.2.2
+   Compiling find-msvc-tools v0.1.14
+    Checking bit-vec v0.9.1
+    Checking linebender_resource_handle v0.1.1
+   Compiling serde_core v1.0.229
+    Checking simd-adler32 v0.3.10
+   Compiling shlex v2.0.1
+   Compiling cc v1.7.0
+    Checking peniko v0.6.1
+    Checking bit-set v0.10.0
+    Checking codespan-reporting v0.13.1
+    Checking guillotiere v0.7.0
+    Checking windows-targets v0.52.6
+    Checking read-fonts v0.41.0
+    Checking half v2.7.1
+    Checking spirv v0.4.0+sdk-1.4.341.0
+   Compiling wgpu v30.0.1
+   Compiling glutin v0.32.3
+    Checking adler2 v2.0.1
+    Checking static_assertions v1.1.0
+    Checking allocator-api2 v0.2.21
+    Checking fearless_simd v0.4.1
+    Checking unicode-segmentation v1.13.3
+    Checking hashbrown v0.16.1
+    Checking wgpu-types v30.0.1
+    Checking vello_common v0.1.0
+   Compiling vswhom-sys v0.1.3
+    Checking windows-sys v0.52.0
+    Checking emath v0.36.2
+    Checking glow v0.17.0
+    Checking dpi v0.1.2
+    Checking presser v0.3.1
+    Checking ecolor v0.36.2
+    Checking wgpu-naga-bridge v30.0.1
+    Checking vello_cpu v0.1.0
+    Checking miniz_oxide v0.9.1
+    Checking skrifa v0.44.0
+    Checking harfrust v0.12.0
+    Checking gpu-allocator v0.28.0
+    Checking ordered-float v5.5.0
+   Compiling glutin-winit v0.5.0
+    Checking range-alloc v0.1.5
+    Checking pin-project-lite v0.2.17
+    Checking self_cell v1.3.0
+   Compiling winnow v1.0.4
+    Checking either v1.19.0
+    Checking uuid v1.28.0
+    Checking renderdoc-sys v1.1.0
+    Checking tracing-core v0.1.36
+   Compiling zmij v1.0.23
+    Checking nohash-hasher v0.2.0
+   Compiling muda v0.21.2
+    Checking epaint_default_fonts v0.36.2
+    Checking tracing v0.1.44
+    Checking epaint v0.36.2
+   Compiling windows-sys v0.61.2
+    Checking accesskit v0.24.1
+    Checking itertools v0.15.0
+   Compiling toml_parser v1.1.5+spec-1.1.0
+    Checking flate2 v1.1.10
+   Compiling toml_datetime v1.1.2+spec-1.1.0
+   Compiling serde_spanned v1.1.2
+    Checking miniz_oxide v0.8.9
+    Checking fdeflate v0.3.7
+    Checking smol_str v0.2.2
+    Checking cursor-icon v1.2.0
+   Compiling toml_writer v1.1.3+spec-1.1.0
+    Checking pxfm v0.1.30
+   Compiling semver v1.0.28
+   Compiling rustc_version v0.4.1
+    Checking wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling toml v1.1.8+spec-1.1.0
+   Compiling winreg v0.56.0
+    Checking moxcms v0.8.1
+    Checking png v0.18.1
+    Checking windows-targets v0.53.5
+   Compiling vswhom v0.1.0
+    Checking egui v0.36.2
+   Compiling serde_json v1.0.152
+    Checking byteorder-lite v0.1.0
+    Checking error-code v3.4.0
+   Compiling tray-icon v0.26.1
+   Compiling serde v1.0.229
+    Checking image v0.25.10
+    Checking clipboard-win v5.4.1
+   Compiling embed-resource v3.0.12
+    Checking windows-sys v0.60.2
+   Compiling serde_derive v1.0.229
+    Checking web-time v1.1.0
+    Checking rustc-hash v2.1.3
     Checking urec-engine v0.4.2 (D:\a\uRec\uRec\crates\engine)
+    Checking type-map v0.5.1
+    Checking crossbeam-channel v0.5.17
+    Checking arboard v3.6.1
    Compiling urec v0.4.2 (D:\a\uRec\uRec\crates\app)
+    Checking keyboard-types v0.8.3
     Checking urec-win v0.4.2 (D:\a\uRec\uRec\crates\win)
+    Checking egui-winit v0.36.2
+    Checking egui-wgpu v0.36.2
+    Checking egui_glow v0.36.2
+    Checking itoa v1.0.18
+    Checking memchr v2.8.3
+    Checking pollster v1.0.1
+    Checking eframe v0.36.2
     Checking urec-cli v0.4.2 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 23.96s
+    Finished `release` profile [optimized] target(s) in 2m 46s
 ## test
+   Compiling windows-link v0.2.1
+   Compiling bitflags v2.13.2
+   Compiling bytemuck v1.25.2
+   Compiling libm v0.2.16
+   Compiling cfg-if v1.0.5
+   Compiling thiserror v2.0.21
+   Compiling once_cell v1.21.4
+   Compiling foldhash v0.2.0
+   Compiling arrayvec v0.7.8
+   Compiling log v0.4.34
+   Compiling smallvec v1.16.3
+   Compiling hashbrown v0.17.1
+   Compiling windows-result v0.4.1
+   Compiling windows-strings v0.5.1
+   Compiling num-traits v0.2.19
+   Compiling windows-core v0.62.2
+   Compiling zerocopy v0.8.62
+   Compiling windows-threading v0.2.1
+   Compiling equivalent v1.0.2
+   Compiling windows-future v0.3.2
+   Compiling windows-collections v0.3.2
+   Compiling windows-numerics v0.3.1
+   Compiling raw-window-handle v0.6.2
+   Compiling scopeguard v1.2.0
+   Compiling windows v0.62.2
+   Compiling lock_api v0.4.14
+   Compiling parking_lot_core v0.9.12
+   Compiling libloading v0.8.9
+   Compiling parking_lot v0.12.5
+   Compiling indexmap v2.14.2
+   Compiling polycool v0.4.0
+   Compiling profiling v1.0.18
+   Compiling rustc-hash v1.1.0
+   Compiling naga-types v30.0.1
+   Compiling kurbo v0.13.1
+   Compiling windows_x86_64_msvc v0.52.6
+   Compiling euclid v0.22.14
+   Compiling font-types v0.12.6
+   Compiling color v0.3.3
+   Compiling simd-adler32 v0.3.10
+   Compiling unicode-width v0.2.2
+   Compiling linebender_resource_handle v0.1.1
+   Compiling bit-vec v0.9.1
+   Compiling codespan-reporting v0.13.1
+   Compiling peniko v0.6.1
+   Compiling bit-set v0.10.0
+   Compiling half v2.7.1
+   Compiling read-fonts v0.41.0
+   Compiling guillotiere v0.7.0
+   Compiling windows-targets v0.52.6
+   Compiling glutin_wgl_sys v0.6.1
+   Compiling spirv v0.4.0+sdk-1.4.341.0
+   Compiling fearless_simd v0.4.1
+   Compiling static_assertions v1.1.0
+   Compiling adler2 v2.0.1
+   Compiling unicode-ident v1.0.26
+   Compiling unicode-segmentation v1.13.3
+   Compiling allocator-api2 v0.2.21
+   Compiling hashbrown v0.16.1
+   Compiling naga v30.0.1
+   Compiling vello_common v0.1.0
+   Compiling wgpu-types v30.0.1
+   Compiling libc v0.2.190
+   Compiling windows-sys v0.52.0
+   Compiling ash v0.38.0+1.3.281
+   Compiling emath v0.36.2
+   Compiling glow v0.17.0
+   Compiling dpi v0.1.2
+   Compiling presser v0.3.1
+   Compiling ecolor v0.36.2
+   Compiling ahash v0.8.12
+   Compiling wgpu-naga-bridge v30.0.1
+   Compiling khronos-egl v6.0.0
+   Compiling unicode-general-category v1.1.0
+   Compiling harfrust v0.12.0
+   Compiling skrifa v0.44.0
+   Compiling gpu-allocator v0.28.0
+   Compiling vello_cpu v0.1.0
+   Compiling crc32fast v1.5.2
+   Compiling miniz_oxide v0.9.1
+   Compiling ordered-float v5.5.0
+   Compiling pin-project-lite v0.2.17
+   Compiling tracing-core v0.1.36
+   Compiling uuid v1.28.0
+   Compiling self_cell v1.3.0
+   Compiling epaint_default_fonts v0.36.2
+   Compiling nohash-hasher v0.2.0
+   Compiling renderdoc-sys v1.1.0
+   Compiling either v1.19.0
+   Compiling range-alloc v0.1.5
+   Compiling wgpu-hal v30.0.1
+   Compiling itertools v0.15.0
+   Compiling epaint v0.36.2
+   Compiling accesskit v0.24.1
+   Compiling tracing v0.1.44
+   Compiling flate2 v1.1.10
+   Compiling windows_x86_64_msvc v0.53.1
+   Compiling miniz_oxide v0.8.9
+   Compiling fdeflate v0.3.7
    Compiling urec-engine v0.4.2 (D:\a\uRec\uRec\crates\engine)
-   Compiling urec v0.4.2 (D:\a\uRec\uRec\crates\app)
+   Compiling smol_str v0.2.2
+   Compiling pxfm v0.1.30
+   Compiling cursor-icon v1.2.0
+   Compiling winit v0.30.13
+   Compiling moxcms v0.8.1
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling png v0.18.1
+   Compiling windows-targets v0.53.5
+   Compiling egui v0.36.2
+   Compiling error-code v3.4.0
+   Compiling byteorder-lite v0.1.0
+   Compiling image v0.25.10
+   Compiling clipboard-win v5.4.1
+   Compiling windows-sys v0.60.2
+   Compiling glutin_egl_sys v0.7.1
+   Compiling wgpu-core v30.0.1
+   Compiling crossbeam-utils v0.8.23
+   Compiling windows-sys v0.61.2
+   Compiling web-time v1.1.0
+   Compiling rustc-hash v2.1.3
+   Compiling type-map v0.5.1
+   Compiling crossbeam-channel v0.5.17
+   Compiling glutin v0.32.3
+   Compiling wgpu v30.0.1
+   Compiling arboard v3.6.1
+   Compiling serde_core v1.0.229
    Compiling urec-win v0.4.2 (D:\a\uRec\uRec\crates\win)
+   Compiling keyboard-types v0.8.3
+   Compiling muda v0.21.2
+   Compiling egui-wgpu v0.36.2
+   Compiling urec v0.4.2 (D:\a\uRec\uRec\crates\app)
+   Compiling egui-winit v0.36.2
+   Compiling glutin-winit v0.5.0
+   Compiling zmij v1.0.23
+   Compiling egui_glow v0.36.2
+   Compiling itoa v1.0.18
+   Compiling memchr v2.8.3
+   Compiling pollster v1.0.1
+   Compiling eframe v0.36.2
+   Compiling serde_json v1.0.152
+   Compiling serde v1.0.229
+   Compiling tray-icon v0.26.1
    Compiling urec-cli v0.4.2 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 37.54s
-     Running unittests src\main.rs (target\release\deps\uRec-08fa98cc1d36c27d.exe)
+    Finished `release` profile [optimized] target(s) in 3m 17s
+     Running unittests src\main.rs (target\release\deps\uRec-d5d193a21c1cab3c.exe)
 
-running 16 tests
+running 17 tests
 test editor::tests::preview_sizes ... ok
 test library::tests::durations ... ok
-test library::tests::parses_ffmpeg_info ... ok
 test library::tests::retention_picks_only_old_unstarred_clips ... ok
+test library::tests::parses_ffmpeg_info ... ok
+test library::tests::typed_extension_is_not_doubled ... ok
 test library::tests::diagnoses_unreadable_files ... ok
 test settings::tests::accepts_a_byte_order_mark ... ok
-test library::tests::scans_nested_and_skips_partials ... ok
 test settings::tests::corrupt_file_is_quarantined ... ok
-test settings::tests::video_conversion_roundtrip ... ok
 test settings::tests::partial_and_out_of_range_values ... ok
+test settings::tests::video_conversion_roundtrip ... ok
 test update::tests::release_json ... ok
 test update::tests::signature_rules ... ok
 test update::tests::sums ... ok
 test update::tests::versions ... ok
 test settings::tests::migrates_v1_to_v2_without_nagging_existing_users ... ok
 test settings::tests::roundtrip_and_defaults ... ok
+test library::tests::scans_nested_and_skips_partials ... ok
 
-test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+test result: ok. 17 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
 
-     Running unittests src\main.rs (target\release\deps\urec_cli-c360b2890c5640c6.exe)
+     Running unittests src\main.rs (target\release\deps\urec_cli-8bf92d9d045ad8de.exe)
 
 running 0 tests
 
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
-     Running unittests src\lib.rs (target\release\deps\urec_engine-e2f161357eb1ff7c.exe)
+     Running unittests src\lib.rs (target\release\deps\urec_engine-1daa2bfd1a831a4c.exe)
 
-running 41 tests
+running 42 tests
 test edit::tests::crop_rectangles ... ok
 test edit::tests::cut_this_this_and_this ... ok
+test edit::tests::dropping_a_piece_lands_where_the_marker_was ... ok
 test edit::tests::export_command ... ok
 test edit::tests::helpers ... ok
 test edit::tests::lossless_rules ... ok
-test edit::tests::trim_reorder_and_drag_is_one_undo_step ... ok
 test edit::tests::preview_starts_at_the_playhead ... ok
+test edit::tests::trim_reorder_and_drag_is_one_undo_step ... ok
 test edit::tests::undo_redo_and_limits ... ok
 test encoder::tests::args_have_rate_and_keyframes ... ok
 test encoder::tests::constant_quality_args ... ok
@@ -69,8 +568,8 @@ test pipeline::tests::region_crops ... ok
 test pipeline::tests::system_path_downloads_once ... ok
 test pipeline::tests::zero_copy_native_has_no_filters ... ok
 test naming::tests::unique_names ... ok
-test process::tests::parses_progress_blocks ... ok
 test mp4check::tests::rejects_truncated_unfinished_and_garbage ... ok
+test process::tests::parses_progress_blocks ... ok
 test replay::tests::parses_and_selects ... ok
 test replay::tests::ring_math ... ok
 test replay::tests::temp_names_are_unique ... ok
@@ -83,31 +582,31 @@ test video::tests::bytes_formatting ... ok
 test video::tests::output_size_never_upscales ... ok
 test video::tests::presets_respect_machine ... ok
 test video::tests::validate_catches_limits ... ok
-test replay::tests::cleanup_touches_only_temp_files ... ok
 test replay::tests::copy_drops_recycled_head_but_not_holes ... ok
+test replay::tests::cleanup_touches_only_temp_files ... ok
 test replay::tests::concurrent_placement_never_overwrites ... ok
 
-test result: ok. 41 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.09s
+test result: ok. 42 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
 
-     Running unittests src\lib.rs (target\release\deps\urec_win-10de9ff482fbde99.exe)
+     Running unittests src\lib.rs (target\release\deps\urec_win-00d95e3e7b50beb8.exe)
 
 running 16 tests
 test http::tests::urls ... ok
 test notify::tests::rejects_malformed_links ... ok
 test notify::tests::uri_round_trip ... ok
-test overlay::tests::dot_is_round_and_symmetric ... ok
 test notify::tests::xml_is_escaped_and_has_actions ... ok
-test notify::tests::only_videos_inside_the_recordings_folder ... ok
+test overlay::tests::dot_is_round_and_symmetric ... ok
 test pill::tests::failure_holds_longer ... ok
-test pill::tests::check_and_cross_differ_in_shape ... ok
-test pill::tests::closed_pill_is_the_dot_and_open_pill_has_message ... ok
 test pill::tests::newer_failure_replaces_success_and_older_success_never_hides_failure ... ok
+test pill::tests::closed_pill_is_the_dot_and_open_pill_has_message ... ok
 test pill::tests::reduced_motion_jumps_between_states ... ok
+test pill::tests::check_and_cross_differ_in_shape ... ok
 test pill::tests::repeated_successes_extend_instead_of_duplicating ... ok
 test pill::tests::result_during_collapse_regrows_smoothly ... ok
 test pill::tests::saving_breathes_then_stops ... ok
 test pill::tests::success_timeline ... ok
 test tests::app_names ... ok
+test notify::tests::only_videos_inside_the_recordings_folder ... ok
 
 test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
@@ -115,7 +614,7 @@ test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fin
 
 running 0 tests
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
 
    Doc-tests urec_win
 
@@ -124,29 +623,168 @@ running 0 tests
 test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
 ## build
+   Compiling windows-link v0.2.1
+   Compiling bitflags v2.13.2
+   Compiling bytemuck v1.25.2
+   Compiling libm v0.2.16
+   Compiling cfg-if v1.0.5
+   Compiling thiserror v2.0.21
+   Compiling foldhash v0.2.0
+   Compiling once_cell v1.21.4
+   Compiling arrayvec v0.7.8
+   Compiling smallvec v1.16.3
+   Compiling log v0.4.34
+   Compiling hashbrown v0.17.1
+   Compiling zerocopy v0.8.62
+   Compiling windows-strings v0.5.1
+   Compiling num-traits v0.2.19
+   Compiling windows-result v0.4.1
+   Compiling windows-core v0.62.2
+   Compiling equivalent v1.0.2
+   Compiling raw-window-handle v0.6.2
+   Compiling scopeguard v1.2.0
+   Compiling lock_api v0.4.14
+   Compiling parking_lot_core v0.9.12
+   Compiling windows-threading v0.2.1
+   Compiling libloading v0.8.9
+   Compiling windows-future v0.3.2
+   Compiling parking_lot v0.12.5
+   Compiling windows-numerics v0.3.1
+   Compiling windows-collections v0.3.2
+   Compiling indexmap v2.14.2
+   Compiling polycool v0.4.0
+   Compiling rustc-hash v1.1.0
+   Compiling profiling v1.0.18
+   Compiling windows v0.62.2
+   Compiling naga-types v30.0.1
+   Compiling kurbo v0.13.1
+   Compiling windows_x86_64_msvc v0.52.6
+   Compiling euclid v0.22.14
+   Compiling color v0.3.3
+   Compiling font-types v0.12.6
+   Compiling bit-vec v0.9.1
+   Compiling unicode-width v0.2.2
+   Compiling linebender_resource_handle v0.1.1
+   Compiling simd-adler32 v0.3.10
+   Compiling peniko v0.6.1
+   Compiling codespan-reporting v0.13.1
+   Compiling bit-set v0.10.0
+   Compiling read-fonts v0.41.0
+   Compiling half v2.7.1
+   Compiling guillotiere v0.7.0
+   Compiling windows-targets v0.52.6
+   Compiling glutin_wgl_sys v0.6.1
+   Compiling spirv v0.4.0+sdk-1.4.341.0
+   Compiling unicode-segmentation v1.13.3
+   Compiling allocator-api2 v0.2.21
+   Compiling adler2 v2.0.1
+   Compiling static_assertions v1.1.0
+   Compiling unicode-ident v1.0.26
+   Compiling fearless_simd v0.4.1
+   Compiling naga v30.0.1
+   Compiling vello_common v0.1.0
+   Compiling wgpu-types v30.0.1
+   Compiling hashbrown v0.16.1
+   Compiling libc v0.2.190
+   Compiling windows-sys v0.52.0
+   Compiling ash v0.38.0+1.3.281
+   Compiling emath v0.36.2
+   Compiling presser v0.3.1
+   Compiling glow v0.17.0
+   Compiling dpi v0.1.2
+   Compiling ecolor v0.36.2
+   Compiling ahash v0.8.12
+   Compiling khronos-egl v6.0.0
+   Compiling wgpu-naga-bridge v30.0.1
+   Compiling crc32fast v1.5.2
+   Compiling vello_cpu v0.1.0
+   Compiling harfrust v0.12.0
+   Compiling skrifa v0.44.0
+   Compiling gpu-allocator v0.28.0
+   Compiling unicode-general-category v1.1.0
+   Compiling miniz_oxide v0.9.1
+   Compiling ordered-float v5.5.0
+   Compiling tracing-core v0.1.36
+   Compiling uuid v1.28.0
+   Compiling either v1.19.0
+   Compiling nohash-hasher v0.2.0
+   Compiling renderdoc-sys v1.1.0
+   Compiling epaint_default_fonts v0.36.2
+   Compiling pin-project-lite v0.2.17
+   Compiling self_cell v1.3.0
+   Compiling range-alloc v0.1.5
+   Compiling epaint v0.36.2
+   Compiling wgpu-hal v30.0.1
+   Compiling tracing v0.1.44
+   Compiling itertools v0.15.0
+   Compiling accesskit v0.24.1
+   Compiling flate2 v1.1.10
+   Compiling windows_x86_64_msvc v0.53.1
+   Compiling miniz_oxide v0.8.9
+   Compiling fdeflate v0.3.7
+   Compiling cursor-icon v1.2.0
+   Compiling pxfm v0.1.30
+   Compiling smol_str v0.2.2
+   Compiling winit v0.30.13
+   Compiling png v0.18.1
+   Compiling moxcms v0.8.1
+   Compiling windows-targets v0.53.5
+   Compiling egui v0.36.2
+   Compiling wgpu-core-deps-windows-linux-android v30.0.1
+   Compiling error-code v3.4.0
+   Compiling byteorder-lite v0.1.0
+   Compiling clipboard-win v5.4.1
+   Compiling wgpu-core v30.0.1
+   Compiling image v0.25.10
+   Compiling windows-sys v0.60.2
+   Compiling glutin_egl_sys v0.7.1
+   Compiling crossbeam-utils v0.8.23
+   Compiling windows-sys v0.61.2
+   Compiling web-time v1.1.0
+   Compiling rustc-hash v2.1.3
+   Compiling type-map v0.5.1
+   Compiling crossbeam-channel v0.5.17
+   Compiling glutin v0.32.3
+   Compiling arboard v3.6.1
+   Compiling wgpu v30.0.1
+   Compiling serde_core v1.0.229
+   Compiling keyboard-types v0.8.3
    Compiling urec-engine v0.4.2 (D:\a\uRec\uRec\crates\engine)
+   Compiling muda v0.21.2
    Compiling urec-win v0.4.2 (D:\a\uRec\uRec\crates\win)
+   Compiling egui-wgpu v0.36.2
+   Compiling egui-winit v0.36.2
+   Compiling glutin-winit v0.5.0
+   Compiling zmij v1.0.23
+   Compiling egui_glow v0.36.2
+   Compiling memchr v2.8.3
+   Compiling itoa v1.0.18
+   Compiling pollster v1.0.1
+   Compiling eframe v0.36.2
+   Compiling serde v1.0.229
+   Compiling tray-icon v0.26.1
+   Compiling serde_json v1.0.152
    Compiling urec-cli v0.4.2 (D:\a\uRec\uRec\crates\cli)
    Compiling urec v0.4.2 (D:\a\uRec\uRec\crates\app)
-    Finished `release` profile [optimized] target(s) in 1m 42s
+    Finished `release` profile [optimized] target(s) in 4m 24s
 Screen: 1024x768
 === Probe
   ffmpeg=ffmpeg version 9.0.2-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
   encoder=h264_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=h264_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=h264_qsv     ok=false ms=103   arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=h264_mf      ok=false ms=103   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
-  encoder=libx264      ok=true ms=63    arg_error=false reason=
+  encoder=h264_amf     ok=false ms=43    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=h264_qsv     ok=false ms=124   arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=h264_mf      ok=false ms=226   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
+  encoder=libx264      ok=true ms=83    arg_error=false reason=
   encoder=h264_mf      ok=true ms=144   arg_error=false reason=
-  encoder=hevc_nvenc   ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
+  encoder=hevc_nvenc   ok=false ms=43    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
   encoder=hevc_amf     ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=hevc_qsv     ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=hevc_qsv     ok=false ms=103   arg_error=false reason=No Intel Quick Sync hardware or driver found.
   encoder=hevc_mf      ok=false ms=63    arg_error=false reason=Windows has no hardware encoder for H.265 (HEVC) on this PC.
-  encoder=libx265      ok=true ms=103   arg_error=false reason=
-  encoder=hevc_mf      ok=false ms=62    arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
+  encoder=libx265      ok=true ms=104   arg_error=false reason=
+  encoder=hevc_mf      ok=false ms=63    arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
   encoder=av1_nvenc    ok=false ms=42    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
   encoder=av1_amf      ok=false ms=42    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=av1_qsv      ok=false ms=83    arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=av1_qsv      ok=false ms=103   arg_error=false reason=No Intel Quick Sync hardware or driver found.
   encoder=av1_mf       ok=false ms=63    arg_error=false reason=Windows has no hardware encoder for AV1 on this PC.
   best_h264=CPU (x264/x265) (H.264 (AVC))
   best_hevc=CPU (x264/x265) (H.265 (HEVC))
@@ -158,25 +796,25 @@ T01b PASS Constant-quality argument sets (x264/x265 CRF, NVENC CQ, AMF CQP, QSV 
 === Invalid settings are rejected
 T09 PASS Oversized H.264 resolution is refused with a clear message :: error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
 === Instant replay
-T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1879ms ring_files=9/9 
-T19 PASS 4 simultaneous replay saves: 4 separate complete clips, none overwritten, no leftovers :: clips=4 [Desktop Replay (2).mp4, Desktop Replay (3).mp4, Desktop Replay (4).mp4, Desktop Replay.mp4] bad=[] temp=0 stages_left=0 total=1958ms
-T20 PASS 150 s Instant Replay: memory stays flat, ring stays bounded, save still works :: ffmpeg private MB 20s=168.1 50s=168 80s=165 110s=168.3 140s=168.3 | host 2/1.9/1.9/2/2 | ring max 19/19 | clip 20.55s
+T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1900ms ring_files=9/9 
+T19 PASS 4 simultaneous replay saves: 4 separate complete clips, none overwritten, no leftovers :: clips=4 [Desktop Replay (2).mp4, Desktop Replay (3).mp4, Desktop Replay (4).mp4, Desktop Replay.mp4] bad=[] temp=0 stages_left=0 total=1901ms
+T20 PASS 150 s Instant Replay: memory stays flat, ring stays bounded, save still works :: ffmpeg private MB 20s=167.9 50s=168 80s=171.1 110s=171.1 140s=171.3 | host 2/1.9/1.9/2/2 | ring max 19/19 | clip 20.55s
 T21 PASS Signed updates: valid signature accepted; changed file, changed signature and other key refused :: good=true tampered_file=false flipped_sig=false other_key=false
-T22 PASS Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported :: VBR 2.11 MB, constant quality 0.66 MB (ratio 0.31); SSIM between them 0.996567
+T22 PASS Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported :: VBR 2.11 MB, constant quality 0.66 MB (ratio 0.31); SSIM between them 0.996461
 === Clip editor (same engine as the app's editor)
-T23 PASS Editor: cut three pieces out of a 20 s clip -> exactly 13 s, sound kept, decodes cleanly :: duration=13s audio=1 1280x720 export=2363ms
-T24 PASS Editor: join two different clips (one silent) with a 9:16 crop -> 18 s, 404x720, decodes cleanly :: duration=18s 404x720 audio=1 export=1427ms
-T25 PASS Editor: lossless export keeps both tracks, decodes cleanly, at most one keyframe interval per piece longer :: duration=17.4s (exact would be 15) audio=2 export=272ms
+T23 PASS Editor: cut three pieces out of a 20 s clip -> exactly 13 s, sound kept, decodes cleanly :: duration=13s audio=1 1280x720 export=2728ms
+T24 PASS Editor: join two different clips (one silent) with a 9:16 crop -> 18 s, 404x720, decodes cleanly :: duration=18s 404x720 audio=1 export=1636ms
+T25 PASS Editor: lossless export keeps both tracks, decodes cleanly, at most one keyframe interval per piece longer :: duration=17.4s (exact would be 15) audio=2 export=294ms
 T26 PASS Editor: exporting to an existing name never overwrites it; muted export has no sound :: second file: ed-cut (2).mp4, audio=0; first still 13s
 === Repeated start/stop
-T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.1s, 3.13s, 3.13s, 3.13s, 3.2s leftover=0
+T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.13s, 3.13s, 3.13s, 3.1s, 3.1s leftover=0
 === Devices
   windows_build=Some(26100) wgc=true
   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
   window: 'C:\ProgramData\GitHub\HostedComputeAgent\hosted-compute-agent' exe=WindowsTerminal app=WindowsTerminal Rect { x: 25, y: 26, width: 1030, height: 628 }
   audio_out: Speakers (VB-Audio Virtual Cable) default=true
   audio_in: CABLE Output (VB-Audio Virtual Cable) default=true
-  disk_free=152 GB of 161 GB
+  disk_free=155 GB of 161 GB
 T12 PASS Monitor enumeration finds the primary screen at its real size :: monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
   audio outputs=1 inputs=1
 === Audio
@@ -184,12 +822,12 @@ T13 PASS Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone :: s
 T14 PASS Separate tracks: one per working source (mic present: False) :: tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
 T15 PASS Microphone: recorded only if it really initialized; recording works either way :: mic=Failed { reason: "Access is denied." } tracks=0
 === Audio/video sync
-  flash window up after 1.2 s
-  video flash onsets: 1.933333, 3.933333, 5.933333, 7.933333, 9.933333, 11.933333
-  audio beep onsets:  1.9095, 3.87925, 5.875917, 7.875375, 9.876125, 11.885167
-T17 PASS Audio/video sync: flash + beep every 2 s, audio offset within 100 ms :: pairs=6 offsets_ms=[-24, -54, -57, -58, -57, -48] median=-54 ms (positive = audio later)
+  flash window up after 2 s
+  video flash onsets: 1.833333, 3.833333, 5.833333, 7.833333, 9.833333, 11.833333
+  audio beep onsets:  1.829375, 3.813104, 5.809771, 7.808104, 9.812938, 11.801271
+T17 PASS Audio/video sync: flash + beep every 2 s, audio offset within 100 ms :: pairs=6 offsets_ms=[-4, -20, -24, -25, -20, -32] median=-20 ms (positive = audio later)
 === Window capture
-T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=127 output=D:\a\_temp\urec-it\T16.mp4
+T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=152 output=D:\a\_temp\urec-it\T16.mp4
 === Show in folder / Open folder
 T18 PASS Show in folder (path with spaces) and Open folder open the right Explorer folder :: explorer windows: D:\a\_temp\urec-it\Folder With Spaces | D:\a\_temp\urec-it\ring
 T27 PASS Copy puts the video files on the clipboard (paste into a chat or folder) :: clipboard: D:\a\_temp\urec-it\copy me 1.mp4 | D:\a\_temp\urec-it\copy me 2.mp4
@@ -199,46 +837,46 @@ Id   Test                                                                       
 --   ----                                                                                                          ------ ------
 T01  Encoder probe: every generated argument set is accepted by FFmpeg                                             PASS   best h264: 
 T01b Constant-quality argument sets (x264/x265 CRF, NVENC CQ, AMF CQP, QSV ICQ, MF quality) are accepted by FFmpeg PASS   argument errors: 0 | encoder=libx264, encoder=h264_mf, encoder=libx265
-T02  GDI capture, x264, 720p30                                                                                     PASS   libx264 via gdi/System -> 960x720@30 6.2s 1.52MB audio=0 | 151 drop=2 dup=3 speed=0.88 startup=1161ms stop=206ms
-T03  GDI capture, Media Foundation (CPU), native 30fps, audio                                                      PASS   h264_mf via gdi/System -> 1024x768@30 6.04s 0.9MB audio=1 | 153 drop=1 dup=2 speed=1.03 startup=656ms stop=177ms
-T04  GDI capture, x264, native 60fps                                                                               PASS   libx264 via gdi/System -> 1024x768@60 5.7s 1.71MB audio=0 | 292 drop=6 dup=82 speed=0.94 startup=656ms stop=209ms
-T05  Automatic capture fallback (WGC -> DDA -> GDI)                                                                PASS   libx264 via gdi/System -> 1024x768@30 5.17s 1.21MB audio=0 | 120 drop=0 dup=0 speed=0.85 startup=1315ms stop=155ms
-T06  MKV container                                                                                                 PASS   libx264 via gdi/System -> 1024x768@30 5.23s 1.21MB audio=0 | 121 drop=0 dup=0 speed=0.86 startup=1158ms stop=216ms
-T07  HEVC via x265, 720p30                                                                                         PASS   libx265 via gdi/System -> 960x720@30 5.23s 0.81MB audio=0 | 116 drop=0 dup=1 speed=0.82 startup=1160ms stop=313ms
-T08  Custom 800x600 output (letterboxed)                                                                           PASS   libx264 via gdi/System -> 800x600@24 5.17s 0.89MB audio=0 | 93 drop=0 dup=0 speed=0.82 startup=1211ms stop=127ms
+T02  GDI capture, x264, 720p30                                                                                     PASS   libx264 via gdi/System -> 960x720@30 6.2s 1.53MB audio=0 | 151 drop=0 dup=0 speed=0.88 startup=1161ms stop=228ms
+T03  GDI capture, Media Foundation (CPU), native 30fps, audio                                                      PASS   h264_mf via gdi/System -> 1024x768@30 6.04s 0.9MB audio=1 | 152 drop=0 dup=0 speed=1.03 startup=657ms stop=177ms
+T04  GDI capture, x264, native 60fps                                                                               PASS   libx264 via gdi/System -> 1024x768@60 5.72s 1.72MB audio=0 | 291 drop=2 dup=81 speed=0.94 startup=656ms stop=203ms
+T05  Automatic capture fallback (WGC -> DDA -> GDI)                                                                PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.22MB audio=0 | 120 drop=2 dup=4 speed=0.85 startup=1370ms stop=203ms
+T06  MKV container                                                                                                 PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.21MB audio=0 | 120 drop=1 dup=2 speed=0.85 startup=1161ms stop=203ms
+T07  HEVC via x265, 720p30                                                                                         PASS   libx265 via gdi/System -> 960x720@30 5.2s 0.83MB audio=0 | 115 drop=0 dup=0 speed=0.81 startup=1164ms stop=286ms
+T08  Custom 800x600 output (letterboxed)                                                                           PASS   libx264 via gdi/System -> 800x600@24 5.21s 0.89MB audio=0 | 93 drop=0 dup=0 speed=0.82 startup=1210ms stop=167ms
 T09  Oversized H.264 resolution is refused with a clear message                                                    PASS   error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
-T10  Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded)                             PASS   clip=10.28s audio=1 save=1879ms ring_files=9/9 
+T10  Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded)                             PASS   clip=10.28s audio=1 save=1900ms ring_files=9/9 
 T19  4 simultaneous replay saves: 4 separate complete clips, none overwritten, no leftovers                        PASS   clips=4 [Desktop Replay (2).mp4, Desktop Replay (3).mp4, Desktop Replay (4).mp4, Desktop Replay.mp4] bad=[] temp=0
-                                                                                                                          stages_left=0 total=1958ms
-T20  150 s Instant Replay: memory stays flat, ring stays bounded, save still works                                 PASS   ffmpeg private MB 20s=168.1 50s=168 80s=165 110s=168.3 140s=168.3 | host 2/1.9/1.9/2/2 | ring max 19/19 | clip 20.55s
+                                                                                                                          stages_left=0 total=1901ms
+T20  150 s Instant Replay: memory stays flat, ring stays bounded, save still works                                 PASS   ffmpeg private MB 20s=167.9 50s=168 80s=171.1 110s=171.1 140s=171.3 | host 2/1.9/1.9/2/2 | ring max 19/19 | clip 20.55s
 T21  Signed updates: valid signature accepted; changed file, changed signature and other key refused               PASS   good=true tampered_file=false flipped_sig=false other_key=false
-T22  Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported     PASS   VBR 2.11 MB, constant quality 0.66 MB (ratio 0.31); SSIM between them 0.996567
-T23  Editor: cut three pieces out of a 20 s clip -> exactly 13 s, sound kept, decodes cleanly                      PASS   duration=13s audio=1 1280x720 export=2363ms
-T24  Editor: join two different clips (one silent) with a 9:16 crop -> 18 s, 404x720, decodes cleanly              PASS   duration=18s 404x720 audio=1 export=1427ms
-T25  Editor: lossless export keeps both tracks, decodes cleanly, at most one keyframe interval per piece longer    PASS   duration=17.4s (exact would be 15) audio=2 export=272ms
+T22  Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported     PASS   VBR 2.11 MB, constant quality 0.66 MB (ratio 0.31); SSIM between them 0.996461
+T23  Editor: cut three pieces out of a 20 s clip -> exactly 13 s, sound kept, decodes cleanly                      PASS   duration=13s audio=1 1280x720 export=2728ms
+T24  Editor: join two different clips (one silent) with a 9:16 crop -> 18 s, 404x720, decodes cleanly              PASS   duration=18s 404x720 audio=1 export=1636ms
+T25  Editor: lossless export keeps both tracks, decodes cleanly, at most one keyframe interval per piece longer    PASS   duration=17.4s (exact would be 15) audio=2 export=294ms
 T26  Editor: exporting to an existing name never overwrites it; muted export has no sound                          PASS   second file: ed-cut (2).mp4, audio=0; first still 13s
-T11  5 start/stop cycles, no leftover ffmpeg processes                                                             PASS   durations 3.1s, 3.13s, 3.13s, 3.13s, 3.2s leftover=0
+T11  5 start/stop cycles, no leftover ffmpeg processes                                                             PASS   durations 3.13s, 3.13s, 3.13s, 3.1s, 3.1s leftover=0
 T12  Monitor enumeration finds the primary screen at its real size                                                 PASS   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 }
                                                                                                                           primary=true dxgi=Some(0)/Some(0) dda=true
 T13  Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone                                            PASS   state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" }
                                                                                                                           peak=0.244 tracks=1 mean=-15.3 dB dur=7.33s
 T14  Separate tracks: one per working source (mic present: False)                                                  PASS   tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
 T15  Microphone: recorded only if it really initialized; recording works either way                                PASS   mic=Failed { reason: "Access is denied." } tracks=0
-T17  Audio/video sync: flash + beep every 2 s, audio offset within 100 ms                                          PASS   pairs=6 offsets_ms=[-24, -54, -57, -58, -57, -48] median=-54 ms (positive = audio later)
-T16  Window capture (Notepad) records just that window                                                             PASS   754x512 via gdi stop_ms=127 output=D:\a\_temp\urec-it\T16.mp4
+T17  Audio/video sync: flash + beep every 2 s, audio offset within 100 ms                                          PASS   pairs=6 offsets_ms=[-4, -20, -24, -25, -20, -32] median=-20 ms (positive = audio later)
+T16  Window capture (Notepad) records just that window                                                             PASS   754x512 via gdi stop_ms=152 output=D:\a\_temp\urec-it\T16.mp4
 T18  Show in folder (path with spaces) and Open folder open the right Explorer folder                              PASS   explorer windows: D:\a\_temp\urec-it\Folder With Spaces | D:\a\_temp\urec-it\ring
 T27  Copy puts the video files on the clipboard (paste into a chat or folder)                                      PASS   clipboard: D:\a\_temp\urec-it\copy me 1.mp4 | D:\a\_temp\urec-it\copy me 2.mp4
 
 
 passed=28 failed=0
 sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-12 14.37.28.mp4 size=677993
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-16 02.50.39.mp4 size=686911
 setup test log: setup test: Capture and encoder start = Some(true) (CPU (x264/x265), H.264 (AVC) via GDI (compatibility), 960×720 at 30 FPS)
 setup test log: setup test: Game and desktop sound = Some(true) (Captured from Speakers (VB-Audio Virtual Cable).)
 setup test log: setup test: Microphone = None (Turned off in Settings › Audio.)
-setup test log: setup test: Recording ran for 5 seconds = Some(true) (154 frames encoded, 11 frames dropped)
-setup test log: setup test: File saved and finalized = Some(true) (424 KB written, crash-safe MP4)
-setup test log: setup test: Video plays back = Some(true) (177 frames of h264 960×720 decoded without errors (5.9 s))
+setup test log: setup test: Recording ran for 5 seconds = Some(true) (152 frames encoded)
+setup test log: setup test: File saved and finalized = Some(true) (427 KB written, crash-safe MP4)
+setup test log: setup test: Video plays back = Some(true) (175 frames of h264 960×720 decoded without errors (5.8 s))
 setup test log: setup test: Audio tracks in the file = Some(true) (1 audio track(s) in the file, 1 expected)
 light home alive=True
 light library alive=True
@@ -257,36 +895,36 @@ dark settings:video alive=True
 dark settings:audio alive=True
 library clicks: thumbnail=PASS play=PASS reveal=PASS edit=PASS
 editor alive while playing=True
-editor preview sound: mean -24.4 dB on the output device (silence is about -91 dB)
-  log: 2026-10-12 14:41:07 editor: preview sound fed 3.4 s, played 2.9 s
-  log: 2026-10-12 14:41:18 editor: preview sound fed 8.0 s, played 7.4 s
+editor preview sound: mean -24.2 dB on the output device (silence is about -91 dB)
+  log: 2026-10-16 02:54:18 editor: preview sound fed 3.5 s, played 2.9 s
+  log: 2026-10-16 02:54:29 editor: preview sound fed 8.0 s, played 7.4 s
 long window title: 90 chars
-P01 PASS Success pill: expands, shows the green check message, holds ~2 s, collapses (total ~2.4 s) :: visible=2293ms (spec 2360) expand=111ms full=2119ms collapse=63ms width=171px green_px=18 capture=47fps
+P01 PASS Success pill: expands, shows the green check message, holds ~2 s, collapses (total ~2.4 s) :: visible=2311ms (spec 2360) expand=143ms full=2089ms collapse=79ms width=171px green_px=18 capture=48fps
 P02 PASS Back to the plain dot afterwards (nothing left on screen) :: residual width=0px
-P03 PASS Failure pill: red cross + 'Instant Replay Failed', held ~2.5 s :: visible=2802ms (spec 2860) red_px=13 green_px=0
-P04 PASS Saving: dot pulses, no 'Saved' before the result; pill only after it :: frames_wide_while_saving=0 pulse_frames=50/50 pill_start=2468ms (result at 2400)
-P05 PASS Burst: a failure replaces a showing success, is shown in full, then the later success follows :: red shown 2423ms from 1023ms; green after it from 3825ms
-P06 PASS Reduced motion: message appears and disappears without in-between frames :: visible=2010ms partial_frames=0
-P07 PASS Overlay uses no CPU at rest (timer stops after the animation) :: after animation: 0ms CPU in 5 s; while animating (pulse): 31ms CPU in 3 s
+P03 PASS Failure pill: red cross + 'Instant Replay Failed', held ~2.5 s :: visible=2817ms (spec 2860) red_px=13 green_px=0
+P04 PASS Saving: dot pulses, no 'Saved' before the result; pill only after it :: frames_wide_while_saving=0 pulse_frames=49/49 pill_start=2481ms (result at 2400)
+P05 PASS Burst: a failure replaces a showing success, is shown in full, then the later success follows :: red shown 2441ms from 1012ms; green after it from 3833ms
+P06 PASS Reduced motion: message appears and disappears without in-between frames :: visible=1995ms partial_frames=0
+P07 PASS Overlay uses no CPU at rest (timer stops after the animation) :: after animation: 0ms CPU in 5 s; while animating (pulse): 16ms CPU in 3 s
 P08 PASS Top-left corner: pill grows away from the screen edge :: width=171px
 toast: registered=true | shown=true error= | toast_history=1
 P09 PASS Windows notification is accepted by Windows (Action Center history) :: shown=True history=1
-P10 PASS Real save (Alt+F10): clip written, then the success pill (only after saving) :: clips 0 -> 1 (Desktop 2026-10-12 14.42.42 Replay.mp4, 1 MB); pill from 2339ms for 1953ms
+P10 PASS Real save (Alt+F10): clip written, then the success pill (only after saving) :: clips 0 -> 1 (Desktop 2026-10-16 02.55.59 Replay.mp4, 0.9 MB); pill from 778ms for 1956ms
 P11 PASS 4 rapid presses: at most 2 saves queued, rest folded in, every clip complete, nothing overwritten :: new clips=2 folded=2 total ok saves=3
 P12 PASS Overlay off: nothing drawn on screen for the save :: corner change: none
 P13 PASS Overlay off: a Windows notification is shown instead :: uRec notifications in Action Center: 1 -> 2
-log: 2026-10-12 14:42:52 replay save #2 queued (0 pending before)
-log: 2026-10-12 14:42:52 replay save #2 started
-log: 2026-10-12 14:42:52 replay save #3 queued (1 pending before)
-log: 2026-10-12 14:42:52 replay save: press folded into the save already waiting
-log: 2026-10-12 14:42:52 replay save: press folded into the save already waiting
-log: 2026-10-12 14:42:53 replay save #2 ok in 900 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-12 14.42.52 Replay.mp4 (16.0 s, 1092869 bytes)
-log: 2026-10-12 14:42:53 Success: Instant Replay saved (16 s).
-log: 2026-10-12 14:42:53 replay save #3 started
-log: 2026-10-12 14:42:54 replay save #3 ok in 1965 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-12 14.42.52 Replay (2).mp4 (16.0 s, 1172412 bytes)
-log: 2026-10-12 14:42:54 Success: Instant Replay saved (16 s).
-log: 2026-10-12 14:43:22 replay save #1 queued (0 pending before)
-log: 2026-10-12 14:43:22 replay save #1 started
-log: 2026-10-12 14:43:23 replay save #1 ok in 380 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-12 14.43.22 Replay.mp4 (10.0 s, 989115 bytes)
-log: 2026-10-12 14:43:23 Success: Instant Replay saved (10 s).
+log: 2026-10-16 02:56:09 replay save #2 queued (0 pending before)
+log: 2026-10-16 02:56:09 replay save #2 started
+log: 2026-10-16 02:56:09 replay save #3 queued (1 pending before)
+log: 2026-10-16 02:56:09 replay save: press folded into the save already waiting
+log: 2026-10-16 02:56:09 replay save: press folded into the save already waiting
+log: 2026-10-16 02:56:10 replay save #2 ok in 1284 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-16 02.56.09 Replay.mp4 (16.0 s, 1114583 bytes)
+log: 2026-10-16 02:56:10 Success: Instant Replay saved (16 s).
+log: 2026-10-16 02:56:10 replay save #3 started
+log: 2026-10-16 02:56:12 replay save #3 ok in 1921 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-16 02.56.09 Replay (2).mp4 (16.0 s, 1171977 bytes)
+log: 2026-10-16 02:56:12 Success: Instant Replay saved (16 s).
+log: 2026-10-16 02:56:39 replay save #1 queued (0 pending before)
+log: 2026-10-16 02:56:39 replay save #1 started
+log: 2026-10-16 02:56:40 replay save #1 ok in 698 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-16 02.56.39 Replay.mp4 (10.0 s, 992529 bytes)
+log: 2026-10-16 02:56:40 Success: Instant Replay saved (10 s).
 indicator passed=13 failed=0
