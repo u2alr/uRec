@@ -129,6 +129,9 @@ pub struct Replay {
     pub seconds: u32,
     /// Where the rolling buffer lives. Empty = %LOCALAPPDATA%\uRec\replay.
     pub buffer_dir: String,
+    /// Highest frame rate Instant Replay captures at (0 = same as recordings). Lower means less
+    /// work for the graphics card while a game runs.
+    pub fps_cap: u32,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -262,7 +265,7 @@ impl Default for Audio {
 
 impl Default for Replay {
     fn default() -> Self {
-        Replay { enabled: false, seconds: 60, buffer_dir: String::new() }
+        Replay { enabled: false, seconds: 60, buffer_dir: String::new(), fps_cap: 0 }
     }
 }
 

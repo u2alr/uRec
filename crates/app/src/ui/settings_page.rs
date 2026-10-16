@@ -726,6 +726,19 @@ fn replay_page(app: &mut App, ui: &mut egui::Ui) {
         },
     );
     app.s.replay.seconds = secs;
+    theme::row(
+        ui,
+        &p,
+        "Frame rate",
+        "Lower uses less of the graphics card while you play. It also applies to recordings made while Instant Replay is on.",
+        |ui| {
+            let mut cap = app.s.replay.fps_cap;
+            let o: Vec<(u32, String)> =
+                vec![(0, "Same as recordings".into()), (60, "Up to 60 FPS".into()), (30, "30 FPS".into())];
+            combo(ui, "rfps", &mut cap, &o, 180.0);
+            app.s.replay.fps_cap = cap;
+        },
+    );
     let bps = video::bytes_per_second(app.s.video.bitrate_kbps, app.s.audio.bitrate_kbps);
     let ring = replay::ring_bytes(secs, 2, bps);
     theme::row(

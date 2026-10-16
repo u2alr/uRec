@@ -631,6 +631,7 @@ impl Worker {
             || new.audio != self.s.audio
             || new.capture != self.s.capture
             || new.replay.seconds != self.s.replay.seconds
+            || new.replay.fps_cap != self.s.replay.fps_cap
             || new.replay.buffer_dir != self.s.replay.buffer_dir;
         let hotkeys_changed = new.hotkeys != self.s.hotkeys;
         let replay_toggled = new.replay.enabled != self.s.replay.enabled;
@@ -859,7 +860,11 @@ impl Worker {
         let (sw, sh) = target.source_size();
         let refresh = urec_win::monitors().iter().find(|m| m.primary).and_then(|m| m.refresh_hz);
         let v = self.s.video_settings();
-        let (w, h, fps) = video::validate(&v, sw, sh, refresh).map_err(|e| e.to_string())?;
+        let (w, h, mut fps) = video::validate(&v, sw, sh, refresh).map_err(|e| e.to_string())?;
+        // Instant Replay can run at a lower frame rate than recordings to spare the graphics card.
+        if kind == LiveKind::Replay && self.s.replay.fps_cap >= 15 {
+            fps = fps.min(self.s.replay.fps_cap);
+        }
         let req = StartRequest {
             target,
             methods,
