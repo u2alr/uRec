@@ -129,6 +129,22 @@ pub fn conflicts<'a>(bindings: &[(&'a str, &str)]) -> Vec<(&'a str, &'a str)> {
     out
 }
 
+/// Is exactly this combination held? `down(vk)` says whether a virtual key is pressed.
+/// Modifiers that aren't part of the hotkey must be up, so Ctrl+F9 doesn't fire Alt+F9.
+pub fn combo_down(key: Hotkey, down: impl Fn(u32) -> bool) -> bool {
+    const VK_SHIFT: u32 = 0x10;
+    const VK_CONTROL: u32 = 0x11;
+    const VK_MENU: u32 = 0x12;
+    const VK_LWIN: u32 = 0x5B;
+    const VK_RWIN: u32 = 0x5C;
+    let want = |flag: u32| key.mods & flag != 0;
+    down(key.vk)
+        && want(MOD_ALT) == down(VK_MENU)
+        && want(MOD_CONTROL) == down(VK_CONTROL)
+        && want(MOD_SHIFT) == down(VK_SHIFT)
+        && want(MOD_WIN) == (down(VK_LWIN) || down(VK_RWIN))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -154,5 +170,22 @@ mod tests {
     fn finds_conflicts() {
         let c = conflicts(&[("record", "Alt+F9"), ("replay", "Alt+F10"), ("mute", "alt+f9")]);
         assert_eq!(c, vec![("record", "mute")]);
+    }
+}
+
+#[cfg(test)]
+mod combo_tests {
+    use super::*;
+
+    #[test]
+    fn needs_exactly_the_modifiers() {
+        let alt_f9 = Hotkey { mods: MOD_ALT, vk: 0x78 };
+        assert!(combo_down(alt_f9, |vk| vk == 0x78 || vk == 0x12));
+        assert!(!combo_down(alt_f9, |vk| vk == 0x78));
+        assert!(!combo_down(alt_f9, |vk| vk == 0x78 || vk == 0x12 || vk == 0x11));
+        assert!(!combo_down(alt_f9, |vk| vk == 0x12));
+        let plain = Hotkey { mods: 0, vk: 0x78 };
+        assert!(combo_down(plain, |vk| vk == 0x78));
+        assert!(!combo_down(plain, |vk| vk == 0x78 || vk == 0x10));
     }
 }

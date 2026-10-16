@@ -2,9 +2,11 @@
 //! other keys (Windows only delivers the exact registered combination to us).
 
 use crate::sys::Win32Ok;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::mpsc;
 use std::sync::Arc;
 use std::thread::JoinHandle;
+use std::time::{Duration, Instant};
 use urec_engine::hotkey::Hotkey;
 use windows::Win32::Foundation::{LPARAM, WPARAM};
 use windows::Win32::System::Threading::GetCurrentThreadId;
@@ -14,12 +16,15 @@ use windows::Win32::UI::WindowsAndMessaging::{GetMessageW, PostThreadMessageW, M
 pub struct Hotkeys {
     on_press: Arc<dyn Fn(usize) + Send + Sync>,
     thread: Option<(u32, JoinHandle<()>)>,
+    /// Watches the keys directly as well, for games whose anti-cheat stops Windows from
+    /// delivering registered hotkeys.
+    watcher: Option<(Arc<std::sync::atomic::AtomicBool>, JoinHandle<()>)>,
 }
 
 impl Hotkeys {
     /// `on_press(index)` is called from the hotkey thread with the index into the slice given to `set`.
     pub fn new(on_press: impl Fn(usize) + Send + Sync + 'static) -> Self {
-        Hotkeys { on_press: Arc::new(on_press), thread: None }
+        Hotkeys { on_press: Arc::new(on_press), thread: None, watcher: None }
     }
 
     /// Register a new set of hotkeys, replacing the old ones.
@@ -27,7 +32,21 @@ impl Hotkeys {
     pub fn set(&mut self, keys: &[Option<Hotkey>]) -> Vec<usize> {
         self.stop();
         let keys = keys.to_vec();
+        let watch_keys = keys.clone();
         let cb = self.on_press.clone();
+        // Both the registered hotkey and the key watcher report a press; only the first counts.
+        let last_fire: Arc<Vec<AtomicU64>> = Arc::new((0..keys.len()).map(|_| AtomicU64::new(0)).collect());
+        let base = Instant::now();
+        let dedupe = {
+            let last_fire = last_fire.clone();
+            move |i: usize| -> bool {
+                let now = base.elapsed().as_millis() as u64 + 1000;
+                let prev = last_fire[i].swap(now, Ordering::SeqCst);
+                prev == 0 || now.saturating_sub(prev) > 400
+            }
+        };
+        let cb_hot = cb.clone();
+        let dedupe_hot = dedupe.clone();
         let (tx, rx) = mpsc::channel::<(u32, Vec<usize>)>();
         let handle = std::thread::Builder::new()
             .name("hotkeys".into())
@@ -49,8 +68,8 @@ impl Hotkeys {
                 while GetMessageW(&mut msg, None, 0, 0).0 > 0 {
                     if msg.message == WM_HOTKEY {
                         let id = msg.wParam.0;
-                        if id >= 1 {
-                            cb(id - 1);
+                        if id >= 1 && dedupe_hot(id - 1) {
+                            cb_hot(id - 1);
                         }
                     }
                 }
@@ -61,10 +80,42 @@ impl Hotkeys {
             .expect("spawn hotkey thread");
         let (tid, failed) = rx.recv().unwrap_or((0, Vec::new()));
         self.thread = Some((tid, handle));
+        // Watch the keys that registered fine (a failed one belongs to another app).
+        let stop = Arc::new(AtomicBool::new(false));
+        let stop2 = stop.clone();
+        let watch: Vec<(usize, Hotkey)> = watch_keys
+            .iter()
+            .enumerate()
+            .filter_map(|(i, k)| k.map(|k| (i, k)))
+            .filter(|(i, _)| !failed.contains(i))
+            .collect();
+        let watcher = std::thread::Builder::new()
+            .name("hotkey-watch".into())
+            .spawn(move || {
+                use windows::Win32::UI::Input::KeyboardAndMouse::GetAsyncKeyState;
+                let down = |vk: u32| unsafe { (GetAsyncKeyState(vk as i32) as u16 & 0x8000) != 0 };
+                let mut held = vec![false; watch.len()];
+                while !stop2.load(Ordering::Relaxed) {
+                    for (n, (i, k)) in watch.iter().enumerate() {
+                        let now = urec_engine::hotkey::combo_down(*k, down);
+                        if now && !held[n] && dedupe(*i) {
+                            cb(*i);
+                        }
+                        held[n] = now;
+                    }
+                    std::thread::sleep(Duration::from_millis(20));
+                }
+            })
+            .ok();
+        self.watcher = watcher.map(|h| (stop, h));
         failed
     }
 
     pub fn stop(&mut self) {
+        if let Some((stop, handle)) = self.watcher.take() {
+            stop.store(true, Ordering::Relaxed);
+            let _ = handle.join();
+        }
         if let Some((tid, handle)) = self.thread.take() {
             unsafe {
                 let _ = PostThreadMessageW(tid, WM_QUIT, WPARAM(0), LPARAM(0));
@@ -84,7 +135,6 @@ pub struct PushToTalk {
 
 impl PushToTalk {
     pub fn start(key: Hotkey, on_change: impl Fn(bool) + Send + 'static) -> PushToTalk {
-        use std::sync::atomic::{AtomicBool, Ordering};
         use windows::Win32::UI::Input::KeyboardAndMouse::{GetAsyncKeyState, VK_CONTROL, VK_MENU, VK_SHIFT};
         let stop = Arc::new(AtomicBool::new(false));
         let s2 = stop.clone();

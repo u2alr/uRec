@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.7
+
+- **Hotkeys now work in games that block them (Valorant).** Some anti-cheat systems stop Windows from delivering registered hotkeys while the game has focus. uRec now also watches the keys itself, so Alt+F9, Alt+F10 and the others work in those games. A press is only counted once when both paths see it.
+
 ## 0.4.6
 
 - **Instant Replay frame rate.** New setting in Instant Replay: "Same as recordings" (as before), "Up to 60 FPS" or "30 FPS". Capture and encoding work grows with frame rate, so a lower one leaves more of the graphics card for the game. Recordings made while Instant Replay is on use the same frame rate.
