@@ -1528,16 +1528,6 @@ impl Worker {
                 }
                 None => ((0.0, 0.0), (None, None), None),
             };
-            let lagging = stats.lagging();
-            if lagging {
-                let since = *self.lag_since.get_or_insert_with(Instant::now);
-                if since.elapsed() > Duration::from_secs(10) && !self.lag_warned {
-                    self.lag_warned = true;
-                    self.on_lag();
-                }
-            } else {
-                self.lag_since = None;
-            }
             let stalled = live.session.plan.method == CaptureMethod::Wgc
                 && !matches!(live.session.plan.target, CaptureTarget::Window { .. })
                 && !self.prefer_dda
@@ -1549,6 +1539,16 @@ impl Worker {
                     live.session.plan.fps,
                 );
             let is_replay = live.kind == LiveKind::Replay;
+            let lagging = stats.lagging();
+            if lagging {
+                let since = *self.lag_since.get_or_insert_with(Instant::now);
+                if since.elapsed() > Duration::from_secs(10) && !self.lag_warned {
+                    self.lag_warned = true;
+                    self.on_lag();
+                }
+            } else {
+                self.lag_since = None;
+            }
             if stalled {
                 self.on_capture_stalled(is_replay);
                 return;
