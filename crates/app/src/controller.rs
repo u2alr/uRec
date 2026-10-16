@@ -359,6 +359,10 @@ struct Worker {
     overlay_monitor: (i32, i32, u32, u32),
     lag_since: Option<Instant>,
     lag_warned: bool,
+    /// Windows Graphics Capture stalled on this PC: prefer Desktop Duplication (remembered in a file).
+    prefer_dda: bool,
+    stall: urec_engine::health::StallWatch,
+    stall_clock: Instant,
     /// None until the first check (see `devices_at` in ui/mod.rs for why not `now() - 60 s`).
     last_disk_check: Option<Instant>,
     low_space_warned: bool,
@@ -406,6 +410,10 @@ impl Worker {
             overlay_monitor: (0, 0, 1920, 1080),
             lag_since: None,
             lag_warned: false,
+            prefer_dda: std::fs::read_to_string(crate::settings::local_dir().join("capture-hint.txt"))
+                .is_ok_and(|t| t.trim() == "dda"),
+            stall: Default::default(),
+            stall_clock: Instant::now(),
             last_disk_check: None,
             low_space_warned: false,
             crash_restarts: 0,
@@ -788,6 +796,13 @@ impl Worker {
             CaptureMethod::Dda => dda_ok,
             _ => true,
         });
+        // Windows Graphics Capture stalled here before: use Desktop Duplication first (screens only).
+        if self.prefer_dda && c.method == "auto" && !matches!(target, CaptureTarget::Window { .. }) {
+            if let Some(i) = methods.iter().position(|m| *m == CaptureMethod::Dda) {
+                let dda = methods.remove(i);
+                methods.insert(0, dda);
+            }
+        }
         if methods.is_empty() {
             return Err("The selected capture method doesn't work for this source on this PC. Choose Automatic in Settings › Recording.".into());
         }
@@ -925,6 +940,7 @@ impl Worker {
         self.update_push_to_talk();
         self.lag_since = None;
         self.lag_warned = false;
+        self.stall.reset();
         Ok(())
     }
 
@@ -1522,6 +1538,21 @@ impl Worker {
             } else {
                 self.lag_since = None;
             }
+            let stalled = live.session.plan.method == CaptureMethod::Wgc
+                && !matches!(live.session.plan.target, CaptureTarget::Window { .. })
+                && !self.prefer_dda
+                && self.s.capture.method == "auto"
+                && self.stall.observe(
+                    self.stall_clock.elapsed().as_secs_f64(),
+                    stats.frame,
+                    stats.dup_frames,
+                    live.session.plan.fps,
+                );
+            let is_replay = live.kind == LiveKind::Replay;
+            if stalled {
+                self.on_capture_stalled(is_replay);
+                return;
+            }
             self.update_quiet(|s| {
                 s.stats = stats;
                 s.lagging = lagging;
@@ -1541,6 +1572,20 @@ impl Worker {
             }
         }
         self.update_overlay();
+    }
+
+    /// Windows Graphics Capture is delivering almost no new frames (usually a fullscreen game).
+    /// Switch to Desktop Duplication and remember it. Instant Replay restarts right away (its
+    /// buffer starts over); a recording in progress is left alone and the next one uses it.
+    fn on_capture_stalled(&mut self, is_replay: bool) {
+        log("capture: Windows Graphics Capture is delivering almost no new frames; using Desktop Duplication from now on");
+        self.prefer_dda = true;
+        let _ = std::fs::create_dir_all(crate::settings::local_dir());
+        let _ = std::fs::write(crate::settings::local_dir().join("capture-hint.txt"), "dda");
+        if is_replay && self.recording.is_none() && self.s.replay.enabled {
+            self.stop_live();
+            self.start_replay();
+        }
     }
 
     fn update_overlay(&self) {

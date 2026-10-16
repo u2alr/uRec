@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.5
+
+- **Instant Replay no longer turns into a slideshow in some games.** On some PCs Windows Graphics Capture delivers about one new picture per second while a fullscreen game runs, so clips looked like 1 fps. uRec now notices that, switches to Desktop Duplication on its own, restarts Instant Replay, and remembers it for next time. (Only with capture method set to Automatic; the Instant Replay buffer starts over once when this happens.)
+
 ## 0.4.4
 
 Starting on older and weaker PCs.

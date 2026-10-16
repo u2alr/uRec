@@ -6,6 +6,7 @@
 
 pub mod edit;
 pub mod encoder;
+pub mod health;
 pub mod hotkey;
 pub mod mp4check;
 pub mod naming;
