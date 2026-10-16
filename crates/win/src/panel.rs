@@ -251,7 +251,7 @@ fn shadow(k: f32) -> f32 {
 pub fn layout(m: &PanelModel, k: f32, texts: &mut Texts) -> Layout {
     let s = shadow(k);
     let pad = (16.0 * k).round();
-    let card_w = (380.0 * k).round();
+    let card_w = (436.0 * k).round();
     let row_h = (56.0 * k).round();
     let header_h = (40.0 * k).round();
     let btn_h = (28.0 * k).round();
@@ -307,10 +307,10 @@ pub fn layout(m: &PanelModel, k: f32, texts: &mut Texts) -> Layout {
     // Instant Replay.
     let (dot, sub) = match m.replay {
         ReplayView::On if m.saving => (AMBER, "Saving…".to_string()),
-        ReplayView::On => (AMBER, format!("On · keeps the last {}", format_long(m.replay_seconds))),
+        ReplayView::On => (AMBER, format!("On · last {}", format_long(m.replay_seconds))),
         ReplayView::Starting => (AMBER, "Starting…".into()),
         ReplayView::Off => (GREY, "Off".into()),
-        ReplayView::Error => (RED, "Couldn't start. See uRec for details.".into()),
+        ReplayView::Error => (RED, "Couldn't start".into()),
     };
     let on = matches!(m.replay, ReplayView::On);
     row(
@@ -390,7 +390,7 @@ pub fn layout(m: &PanelModel, k: f32, texts: &mut Texts) -> Layout {
             )
         })
         .collect();
-    let sub = if on { "Changing it restarts the buffer" } else { "Used when Instant Replay is on" };
+    let sub = if on { "Changing it restarts the buffer" } else { "For the next replay" };
     row(&mut ops, &mut buttons, texts, y, None, "Replay length", sub, chips);
     y += row_h;
     ops.push(Op::Divider { y });

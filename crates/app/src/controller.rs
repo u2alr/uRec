@@ -1644,7 +1644,7 @@ impl Worker {
             };
             (n.text.clone(), tone)
         });
-        let key = |k: &str| k.replace('+', " + ");
+        let key = |k: &str| k.to_string();
         PanelModel {
             replay,
             replay_seconds: self.s.replay.seconds,
