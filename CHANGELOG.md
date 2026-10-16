@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.3
+
+Bug fixes from a code audit.
+
+- **Crash at launch fixed.** uRec could close right after starting when the PC had been on for less than an hour, which is exactly when "Start with Windows" launches it. Two start-up timers subtracted from the system clock in a way Windows doesn't allow that early.
+- **Editor: dragging a piece to the right landed one place too far.** It now drops where the marker shows, including at the very end.
+- **Editor: undo and redo** no longer leave the playhead past the end of a shorter timeline (the clock could read "0:07 / 0:05") or highlight the wrong piece. Deleting, undoing or redoing while the preview plays now carries on from the playhead with the new cuts, instead of playing the old ones.
+- **Editor:** keys (Space, S, Delete, Ctrl+Z) no longer act in the middle of a mouse drag or behind the Export window.
+- **Library:** renaming now works for case-only changes ("clip" to "Clip"), and typing the extension ("clip.mp4") no longer makes "clip.mp4.mp4".
+- **Names** like "con.txt" or "Lpt1.backup", which Windows reserves, are now fixed up like "con".
+
 ## 0.4.2
 
 **New**
