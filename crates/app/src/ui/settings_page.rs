@@ -771,15 +771,16 @@ fn replay_page(app: &mut App, ui: &mut egui::Ui) {
 
 // ------------------------------------------------------------------ Hotkeys
 
-const ACTIONS: [&str; 6] = [
+const ACTIONS: [&str; 7] = [
     "Start or stop recording",
     "Save Instant Replay",
     "Turn Instant Replay on or off",
     "Mute or unmute microphone",
     "Show or hide the overlay",
+    "Open the overlay panel",
     "Push to talk (hold)",
 ];
-const PUSH_TO_TALK: usize = 5;
+const PUSH_TO_TALK: usize = 6;
 
 fn hotkey_field(s: &mut Settings, i: usize) -> &mut String {
     match i {
@@ -788,6 +789,7 @@ fn hotkey_field(s: &mut Settings, i: usize) -> &mut String {
         2 => &mut s.hotkeys.toggle_replay,
         3 => &mut s.hotkeys.mute_mic,
         4 => &mut s.hotkeys.overlay,
+        5 => &mut s.hotkeys.panel,
         _ => &mut s.hotkeys.push_to_talk,
     }
 }
@@ -897,6 +899,9 @@ fn hotkeys(app: &mut App, ui: &mut egui::Ui, st: &Status) {
             help = format!("Also used for \"{other}\". Pick a different shortcut.");
         } else if st.hotkey_failures.iter().any(|f| f.starts_with(short_name(i))) {
             help = "Another app is already using this shortcut.".into();
+        } else if i == 5 {
+            help =
+                "Save a replay, start or stop recording and mute the microphone while you play. Esc closes it.".into();
         } else if i == PUSH_TO_TALK {
             help = if app.s.audio.mic && app.s.audio.mic_mode == "push_to_talk" {
                 "Hold to talk. The key keeps working in your game. A side mouse button works too.".into()
@@ -937,6 +942,7 @@ fn short_name(i: usize) -> &'static str {
         "Turn Instant Replay on/off",
         "Mute microphone",
         "Show/hide overlay",
+        "Open overlay panel",
         "Push to talk",
     ][i]
 }
@@ -1215,6 +1221,34 @@ fn appearance(app: &mut App, ui: &mut egui::Ui) {
             },
         );
     });
+    theme::row(ui, &p, "Save message duration", "How long \"Instant Replay Saved\" stays on screen.", |ui| {
+        combo(
+            ui,
+            "notice_length",
+            &mut a.notice_length,
+            &opts(&[("short", "Short"), ("normal", "Normal"), ("long", "Long")]),
+            180.0,
+        );
+    });
+    theme::row(
+        ui,
+        &p,
+        "Overlay panel",
+        if excl {
+            "Opens with its shortcut (Settings › Hotkeys) on the screen you're playing on. It never appears in your videos."
+        } else {
+            "Opens with its shortcut (Settings › Hotkeys) on the screen you're playing on."
+        },
+        |ui| {
+            combo(
+                ui,
+                "panel_position",
+                &mut a.panel_position,
+                &opts(&[("top", "Top of the screen"), ("center", "Centre of the screen")]),
+                180.0,
+            );
+        },
+    );
     let overlay_on = a.overlay;
     theme::row(
         ui,

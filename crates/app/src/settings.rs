@@ -145,6 +145,8 @@ pub struct Hotkeys {
     /// Held to talk when the microphone is in push-to-talk mode. Plain keys are fine here:
     /// this key is watched, not taken away from the game.
     pub push_to_talk: String,
+    /// Opens the overlay panel (Save replay, recording, microphone, replay length).
+    pub panel: String,
 }
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
@@ -178,6 +180,10 @@ pub struct Appearance {
     pub overlay_size: String,
     /// Dot opacity in percent (30-100).
     pub overlay_opacity: u32,
+    /// Where the overlay panel opens: "top" | "center".
+    pub panel_position: String,
+    /// How long "Instant Replay Saved" stays up: "short" | "normal" | "long".
+    pub notice_length: String,
 }
 
 impl Default for Settings {
@@ -278,6 +284,7 @@ impl Default for Hotkeys {
             mute_mic: "Ctrl+Alt+M".into(),
             overlay: String::new(),
             push_to_talk: "CapsLock".into(),
+            panel: "Alt+F8".into(),
         }
     }
 }
@@ -305,6 +312,8 @@ impl Default for Appearance {
             motion: "system".into(),
             overlay_size: "medium".into(),
             overlay_opacity: 100,
+            panel_position: "top".into(),
+            notice_length: "normal".into(),
         }
     }
 }
@@ -403,6 +412,7 @@ impl Settings {
         });
         let r = &mut self.replay;
         check((5..=REPLAY_MAX).contains(&r.seconds), "replay length", &mut || r.seconds = 60);
+        check([0, 30, 60].contains(&r.fps_cap), "replay frame rate", &mut || r.fps_cap = 0);
         let st = &mut self.storage;
         check((1..=3650).contains(&st.retention_days), "clean-up age", &mut || st.retention_days = 30);
         check(["replays", "all"].contains(&st.retention_scope.as_str()), "clean-up scope", &mut || {
@@ -416,6 +426,12 @@ impl Settings {
             ap.overlay_size = "medium".into()
         });
         check((30..=100).contains(&ap.overlay_opacity), "overlay opacity", &mut || ap.overlay_opacity = 100);
+        check(["top", "center"].contains(&ap.panel_position.as_str()), "panel position", &mut || {
+            ap.panel_position = "top".into()
+        });
+        check(["short", "normal", "long"].contains(&ap.notice_length.as_str()), "message length", &mut || {
+            ap.notice_length = "normal".into()
+        });
         let c = &mut self.capture;
         check(["monitor", "window", "region"].contains(&c.kind.as_str()), "capture source", &mut || {
             c.kind = "monitor".into()
@@ -646,6 +662,9 @@ mod tests {
         assert!(s.setup_done, "existing users skip the new setup");
         assert!(!s.appearance.overlay, "their choices are kept");
         assert_eq!(s.appearance.motion, "system", "new fields get defaults");
+        assert_eq!(s.hotkeys.panel, "Alt+F8", "the overlay panel gets its default shortcut");
+        assert_eq!((s.appearance.panel_position.as_str(), s.appearance.notice_length.as_str()), ("top", "normal"));
+        assert_eq!(s.replay.fps_cap, 0);
         assert_eq!(s.version, SETTINGS_VERSION);
         let p2 = tmp("v1new");
         std::fs::write(&p2, r#"{"version":1,"first_run_done":false}"#).unwrap();

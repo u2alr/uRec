@@ -16,6 +16,9 @@ mod http;
 pub mod notify;
 #[cfg(windows)]
 mod overlay;
+pub mod panel;
+#[cfg(windows)]
+mod panel_win;
 pub mod pill;
 #[cfg(windows)]
 mod playback;
@@ -39,6 +42,8 @@ pub use hotkeys::{Hotkeys, PushToTalk};
 pub use http::{https_download, https_get};
 #[cfg(windows)]
 pub use overlay::Overlay;
+#[cfg(windows)]
+pub use panel_win::Panel;
 #[cfg(windows)]
 pub use playback::{AudioOut, OUT_CHANNELS, OUT_RATE};
 #[cfg(windows)]
@@ -182,6 +187,8 @@ pub struct OverlayState {
     pub size: f32,
     /// Opacity of the status dot, 0.3..1. Save messages are always fully opaque to stay readable.
     pub opacity: f32,
+    /// How long save messages stay up: 0.6 short, 1.0 normal, 2.0 long.
+    pub hold_scale: f32,
 }
 
 /// Instant Replay save progress for the overlay indicator.
@@ -202,6 +209,7 @@ impl Default for OverlayState {
             monitor: (0, 0, 1920, 1080),
             size: 1.0,
             opacity: 1.0,
+            hold_scale: 1.0,
         }
     }
 }

@@ -179,6 +179,55 @@ if ((Test-Path $settingsPath) -and $title) {
 }
 Stop-Process -Id $np.Id -Force -ErrorAction SilentlyContinue
 
+# Overlay panel: a stand-in "game" window has focus; Alt+F8 opens the panel, a real mouse click
+# on "Turn on" starts Instant Replay, Esc closes it and focus must go back to the game window.
+Add-Type @"
+using System; using System.Runtime.InteropServices; using System.Text;
+public static class UrecFg {
+    [DllImport("user32.dll")] public static extern IntPtr GetForegroundWindow();
+    [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetWindowText(IntPtr h, StringBuilder s, int n);
+    public static string Title() { var sb = new StringBuilder(256); GetWindowText(GetForegroundWindow(), sb, 256); return sb.ToString(); }
+}
+"@
+$settingsFile = Join-Path $env:APPDATA "uRec\settings.json"
+$settingsBackup = if (Test-Path $settingsFile) { Get-Content $settingsFile -Raw } else { $null }
+$panelHit = Join-Path $env:TEMP "urec-panel-hitmap.txt"
+Remove-Item $panelHit -ErrorAction SilentlyContinue
+$env:UREC_PANEL_HITMAP = $panelHit; $env:UREC_OVERLAY_CAPTURABLE = "1"; $env:UREC_PAGE = "home"
+$proc = Start-Process $Exe -ArgumentList "--minimized" -PassThru
+Start-Sleep -Seconds 8
+$game = Start-Process powershell.exe -ArgumentList "-NoProfile", "-Command", "Add-Type -AssemblyName System.Windows.Forms; `$f = New-Object System.Windows.Forms.Form; `$f.Text = 'Panel focus test'; `$f.WindowState = 'Maximized'; `$f.ShowDialog()" -PassThru
+Start-Sleep -Seconds 4
+$before = [UrecFg]::Title()
+$wsh.SendKeys("%{F8}")
+Start-Sleep -Seconds 2
+$panelFocused = [UrecFg]::Title() -eq "uRec panel"
+Shot "panel-open"
+$line = if (Test-Path $panelHit) { Get-Content $panelHit | Where-Object { $_ -like "ToggleReplay *" } | Select-Object -First 1 } else { $null }
+if ($line) {
+    $parts = $line -split " "
+    [UrecMouse]::Click([int]$parts[1], [int]$parts[2])
+    Start-Sleep -Seconds 8
+    Shot "panel-replay-on"
+}
+$wsh.SendKeys("{ESC}")
+Start-Sleep -Seconds 2
+$after = [UrecFg]::Title()
+Shot "panel-closed"
+$plog = Get-Content (Join-Path $env:LOCALAPPDATA "uRec\logs\urec.log") -Raw
+$clicked = $plog -match "overlay panel: ToggleReplay"
+$replayOn = (Get-Content $settingsFile -Raw | ConvertFrom-Json).replay.enabled
+$results += "panel-open=$(if (Test-Path $panelHit) { 'PASS' } else { 'FAIL' })"
+$results += "panel-click=$(if ($clicked -and $replayOn) { 'PASS' } else { 'FAIL' })"
+$results += "panel-focus-back=$(if ($after -eq $before) { 'PASS' } else { 'FAIL' })"
+"overlay panel: focused=$panelFocused before='$before' after='$after' clicked=$clicked replayOn=$replayOn"
+if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+Stop-Process -Id $game.Id -Force -ErrorAction SilentlyContinue
+if ($settingsBackup) { [IO.File]::WriteAllText($settingsFile, $settingsBackup) }
+Remove-Item env:UREC_PANEL_HITMAP, env:UREC_OVERLAY_CAPTURABLE
+"panel results: $($results -join ' ')"
+Start-Sleep -Seconds 1
+
 # Start-up guard: a start that never drew a window must make the next start use OpenGL.
 $dir = Join-Path $env:LOCALAPPDATA "uRec"
 $savedRenderer = $env:UREC_RENDERER

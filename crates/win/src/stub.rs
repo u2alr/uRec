@@ -187,3 +187,17 @@ pub fn copy_files_to_clipboard(_paths: &[std::path::PathBuf]) -> Result<(), Stri
 }
 
 pub fn error_box(_title: &str, _text: &str) {}
+
+pub struct Panel;
+
+impl Panel {
+    pub fn new(_on_action: impl Fn(crate::panel::PanelAction) + Send + Sync + 'static) -> Panel {
+        Panel
+    }
+    pub fn is_visible(&self) -> bool {
+        false
+    }
+    pub fn set_model(&self, _model: crate::panel::PanelModel) {}
+    pub fn toggle(&self, _model: crate::panel::PanelModel, _position: &str, _reduced_motion: bool) {}
+    pub fn hide(&self) {}
+}

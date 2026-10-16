@@ -2,6 +2,9 @@
 
 ## 0.4.7
 
+- **Overlay panel.** Press Alt+F8 while playing to open a small panel on the screen you're playing on: save a replay, turn Instant Replay on or off, start or stop recording (with the elapsed time), mute the microphone, and change the replay length. Esc or Alt+F8 closes it and puts you back in your game. It shows only real state, never appears in your videos (Windows 10 2004 and later), and draws nothing while closed. Exclusive-fullscreen games may minimise while it is open; borderless and windowed games don't. Shortcut in Settings › Hotkeys, position in Settings › Appearance.
+- **Save message duration** (Settings › Appearance): short, normal or long.
+- Settings that uRec changes by itself (Instant Replay switched by hotkey, the overlay panel, the automatic frame-rate drop) no longer get switched back the next time you change something in the settings window.
 - **Hotkeys now work in games that block them (Valorant).** Some anti-cheat systems stop Windows from delivering registered hotkeys while the game has focus. uRec now also watches the keys itself, so Alt+F9, Alt+F10 and the others work in those games. A press is only counted once when both paths see it.
 
 ## 0.4.6

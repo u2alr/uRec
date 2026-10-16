@@ -483,6 +483,17 @@ impl eframe::App for App {
             crate::startup::first_frame_drawn();
         }
         self.apply_theme(&ctx);
+        // Settings the controller changed itself, and a page asked for by the overlay panel.
+        let (settings_update, open_page) = match self.ctl.status.lock() {
+            Ok(mut s) => (s.settings_update.take(), s.open_page.take()),
+            Err(_) => (None, None),
+        };
+        if let Some(new) = settings_update {
+            self.s = *new;
+        }
+        if let Some(p) = open_page {
+            self.open_page(&p);
+        }
         let st = self.ctl.snapshot();
         self.handle_close(&ctx, &st);
         if let Some(msg) = self.startup_message.take() {

@@ -125,6 +125,8 @@ pub struct Indicator {
     pending: Option<Kind>,
     saving_since: Option<Instant>,
     reduced_motion: bool,
+    /// Multiplies how long a message stays up (the "Notification duration" setting).
+    hold_scale: f32,
 }
 
 impl Default for Indicator {
@@ -137,6 +139,7 @@ impl Default for Indicator {
             pending: None,
             saving_since: None,
             reduced_motion: false,
+            hold_scale: 1.0,
         }
     }
 }
@@ -145,6 +148,15 @@ impl Indicator {
     /// Instant transitions instead of motion (Windows "Show animations" off, or the app setting).
     pub fn set_reduced_motion(&mut self, on: bool) {
         self.reduced_motion = on;
+    }
+
+    /// 0.6 = short, 1.0 = normal, 2.0 = long.
+    pub fn set_hold_scale(&mut self, scale: f32) {
+        self.hold_scale = scale.clamp(0.3, 4.0);
+    }
+
+    fn hold(&self, kind: Kind) -> Duration {
+        kind.hold().mul_f32(self.hold_scale)
     }
 
     fn ms(&self, ms: u64) -> u64 {
@@ -177,7 +189,7 @@ impl Indicator {
                 (Kind::Success, Kind::Success) | (Kind::Failure, Kind::Failure) => {
                     // Same message again: keep it up a little longer instead of popping twice.
                     if let Phase::Holding { .. } = self.phase {
-                        self.phase = Phase::Holding { until: now + kind.hold() };
+                        self.phase = Phase::Holding { until: now + self.hold(kind) };
                     }
                 }
                 (Kind::Success, Kind::Failure) => {
@@ -185,7 +197,7 @@ impl Indicator {
                     self.kind = Kind::Failure;
                     self.reveal_start = Some(now);
                     if let Phase::Holding { .. } = self.phase {
-                        self.phase = Phase::Holding { until: now + Kind::Failure.hold() };
+                        self.phase = Phase::Holding { until: now + self.hold(Kind::Failure) };
                     }
                 }
                 (Kind::Failure, Kind::Success) => self.pending = Some(Kind::Success),
@@ -213,7 +225,7 @@ impl Indicator {
             match self.phase {
                 Phase::Expanding { start, .. } if progress(start, now, self.ms(EXPAND_MS)) >= 1.0 => {
                     let end = start + Duration::from_millis(self.ms(EXPAND_MS));
-                    self.phase = Phase::Holding { until: end + self.kind.hold() };
+                    self.phase = Phase::Holding { until: end + self.hold(self.kind) };
                 }
                 Phase::Holding { until } if now >= until => {
                     self.phase = Phase::Collapsing { start: until };
@@ -464,6 +476,17 @@ mod tests {
         assert_eq!(ind.look(ms(t0, 2361)), Look::Dot { alpha: 1.0 });
         assert!(!ind.animating());
         assert!(ind.is_idle());
+    }
+
+    #[test]
+    fn hold_scale_changes_how_long_a_message_stays() {
+        let t0 = Instant::now();
+        let mut ind = Indicator::default();
+        ind.set_hold_scale(2.0);
+        ind.finished(Kind::Success, t0);
+        let Look::Pill(f) = ind.look(ms(t0, 4000)) else { panic!("still up at 4 s") };
+        assert_eq!(f.expand, 1.0);
+        assert_eq!(ind.look(ms(t0, 4361)), Look::Dot { alpha: 1.0 });
     }
 
     #[test]

@@ -21,7 +21,7 @@ use windows::Win32::Graphics::Gdi::{
     CreateCompatibleDC, CreateDIBSection, CreateFontW, DeleteDC, DeleteObject, GdiFlush, GetDC, GetTextExtentPoint32W,
     ReleaseDC, SelectObject, SetBkMode, SetTextColor, TextOutW, AC_SRC_ALPHA, AC_SRC_OVER, ANTIALIASED_QUALITY,
     BITMAPINFO, BITMAPINFOHEADER, BI_RGB, BLENDFUNCTION, CLIP_DEFAULT_PRECIS, DEFAULT_CHARSET, DIB_RGB_COLORS,
-    FW_SEMIBOLD, HDC, HGDIOBJ, OUT_DEFAULT_PRECIS, TRANSPARENT,
+    FW_NORMAL, FW_SEMIBOLD, HDC, HGDIOBJ, OUT_DEFAULT_PRECIS, TRANSPARENT,
 };
 use windows::Win32::System::LibraryLoader::GetModuleHandleW;
 use windows::Win32::UI::WindowsAndMessaging::{
@@ -110,7 +110,7 @@ fn dot_geometry(st: &OverlayState) -> (i32, f32, f32) {
 }
 
 /// Put premultiplied BGRA pixels on screen at (x, y).
-unsafe fn present(hwnd: HWND, x: i32, y: i32, w: i32, h: i32, pixels: &[u8], alpha: u8) {
+pub(crate) unsafe fn present(hwnd: HWND, x: i32, y: i32, w: i32, h: i32, pixels: &[u8], alpha: u8) {
     let screen = GetDC(None);
     let mem = CreateCompatibleDC(Some(screen));
     let bmi = BITMAPINFO {
@@ -161,16 +161,21 @@ unsafe fn present(hwnd: HWND, x: i32, y: i32, w: i32, h: i32, pixels: &[u8], alp
 /// Render a line of text into a coverage mask with GDI (greyscale anti-aliasing, white on
 /// black, so any channel is the coverage).
 unsafe fn text_mask(text: &str, px_height: i32) -> TextMask {
+    text_mask_weight(text, px_height, true)
+}
+
+/// Like `text_mask`, in Segoe UI Semibold or regular Segoe UI.
+pub(crate) unsafe fn text_mask_weight(text: &str, px_height: i32, semibold: bool) -> TextMask {
     let w16: Vec<u16> = text.encode_utf16().collect();
     let screen = GetDC(None);
     let dc: HDC = CreateCompatibleDC(Some(screen));
-    let face = wide("Segoe UI Semibold");
+    let face = wide(if semibold { "Segoe UI Semibold" } else { "Segoe UI" });
     let font = CreateFontW(
         -px_height,
         0,
         0,
         0,
-        FW_SEMIBOLD.0 as i32,
+        if semibold { FW_SEMIBOLD.0 as i32 } else { FW_NORMAL.0 as i32 },
         0,
         0,
         0,
@@ -292,8 +297,10 @@ unsafe extern "system" fn wndproc(hwnd: HWND, msg: u32, wp: WPARAM, lp: LPARAM) 
                     timer: false,
                     masks: HashMap::new(),
                 });
+                let hold = current_state().hold_scale;
                 for (ev, reduced, at) in events {
                     anim.indicator.set_reduced_motion(reduced);
+                    anim.indicator.set_hold_scale(hold);
                     match ev {
                         OverlayEvent::Saving => anim.indicator.saving(at),
                         OverlayEvent::Saved => anim.indicator.finished(Kind::Success, at),

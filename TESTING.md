@@ -77,6 +77,10 @@ The results below are copied from those runs. Nothing is estimated.
 
 Not automated: dragging edges or pieces, the crop box and Ctrl+wheel zoom. These are mouse gestures on the timeline; the editing operations behind them are unit-tested.
 
+## Overlay panel (automated, real window and mouse)
+
+`ci/ui-screenshots.ps1` opens a stand-in game window, presses Alt+F8, clicks **Turn on** in the panel with the real mouse (Instant Replay must start and be saved in the settings), presses Esc and checks that the stand-in window has focus again. Screenshots: `panel-open`, `panel-replay-on`, `panel-closed`. Unit tests cover the layout at 1×, 1.5× and 2× (every button inside the card, none overlapping), buttons following the real state (no Save while Instant Replay is off, no second Stop while finishing), hit testing, keyboard focus skipping disabled buttons, and long messages being shortened.
+
 ## Instant Replay indicator and notifications (automated, real overlay)
 
 `ci/indicator-test.ps1` films the corner of the screen at ~47 frames per second while the real overlay runs. Normally the overlay is excluded from capture; `UREC_OVERLAY_CAPTURABLE=1` turns that off for the test only. Latest run: **13 passed, 0 failed.**
@@ -177,6 +181,8 @@ GitHub's machine has no GPU and no microphone, so these are implemented but have
 - A real microphone, device unplugging and reconnecting, Windows 10 (only build 26100 tested), multiple monitors and high-DPI scaling.
 - Overlay hidden from recordings. CI only shows the opposite: with the exclusion turned off for the test, the overlay is captured.
 - The indicator at high-DPI scaling (125–200 %) and on a secondary monitor.
+- **Overlay panel in real games**: opening over a borderless and an exclusive-fullscreen game, whether the game gets focus back, whether anti-cheat games (Valorant) let it take focus, and that it stays out of recordings. CI tests it over a normal window only.
+- **Hotkeys in games whose anti-cheat blocks registered hotkeys** (the key watcher added in 0.4.7). CI only checks that a hotkey press still counts once.
 - **Push-to-talk** with a real microphone. The key watching and muting logic is implemented, but CI has no microphone and no one to hold a key.
 - **Constant quality on GPU encoders** (NVENC CQ, AMF CQP, QSV ICQ). FFmpeg accepts the arguments (T01b), but only x264 was measured. Hardware encoders usually save less space than x264 does in constant-quality mode.
 - **"Use CPU encoder"** after a hardware encoder fails at start. CI has no hardware encoder that could fail.
@@ -207,3 +213,4 @@ Please run these on your PC and report results (Settings › Advanced shows whic
 8. While recording, check Task Manager: CPU and GPU usage of `uRec.exe` and `ffmpeg.exe`, and whether frames are dropped (Home shows the count).
 9. Try 1440p/4K, 120+ FPS and HEVC/AV1 if your GPU supports them.
 10. Uninstall and check that recordings remain.
+11. In a game, press Alt+F8: the overlay panel opens. Save a replay from it, start and stop a recording, change the replay length, then press Esc. You should be back in the game with mouse and keyboard working. Check that the panel isn't in the saved clip.

@@ -40,6 +40,10 @@ pub enum Command {
     Shutdown,
     /// Push-to-talk key pressed (true) or released (false).
     PushToTalk(bool),
+    /// Open or close the overlay panel (its hotkey).
+    TogglePanel,
+    /// A button pressed in the overlay panel.
+    Panel(urec_win::panel::PanelAction),
     /// From the save worker: a queued replay save has started / finished.
     ReplaySaveStarted(u64),
     ReplaySaveFinished(u64, Result<SavedClip, String>),
@@ -151,6 +155,11 @@ pub struct Status {
     pub replay_saving: usize,
     pub last_replay_save: Option<ReplaySaveEvent>,
     pub test: Option<TestReport>,
+    /// The controller changed a setting itself (hotkey, overlay panel, auto-adjust): the UI
+    /// takes this copy so it doesn't write the old value back.
+    pub settings_update: Option<Box<Settings>>,
+    /// Page the UI should show (e.g. "settings" from the overlay panel).
+    pub open_page: Option<String>,
 }
 
 impl Status {
@@ -355,6 +364,7 @@ struct Worker {
     recording: Option<Recording>,
     hotkeys: urec_win::Hotkeys,
     overlay: urec_win::Overlay,
+    panel: urec_win::Panel,
     /// Primary monitor rectangle for the overlay, refreshed with the disk check (not every tick).
     overlay_monitor: (i32, i32, u32, u32),
     lag_since: Option<Instant>,
@@ -379,14 +389,22 @@ impl Worker {
                 1 => Command::SaveReplay,
                 2 => Command::ToggleReplay,
                 3 => Command::ToggleMicMute,
-                _ => Command::ToggleOverlay,
+                4 => Command::ToggleOverlay,
+                _ => Command::TogglePanel,
             };
             if let Ok(tx) = tx.lock() {
                 let _ = tx.send(cmd);
             }
         });
         let saver = Saver::start(ctl.clone());
+        let panel_tx = ctl.tx.clone();
+        let panel = urec_win::Panel::new(move |a| {
+            if let Ok(tx) = panel_tx.lock() {
+                let _ = tx.send(Command::Panel(a));
+            }
+        });
         Worker {
+            panel,
             ctl,
             s,
             rx,
@@ -570,6 +588,7 @@ impl Worker {
             ("Turn Instant Replay on/off", &h.toggle_replay),
             ("Mute microphone", &h.mute_mic),
             ("Show/hide overlay", &h.overlay),
+            ("Open overlay panel", &h.panel),
         ];
         let keys: Vec<Option<Hotkey>> = names.iter().map(|(_, k)| Hotkey::parse(k)).collect();
         let failed = self.hotkeys.set(&keys);
@@ -596,6 +615,12 @@ impl Worker {
             Command::ToggleReplay => self.set_replay(!self.s.replay.enabled),
             Command::SaveReplay => self.save_replay(),
             Command::ToggleMicMute => self.toggle_mute(),
+            Command::TogglePanel => {
+                let model = self.panel_model();
+                let reduced = self.reduced_motion();
+                self.panel.toggle(model, &self.s.appearance.panel_position, reduced);
+            }
+            Command::Panel(action) => self.panel_action(action),
             Command::ToggleOverlay => {
                 self.update(|s| s.overlay_visible = !s.overlay_visible);
                 self.update_overlay();
@@ -1121,6 +1146,7 @@ impl Worker {
         if self.s.replay.enabled != on {
             self.s.replay.enabled = on;
             let _ = self.s.save();
+            self.publish_settings();
         }
         if on {
             if self.live.is_none() {
@@ -1286,11 +1312,7 @@ impl Worker {
     /// overlay is turned off. The in-app notice is always added separately.
     fn save_feedback(&mut self, fb: SaveFeedback) {
         let overlay_on = self.s.appearance.overlay && self.ctl.snapshot().overlay_visible;
-        let reduced = match self.s.appearance.motion.as_str() {
-            "reduced" => true,
-            "full" => false,
-            _ => urec_win::system_reduced_motion(),
-        };
+        let reduced = self.reduced_motion();
         let ev = match &fb {
             SaveFeedback::Saving => urec_win::OverlayEvent::Saving,
             SaveFeedback::Saved(_) => urec_win::OverlayEvent::Saved,
@@ -1577,6 +1599,99 @@ impl Worker {
             }
         }
         self.update_overlay();
+        if self.panel.is_visible() {
+            self.panel.set_model(self.panel_model());
+        }
+    }
+
+    fn reduced_motion(&self) -> bool {
+        match self.s.appearance.motion.as_str() {
+            "reduced" => true,
+            "full" => false,
+            _ => urec_win::system_reduced_motion(),
+        }
+    }
+
+    /// Hand the controller's settings to the UI after the controller changed one itself.
+    fn publish_settings(&self) {
+        let s = Box::new(self.s.clone());
+        self.update(|st| st.settings_update = Some(s));
+    }
+
+    /// What the overlay panel shows, from the real state (nothing estimated).
+    fn panel_model(&self) -> urec_win::panel::PanelModel {
+        use urec_win::panel::{PanelModel, RecordView, ReplayView, Tone};
+        let st = self.ctl.snapshot();
+        let replay = match st.replay {
+            ReplayState::Off => ReplayView::Off,
+            ReplayState::Starting => ReplayView::Starting,
+            ReplayState::On => ReplayView::On,
+            ReplayState::Error(_) => ReplayView::Error,
+        };
+        let recording = match (&self.recording, st.finishing) {
+            (_, true) => RecordView::Finishing,
+            (Some(r), false) => RecordView::Recording { seconds: r.started.elapsed().as_secs() },
+            (None, false) if st.starting && self.live.is_none() && !self.s.replay.enabled => RecordView::Starting,
+            (None, false) => RecordView::Idle,
+        };
+        // Only when the microphone is really part of the capture and can be muted by a press.
+        let mic_muted = (self.live.is_some() && self.s.audio.mic && !self.push_to_talk()).then_some(st.mic_muted);
+        let message = st.notices.front().filter(|n| n.at.elapsed() < Duration::from_secs(8)).map(|n| {
+            let tone = match n.level {
+                Level::Success => Tone::Success,
+                Level::Error | Level::Warning => Tone::Error,
+                Level::Info => Tone::Info,
+            };
+            (n.text.clone(), tone)
+        });
+        let key = |k: &str| k.replace('+', " + ");
+        PanelModel {
+            replay,
+            replay_seconds: self.s.replay.seconds,
+            saving: st.replay_saving > 0,
+            recording,
+            mic_muted,
+            message,
+            key_save: key(&self.s.hotkeys.save_replay),
+            key_record: key(&self.s.hotkeys.record),
+            key_mute: key(&self.s.hotkeys.mute_mic),
+            key_panel: key(&self.s.hotkeys.panel),
+        }
+    }
+
+    fn panel_action(&mut self, action: urec_win::panel::PanelAction) {
+        use urec_win::panel::PanelAction;
+        log(&format!("overlay panel: {action:?}"));
+        match action {
+            PanelAction::SaveReplay => self.save_replay(),
+            PanelAction::ToggleReplay => self.set_replay(!self.s.replay.enabled),
+            PanelAction::ToggleRecording => {
+                if self.ctl.snapshot().finishing {
+                    return;
+                }
+                if self.recording.is_some() {
+                    self.stop_recording()
+                } else {
+                    self.start_recording()
+                }
+            }
+            PanelAction::ToggleMic => self.toggle_mute(),
+            PanelAction::ReplaySeconds(secs) => {
+                if self.s.replay.seconds != secs {
+                    let mut new = self.s.clone();
+                    new.replay.seconds = secs;
+                    let _ = new.save();
+                    self.apply(new);
+                    self.publish_settings();
+                }
+            }
+            PanelAction::OpenSettings => {
+                self.update(|s| s.open_page = Some("settings:instantreplay".into()));
+                urec_win::show_window_titled(crate::ui::WINDOW_TITLE);
+                self.ctl.repaint();
+            }
+            PanelAction::Close => {}
+        }
     }
 
     /// Windows Graphics Capture is delivering almost no new frames (usually a fullscreen game).
@@ -1605,6 +1720,11 @@ impl Worker {
             _ => 1.0,
         };
         o.opacity = self.s.appearance.overlay_opacity as f32 / 100.0;
+        o.hold_scale = match self.s.appearance.notice_length.as_str() {
+            "short" => 0.6,
+            "long" => 2.0,
+            _ => 1.0,
+        };
         // Keep the position even while hidden, so a save message appears in the right corner.
         o.monitor = self.overlay_monitor;
         if visible {
@@ -1650,6 +1770,7 @@ impl Worker {
             let old = self.s.video.fps;
             self.s.video.fps = 30;
             let _ = self.s.save();
+            self.publish_settings();
             self.notice(
                 Level::Warning,
                 format!("Your PC couldn't keep up at {old} FPS, so Instant Replay now records at 30 FPS. You can change this in Settings › Video."),
