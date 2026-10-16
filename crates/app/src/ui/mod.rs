@@ -85,7 +85,9 @@ pub struct App {
     pub windows: Vec<WindowInfo>,
     pub mics: Vec<AudioDevice>,
     pub speakers: Vec<AudioDevice>,
-    devices_at: Instant,
+    /// When the device lists were last read; None = never. (Not `Instant::now() - 1 h`: that
+    /// panics on Windows when the PC booted less than an hour ago, e.g. with Start with Windows.)
+    devices_at: Option<Instant>,
     /// Which hotkey field is waiting for a key press.
     pub listening: Option<usize>,
     pub custom_replay: String,
@@ -144,7 +146,7 @@ impl App {
             windows: Vec::new(),
             mics: Vec::new(),
             speakers: Vec::new(),
-            devices_at: Instant::now() - Duration::from_secs(3600),
+            devices_at: None,
             listening: None,
             custom_replay,
             told_about_tray: false,
@@ -200,10 +202,10 @@ impl App {
 
     /// Re-read monitors/windows/audio devices (at most every few seconds).
     pub fn refresh_devices(&mut self, force: bool) {
-        if !force && self.devices_at.elapsed() < Duration::from_secs(4) {
+        if !force && self.devices_at.is_some_and(|t| t.elapsed() < Duration::from_secs(4)) {
             return;
         }
-        self.devices_at = Instant::now();
+        self.devices_at = Some(Instant::now());
         self.monitors = urec_win::monitors();
         self.windows = urec_win::windows();
         self.mics = urec_win::audio_inputs();

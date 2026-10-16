@@ -13,7 +13,9 @@ pub fn sanitize(name: &str) -> String {
         "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1",
         "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9",
     ];
-    if out.is_empty() || RESERVED.contains(&out.to_ascii_uppercase().as_str()) {
+    // Windows treats "CON.anything" as the device too, so only the part before the first dot counts.
+    let stem = out.split('.').next().unwrap_or("").to_ascii_uppercase();
+    if out.is_empty() || RESERVED.contains(&stem.as_str()) {
         out = format!("Recording {out}").trim().to_string();
     }
     out.chars().take(80).collect::<String>().trim().to_string()
@@ -91,6 +93,10 @@ mod tests {
         assert_eq!(sanitize("VALORANT  "), "VALORANT");
         assert_eq!(sanitize("a<b>c:d\"e/f\\g|h?i*j"), "a b c d e f g h i j");
         assert_eq!(sanitize("con"), "Recording con");
+        // Windows reserves "CON.txt" and the like too.
+        assert_eq!(sanitize("con.txt"), "Recording con.txt");
+        assert_eq!(sanitize("Lpt1.backup"), "Recording Lpt1.backup");
+        assert_eq!(sanitize("console"), "console");
         assert_eq!(sanitize("..."), "Recording");
         assert_eq!(sanitize("Notes\u{7}.txt."), "Notes .txt");
     }

@@ -359,7 +359,8 @@ struct Worker {
     overlay_monitor: (i32, i32, u32, u32),
     lag_since: Option<Instant>,
     lag_warned: bool,
-    last_disk_check: Instant,
+    /// None until the first check (see `devices_at` in ui/mod.rs for why not `now() - 60 s`).
+    last_disk_check: Option<Instant>,
     low_space_warned: bool,
     crash_restarts: u32,
 }
@@ -405,7 +406,7 @@ impl Worker {
             overlay_monitor: (0, 0, 1920, 1080),
             lag_since: None,
             lag_warned: false,
-            last_disk_check: Instant::now() - Duration::from_secs(60),
+            last_disk_check: None,
             low_space_warned: false,
             crash_restarts: 0,
         }
@@ -1532,8 +1533,8 @@ impl Worker {
                 }
             });
         }
-        if self.last_disk_check.elapsed() > Duration::from_secs(10) {
-            self.last_disk_check = Instant::now();
+        if self.last_disk_check.is_none_or(|t| t.elapsed() > Duration::from_secs(10)) {
+            self.last_disk_check = Some(Instant::now());
             self.check_disk();
             if let Some(m) = urec_win::monitors().into_iter().find(|m| m.primary) {
                 self.overlay_monitor = (m.bounds.x, m.bounds.y, m.bounds.width, m.bounds.height);

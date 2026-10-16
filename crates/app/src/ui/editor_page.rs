@@ -282,9 +282,11 @@ fn frame(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, st: &Status) -> bo
 }
 
 fn keyboard(ed: &mut EditorUi, ui: &egui::Ui) {
-    if ui.ctx().egui_wants_keyboard_input() || ed.dialog.is_some() {
+    if ui.ctx().egui_wants_keyboard_input() || ed.dialog.is_some() || ed.export.is_some() {
         return;
     }
+    // While a piece or edge is being dragged, editing by key would change the pieces under it.
+    let dragging = ed.drag.is_some();
     let Some(pr) = ed.project.as_mut() else { return };
     let fps = pr.fps();
     let (space, s_key, del, left, right, home, end, undo, redo, shift) = ui.input(|i| {
@@ -301,6 +303,7 @@ fn keyboard(ed: &mut EditorUi, ui: &egui::Ui) {
             i.modifiers.shift,
         )
     });
+    let (s_key, del, undo, redo) = (s_key && !dragging, del && !dragging, undo && !dragging, redo && !dragging);
     let dur = pr.duration();
     if space {
         toggle_play(ed);
@@ -333,14 +336,21 @@ fn keyboard(ed: &mut EditorUi, ui: &egui::Ui) {
                 ed.selected = None;
                 ed.playhead = ed.playhead.min(pr.duration() - 0.001).max(0.0);
                 ed.still_for = None;
+                // Playback was started from the old pieces: carry on from the playhead with the new ones.
+                if ed.player.take().is_some() {
+                    PLAY_REQUEST.with(|r| r.set(true));
+                }
             }
         }
     }
-    if undo && pr.undo() {
+    if (undo && pr.undo()) || (redo && pr.redo()) {
+        // The timeline can be shorter or have fewer pieces now.
         ed.still_for = None;
-    }
-    if redo && pr.redo() {
-        ed.still_for = None;
+        ed.playhead = ed.playhead.min((pr.duration() - 0.001).max(0.0));
+        ed.selected = ed.selected.filter(|i| *i < pr.pieces().len());
+        if ed.player.take().is_some() {
+            PLAY_REQUEST.with(|r| r.set(true));
+        }
     }
 }
 
@@ -605,6 +615,9 @@ fn controls(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect, _ff
                 ed.selected = None;
                 ed.playhead = ed.playhead.min(pr.duration() - 0.001).max(0.0);
                 ed.still_for = None;
+                if ed.player.take().is_some() {
+                    PLAY_REQUEST.with(|r| r.set(true));
+                }
             }
         }
     }
@@ -856,15 +869,11 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
             Drag::Move { piece, before_x, target } => {
                 if (q.x - *before_x).abs() > 8.0 {
                     let t = t_of(q.x, ed.scroll, ed.zoom);
-                    let mut to = pr.pieces().len() - 1;
-                    for (k, s) in starts.iter().enumerate() {
-                        if t < s + pr.pieces()[k].len() / 2.0 {
-                            to = k;
-                            break;
-                        }
-                    }
-                    *target = to;
-                    let x = x_of(starts.get(to).copied().unwrap_or(0.0), ed.scroll, ed.zoom);
+                    // The piece goes in front of piece `ins` (the end when `ins` is the piece count).
+                    let ins = pr.insertion_index(t);
+                    *target = ins;
+                    let at = starts.get(ins).copied().unwrap_or_else(|| pr.duration());
+                    let x = x_of(at, ed.scroll, ed.zoom);
                     ui.painter().line_segment(
                         [Pos2::new(x, lane.min.y - 4.0), Pos2::new(x, lane.max.y + 4.0)],
                         Stroke::new(3.0, p.replay),
@@ -884,8 +893,8 @@ fn timeline(app: &mut App, ed: &mut EditorUi, ui: &mut egui::Ui, area: Rect) {
             }
             Some(Drag::Move { piece, target, before_x }) => {
                 let moved = resp.interact_pointer_pos().is_some_and(|q| (q.x - before_x).abs() > 8.0);
-                if moved && pr.move_piece(piece, target) {
-                    ed.selected = Some(target);
+                if moved && pr.move_before(piece, target) {
+                    ed.selected = Some(Project::index_after_move(piece, target));
                     ed.still_for = None;
                 }
             }

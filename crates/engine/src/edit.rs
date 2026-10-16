@@ -239,6 +239,38 @@ impl Project {
         true
     }
 
+    /// Where a piece dropped at timeline time `t` goes: the index of the piece it ends up in
+    /// front of (the left half of a piece is "before it"), or the piece count for the very end.
+    pub fn insertion_index(&self, t: f64) -> usize {
+        let mut acc = 0.0;
+        for (i, p) in self.state.pieces.iter().enumerate() {
+            if t < acc + p.len() / 2.0 {
+                return i;
+            }
+            acc += p.len();
+        }
+        self.state.pieces.len()
+    }
+
+    /// Move piece `from` in front of piece `before` (numbered as they are now; the piece count
+    /// means the end). False when that leaves it where it is.
+    pub fn move_before(&mut self, from: usize, before: usize) -> bool {
+        if before > self.state.pieces.len() {
+            return false;
+        }
+        self.move_piece(from, Project::index_after_move(from, before))
+    }
+
+    /// Index a piece ends up at after `move_before(from, before)`: removing it first shifts
+    /// everything behind it up by one.
+    pub fn index_after_move(from: usize, before: usize) -> usize {
+        if before > from {
+            before - 1
+        } else {
+            before
+        }
+    }
+
     /// Set a piece's start or end (source seconds), clamped to the source and a minimum length.
     /// `record` = false while dragging (call `commit_drag` once at the end for one undo step).
     pub fn set_edge(&mut self, i: usize, start: bool, value: f64, record: bool) -> bool {
@@ -843,6 +875,44 @@ mod tests {
         assert!(!p.set_edge(0, true, 29.99, true) || p.pieces()[0].len() >= MIN_PIECE);
         assert!(p.move_piece(1, 0));
         assert_eq!(p.pieces()[0].source, 1);
+    }
+
+    #[test]
+    fn dropping_a_piece_lands_where_the_marker_was() {
+        let names = ["a", "b", "c", "d"];
+        let order = |p: &Project| p.pieces().iter().map(|x| names[x.source]).collect::<String>();
+        let fresh = || Project::new(names.iter().map(|n| src(n, 10.0, 1)).collect());
+        let p = fresh();
+        // Each piece is 10 s: halves decide, and past the last half is the end.
+        assert_eq!(p.insertion_index(0.0), 0);
+        assert_eq!(p.insertion_index(4.9), 0);
+        assert_eq!(p.insertion_index(5.1), 1);
+        assert_eq!(p.insertion_index(14.0), 1);
+        assert_eq!(p.insertion_index(16.0), 2);
+        assert_eq!(p.insertion_index(34.0), 3);
+        assert_eq!(p.insertion_index(36.0), 4);
+        // Moving right: in front of "d" means between c and d (not after d).
+        let mut p = fresh();
+        assert!(p.move_before(0, 3));
+        assert_eq!(order(&p), "bcad");
+        assert_eq!(Project::index_after_move(0, 3), 2);
+        // To the very end.
+        let mut p = fresh();
+        assert!(p.move_before(0, 4));
+        assert_eq!(order(&p), "bcda");
+        // Moving left.
+        let mut p = fresh();
+        assert!(p.move_before(3, 1));
+        assert_eq!(order(&p), "adbc");
+        assert_eq!(Project::index_after_move(3, 1), 1);
+        // Dropping next to where it already is changes nothing (and records no undo step).
+        for (from, before) in [(0, 0), (0, 1), (2, 2), (2, 3), (3, 3), (3, 4)] {
+            let mut p = fresh();
+            assert!(!p.move_before(from, before), "{from} -> {before}");
+            assert_eq!(order(&p), "abcd");
+            assert!(!p.can_undo());
+        }
+        assert!(!fresh().move_before(0, 5));
     }
 
     #[test]

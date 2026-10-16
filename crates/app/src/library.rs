@@ -219,16 +219,19 @@ impl Library {
 
     /// Rename a recording (same folder, same extension). Never overwrites.
     pub fn rename(&self, item: &Item, new_name: &str) -> Result<PathBuf, String> {
-        let clean = urec_engine::naming::sanitize(new_name);
+        let ext = item.path.extension().and_then(|e| e.to_str()).unwrap_or("mp4");
+        let clean = urec_engine::naming::sanitize(strip_extension(new_name, ext));
         if clean.is_empty() {
             return Err("Enter a name.".into());
         }
-        let ext = item.path.extension().and_then(|e| e.to_str()).unwrap_or("mp4");
         let target = item.path.with_file_name(format!("{clean}.{ext}"));
         if target == item.path {
             return Ok(target);
         }
-        if target.exists() {
+        // Windows file names ignore case, so "clip.mp4" -> "Clip.mp4" is the same file (and fine),
+        // not a name that's already taken.
+        let same_file = target.to_string_lossy().to_lowercase() == item.path.to_string_lossy().to_lowercase();
+        if target.exists() && !same_file {
             return Err(format!("A file named \"{clean}.{ext}\" already exists."));
         }
         if !item.path.exists() {
@@ -277,6 +280,17 @@ impl Library {
             }
         }
         (ok, failed)
+    }
+}
+
+/// People type the extension too ("clip.mp4"); the file keeps its own, so don't double it.
+fn strip_extension<'a>(typed: &'a str, ext: &str) -> &'a str {
+    let t = typed.trim();
+    let suffix = format!(".{ext}");
+    if t.len() > suffix.len() && t.to_ascii_lowercase().ends_with(&suffix.to_ascii_lowercase()) {
+        &t[..t.len() - suffix.len()]
+    } else {
+        t
     }
 }
 
@@ -522,5 +536,15 @@ mod tests {
         let all = retention_candidates(&items, 30, true, &fav, now);
         assert_eq!(all.len(), 3, "recordings too, still never favorites or recent files");
         assert!(retention_candidates(&items, 60, true, &fav, now).is_empty());
+    }
+
+    #[test]
+    fn typed_extension_is_not_doubled() {
+        assert_eq!(strip_extension("clip.mp4", "mp4"), "clip");
+        assert_eq!(strip_extension("  My Clip.MP4 ", "mp4"), "My Clip");
+        assert_eq!(strip_extension("clip.mkv", "mp4"), "clip.mkv");
+        assert_eq!(strip_extension(".mp4", "mp4"), ".mp4");
+        assert_eq!(strip_extension("Desktop 10.00.00", "mp4"), "Desktop 10.00.00");
+        assert_eq!(strip_extension("日本語.mp4", "mp4"), "日本語");
     }
 }
