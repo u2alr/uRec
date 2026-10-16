@@ -506,3 +506,12 @@ pub fn copy_files_to_clipboard(paths: &[std::path::PathBuf]) -> Result<(), Strin
         }
     }
 }
+
+/// A plain error message box (for failures that happen before there is a window to show them).
+pub fn error_box(title: &str, text: &str) {
+    use windows::Win32::UI::WindowsAndMessaging::{MessageBoxW, MB_ICONERROR, MB_OK, MB_SETFOREGROUND};
+    let (t, m) = (wide(title), wide(text));
+    unsafe {
+        MessageBoxW(None, PCWSTR(m.as_ptr()), PCWSTR(t.as_ptr()), MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+    }
+}

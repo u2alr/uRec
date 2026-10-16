@@ -480,6 +480,7 @@ impl eframe::App for App {
         if !self.first_frame_logged {
             self.first_frame_logged = true;
             crate::controller::log("startup: first frame");
+            crate::startup::first_frame_drawn();
         }
         self.apply_theme(&ctx);
         let st = self.ctl.snapshot();

@@ -9,6 +9,9 @@ on:
 permissions:
   contents: write
 
+env:
+  UREC_RENDERER: wgpu
+
 jobs:
   ui:
     runs-on: windows-latest

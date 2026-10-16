@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.4.4
+
+Starting on older and weaker PCs.
+
+- **uRec now opens on PCs where the graphics driver can't draw the window.** If the default renderer fails, uRec switches to OpenGL by itself, and remembers it if the previous start never drew a window. If nothing works it says so and points to the log instead of closing silently.
+- **Faster start-up.** The encoder tests that run when uRec starts now run three at a time instead of one by one, so Instant Replay starts sooner on slow CPUs. Each test also gives up sooner.
+- **Launching uRec twice** now waits for the first one to finish starting, and tells you if it is stuck, instead of doing nothing.
+
 ## 0.4.3
 
 Bug fixes from a code audit.

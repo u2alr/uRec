@@ -185,3 +185,5 @@ impl AudioOut {
 pub fn copy_files_to_clipboard(_paths: &[std::path::PathBuf]) -> Result<(), String> {
     Err("The clipboard is only available on Windows.".into())
 }
+
+pub fn error_box(_title: &str, _text: &str) {}

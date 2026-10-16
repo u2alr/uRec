@@ -4,6 +4,8 @@ use crate::encoder::{explain_probe_failure, is_argument_error, Encoder};
 use crate::process::run_capture;
 use crate::video::{Codec, VideoSettings};
 use std::path::Path;
+use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::Mutex;
 use std::time::{Duration, Instant};
 
 #[derive(Clone, Debug, PartialEq)]
@@ -18,31 +20,50 @@ pub struct ProbeResult {
     pub raw_error: String,
 }
 
+/// How many test encodes run at once. Few enough for a weak CPU and for GPUs that limit
+/// simultaneous encode sessions, but it makes start-up several times faster than one by one.
+const PROBE_WORKERS: usize = 3;
+
 /// Test-encode a few frames with every candidate encoder for the given codecs.
 /// Encoders missing from this FFmpeg build are reported without running them.
+/// Results come back in candidate order.
 pub fn probe_encoders(ffmpeg: &Path, codecs: &[Codec], v: &VideoSettings) -> Vec<ProbeResult> {
     let built_in = available_encoders(ffmpeg);
-    let mut out = Vec::new();
+    let mut jobs: Vec<(Encoder, VideoSettings)> = Vec::new();
     for &codec in codecs {
         let mut settings = v.clone();
         settings.codec = codec;
         for enc in Encoder::candidates(codec) {
-            let name = enc.ffmpeg_name().unwrap_or_default();
-            if !built_in.is_empty() && !built_in.iter().any(|n| n == name) {
-                out.push(ProbeResult {
-                    encoder: enc,
-                    ok: false,
-                    reason: "This encoder isn't included in the bundled FFmpeg.".into(),
-                    argument_error: false,
-                    millis: 0,
-                    raw_error: String::new(),
-                });
-                continue;
-            }
-            out.push(probe_one(ffmpeg, enc, &settings, 640, 360, 30));
+            jobs.push((enc, settings.clone()));
         }
     }
-    out
+    let slots: Mutex<Vec<Option<ProbeResult>>> = Mutex::new(vec![None; jobs.len()]);
+    let next = AtomicUsize::new(0);
+    std::thread::scope(|scope| {
+        for _ in 0..PROBE_WORKERS.min(jobs.len().max(1)) {
+            scope.spawn(|| loop {
+                let n = next.fetch_add(1, Ordering::Relaxed);
+                let Some((enc, settings)) = jobs.get(n) else { break };
+                let name = enc.ffmpeg_name().unwrap_or_default();
+                let result = if !built_in.is_empty() && !built_in.iter().any(|b| b == name) {
+                    ProbeResult {
+                        encoder: *enc,
+                        ok: false,
+                        reason: "This encoder isn't included in the bundled FFmpeg.".into(),
+                        argument_error: false,
+                        millis: 0,
+                        raw_error: String::new(),
+                    }
+                } else {
+                    probe_one(ffmpeg, *enc, settings, 640, 360, 30)
+                };
+                if let Ok(mut slots) = slots.lock() {
+                    slots[n] = Some(result);
+                }
+            });
+        }
+    });
+    slots.into_inner().unwrap_or_default().into_iter().flatten().collect()
 }
 
 /// Names of the video encoders compiled into this FFmpeg.
@@ -64,7 +85,7 @@ pub fn available_encoders(ffmpeg: &Path) -> Vec<String> {
 pub fn probe_one(ffmpeg: &Path, enc: Encoder, v: &VideoSettings, w: u32, h: u32, fps: u32) -> ProbeResult {
     let start = Instant::now();
     let args = enc.probe_args(v, w, h, fps);
-    let (ok, err) = match run_capture(ffmpeg, &args, Duration::from_secs(20)) {
+    let (ok, err) = match run_capture(ffmpeg, &args, Duration::from_secs(15)) {
         Ok(r) => r,
         Err(e) => (false, e.to_string()),
     };
@@ -92,4 +113,18 @@ pub fn ffmpeg_version(ffmpeg: &Path) -> Option<String> {
 /// Number of logical CPUs (for preset recommendations).
 pub fn logical_cpus() -> u32 {
     std::thread::available_parallelism().map(|n| n.get() as u32).unwrap_or(4)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn every_candidate_is_reported_in_order() {
+        let v = VideoSettings::default();
+        let got = probe_encoders(Path::new("definitely-not-ffmpeg"), &[Codec::H264, Codec::Hevc], &v);
+        let want: Vec<Encoder> = [Codec::H264, Codec::Hevc].iter().flat_map(|&c| Encoder::candidates(c)).collect();
+        assert_eq!(got.iter().map(|r| r.encoder).collect::<Vec<_>>(), want);
+        assert!(got.iter().all(|r| !r.ok));
+    }
 }

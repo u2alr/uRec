@@ -179,6 +179,26 @@ if ((Test-Path $settingsPath) -and $title) {
 }
 Stop-Process -Id $np.Id -Force -ErrorAction SilentlyContinue
 
+# Start-up guard: a start that never drew a window must make the next start use OpenGL.
+$dir = Join-Path $env:LOCALAPPDATA "uRec"
+$savedRenderer = $env:UREC_RENDERER
+try {
+    Remove-Item env:UREC_RENDERER -ErrorAction SilentlyContinue
+    Remove-Item env:UREC_PAGE -ErrorAction SilentlyContinue
+    New-Item -ItemType Directory -Force $dir | Out-Null
+    Set-Content (Join-Path $dir "renderer-trial.txt") "wgpu"
+    $proc = Start-Process $Exe -PassThru
+    Start-Sleep -Seconds 6
+    if (-not $proc.HasExited) { Stop-Process -Id $proc.Id -Force }
+    $lg = Get-Content (Join-Path $dir "logs\urec.log") -Raw
+    $switched = $lg -match "using OpenGL from now on"
+    $saved = (Test-Path (Join-Path $dir "renderer.txt")) -and ((Get-Content (Join-Path $dir "renderer.txt") -Raw).Trim() -eq "glow")
+    "renderer guard: switched=$switched saved=$saved"
+} finally {
+    Remove-Item (Join-Path $dir "renderer.txt"), (Join-Path $dir "renderer-trial.txt") -ErrorAction SilentlyContinue
+    $env:UREC_RENDERER = $savedRenderer
+}
+
 $log = Join-Path $env:LOCALAPPDATA "uRec\logs\urec.log"
 if (Test-Path $log) { Copy-Item $log (Join-Path $Out "urec.log") }
 

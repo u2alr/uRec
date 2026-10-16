@@ -5,6 +5,7 @@ mod controller;
 mod editor;
 mod library;
 mod settings;
+mod startup;
 #[cfg(windows)]
 mod tray;
 mod ui;
@@ -13,6 +14,7 @@ mod update;
 use controller::Controller;
 use eframe::egui;
 use settings::Settings;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
 fn main() -> eframe::Result {
@@ -40,7 +42,24 @@ fn main() -> eframe::Result {
     }
     // Only one uRec at a time: a second launch brings the first one forward.
     if !urec_win::claim_single_instance("Local\\uRec.SingleInstance") {
-        urec_win::show_window_titled(ui::WINDOW_TITLE);
+        // Bring the running uRec forward. It may still be starting, so give it a moment.
+        let mut shown = false;
+        for _ in 0..8 {
+            if urec_win::show_window_titled(ui::WINDOW_TITLE) {
+                shown = true;
+                break;
+            }
+            std::thread::sleep(std::time::Duration::from_millis(250));
+        }
+        if !shown {
+            controller::log("second launch: the running uRec has no window to show");
+            if std::env::var_os("CI").is_none() {
+                urec_win::error_box(
+                    "uRec",
+                    "uRec is already running but has no window to show. It may still be starting, or it may be stuck.\n\nIf this keeps happening, close \"uRec\" in Task Manager (Ctrl+Shift+Esc) and open it again.",
+                );
+            }
+        }
         return Ok(());
     }
     let (settings, message) = Settings::load();
@@ -69,6 +88,46 @@ fn main() -> eframe::Result {
         .map(|(_, _, ww, wh)| ((ww * 0.92).min(1060.0), ((wh - TITLE_BAR) * 0.94).min(720.0)))
         .unwrap_or((1060.0, 720.0));
     let position = work.map(|(x, y, ww, wh)| [x + (ww - w) / 2.0, y + (wh - h - TITLE_BAR) / 2.0]);
+    // Development/CI: open a specific page, e.g. UREC_PAGE=settings:video
+    let start_page = std::env::var("UREC_PAGE").ok();
+    let look = WindowLook { w, h, position, hidden: minimized };
+    let first = startup::choose();
+    controller::log(&format!("startup: opening window ({})", first.name()));
+    let created = Arc::new(AtomicBool::new(false));
+    let mut result = open_window(first, &look, &ctl, &settings, &message, &start_page, &created);
+    // The window couldn't be created (graphics driver): try the other renderer before giving up.
+    if let (Err(e), false) = (&result, created.load(Ordering::Relaxed)) {
+        controller::log(&format!("window error with {}: {e}; trying {}", first.name(), first.other().name()));
+        result = open_window(first.other(), &look, &ctl, &settings, &message, &start_page, &created);
+        if result.is_ok() && first == startup::Renderer::Wgpu && std::env::var_os("UREC_RENDERER").is_none() {
+            startup::remember_opengl();
+        }
+    }
+    if let Err(e) = &result {
+        controller::log(&format!("window error: {e}"));
+        startup::show_failure(&e.to_string());
+    }
+    result
+}
+
+/// Where and how big the window is.
+struct WindowLook {
+    w: f32,
+    h: f32,
+    position: Option<[f32; 2]>,
+    hidden: bool,
+}
+
+fn open_window(
+    renderer: startup::Renderer,
+    look: &WindowLook,
+    ctl: &Controller,
+    settings: &Settings,
+    message: &Option<String>,
+    start_page: &Option<String>,
+    created: &Arc<AtomicBool>,
+) -> eframe::Result {
+    let (w, h) = (look.w, look.h);
     let icon = egui::IconData { rgba: include_bytes!("../assets/icon_64.rgba").to_vec(), width: 64, height: 64 };
     let mut viewport = egui::ViewportBuilder::default()
         .with_title(ui::WINDOW_TITLE)
@@ -76,26 +135,27 @@ fn main() -> eframe::Result {
         .with_inner_size([w, h])
         .with_min_inner_size([w.min(880.0), h.min(560.0)])
         .with_icon(Arc::new(icon))
-        .with_visible(!minimized);
-    if let Some(pos) = position {
+        .with_visible(!look.hidden);
+    if let Some(pos) = look.position {
         viewport = viewport.with_position(pos);
     }
     let options = eframe::NativeOptions {
         viewport,
-        centered: position.is_none(),
-        renderer: match std::env::var("UREC_RENDERER").as_deref() {
-            Ok("glow") => eframe::Renderer::Glow,
-            _ => eframe::Renderer::Wgpu,
+        centered: look.position.is_none(),
+        renderer: match renderer {
+            startup::Renderer::Glow => eframe::Renderer::Glow,
+            startup::Renderer::Wgpu => eframe::Renderer::Wgpu,
         },
         ..Default::default()
     };
-    // Development/CI: open a specific page, e.g. UREC_PAGE=settings:video
-    let start_page = std::env::var("UREC_PAGE").ok();
-    controller::log("startup: opening window");
-    let result = eframe::run_native(
+    let (ctl, settings, message, start_page, created) =
+        (ctl.clone(), settings.clone(), message.clone(), start_page.clone(), created.clone());
+    startup::begin_trial(renderer);
+    eframe::run_native(
         ui::WINDOW_TITLE,
         options,
         Box::new(move |cc| {
+            created.store(true, Ordering::Relaxed);
             controller::log("startup: window created");
             #[cfg(windows)]
             tray::install(ctl.clone());
@@ -111,11 +171,7 @@ fn main() -> eframe::Result {
             }
             Ok(Box::new(app))
         }),
-    );
-    if let Err(e) = &result {
-        controller::log(&format!("window error: {e}"));
-    }
-    result
+    )
 }
 
 /// Handle a `urec://open?path=...` / `urec://reveal?path=...` link from a notification.
