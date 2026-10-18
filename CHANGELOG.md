@@ -7,6 +7,7 @@ Fixes for the "Starting…" loop after saving a replay, and smaller improvements
 - **Saving a replay no longer makes Instant Replay restart itself.** The save briefly competes with the capture for the processor and disk, and uRec took that dip for "falling behind": it restarted Instant Replay (and could lower the frame rate to 30). Dips while a save runs are now ignored.
 - **Instant Replay restarts no longer wait for a whole save.** A restart only waits until the save has copied its pieces of the buffer (usually a second or two), not until the clip is finished. Before, uRec could sit on "Starting…" for up to 30 seconds, ignoring hotkeys.
 - **Hotkey presses don't pile up.** A press that had to wait more than 3 seconds is dropped instead of running late, so repeated presses during a stall no longer start and stop recordings afterwards.
+- **Fast repeated hotkey presses all count again.** 0.4.7's in-game key watcher merged presses less than 0.4 s apart, so pressing Save replay several times quickly saved once. Now a press Windows delivers always counts at once, and the watcher only adds presses Windows didn't deliver.
 - **Choosing a new shortcut** in Settings › Hotkeys no longer triggers the current one (pressing Alt+F9 to keep it used to start a recording).
 - **Overlay panel:** pressing its shortcut twice quickly closes it again instead of being ignored.
 - **Start-up:** if OpenGL was saved as the fallback but stops working while the default works again, uRec goes back to the default.

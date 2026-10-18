@@ -145,6 +145,38 @@ pub fn combo_down(key: Hotkey, down: impl Fn(u32) -> bool) -> bool {
         && want(MOD_WIN) == (down(VK_LWIN) || down(VK_RWIN))
 }
 
+/// Pairs the key watcher's sightings with hotkeys Windows delivered, so each physical press
+/// counts once: a press the watcher sees is reported only if Windows didn't deliver a hotkey
+/// for it within `WAIT_MS`. Presses Windows did deliver are never delayed or dropped, however
+/// fast they come.
+#[derive(Clone, Copy, Debug, Default)]
+pub struct PressMatcher {
+    pending: Option<u64>,
+}
+
+impl PressMatcher {
+    pub const WAIT_MS: u64 = 150;
+
+    /// Call on every poll. `now` and `last_delivered` are milliseconds on the same clock
+    /// (`last_delivered` = 0: never). `edge` is true when the watcher just saw the combination
+    /// go down. Returns true when the watcher should report a press.
+    pub fn poll(&mut self, now: u64, edge: bool, last_delivered: u64) -> bool {
+        if edge && self.pending.is_none() {
+            self.pending = Some(now);
+        }
+        let Some(p) = self.pending else { return false };
+        if last_delivered != 0 && last_delivered + Self::WAIT_MS >= p {
+            self.pending = None;
+            return false;
+        }
+        if now >= p + Self::WAIT_MS {
+            self.pending = None;
+            return true;
+        }
+        false
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -187,5 +219,35 @@ mod combo_tests {
         let plain = Hotkey { mods: 0, vk: 0x78 };
         assert!(combo_down(plain, |vk| vk == 0x78));
         assert!(!combo_down(plain, |vk| vk == 0x78 || vk == 0x10));
+    }
+}
+
+#[cfg(test)]
+mod matcher_tests {
+    use super::PressMatcher;
+
+    #[test]
+    fn a_delivered_press_is_not_reported_again() {
+        let mut m = PressMatcher::default();
+        // Windows delivered at 1000; the watcher sees the key at 1010.
+        assert!(!m.poll(1010, true, 1000));
+        assert!(!m.poll(1200, false, 1000));
+        // The watcher saw it first; Windows delivers 30 ms later.
+        let mut m = PressMatcher::default();
+        assert!(!m.poll(2000, true, 1000));
+        assert!(!m.poll(2030, false, 2030));
+        assert!(!m.poll(2200, false, 2030));
+    }
+
+    #[test]
+    fn a_blocked_press_is_reported_once_after_the_wait() {
+        let mut m = PressMatcher::default();
+        assert!(!m.poll(5000, true, 0));
+        assert!(!m.poll(5100, false, 0));
+        assert!(m.poll(5150, false, 0));
+        assert!(!m.poll(5200, false, 0));
+        // Next press, still blocked (an old delivery long ago doesn't count).
+        assert!(!m.poll(9000, true, 1000));
+        assert!(m.poll(9160, false, 1000));
     }
 }

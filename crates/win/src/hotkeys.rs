@@ -34,19 +34,13 @@ impl Hotkeys {
         let keys = keys.to_vec();
         let watch_keys = keys.clone();
         let cb = self.on_press.clone();
-        // Both the registered hotkey and the key watcher report a press; only the first counts.
-        let last_fire: Arc<Vec<AtomicU64>> = Arc::new((0..keys.len()).map(|_| AtomicU64::new(0)).collect());
+        // Windows-delivered hotkeys count at once; the key watcher only reports presses Windows
+        // didn't deliver (see `PressMatcher`).
+        let delivered: Arc<Vec<AtomicU64>> = Arc::new((0..keys.len()).map(|_| AtomicU64::new(0)).collect());
         let base = Instant::now();
-        let dedupe = {
-            let last_fire = last_fire.clone();
-            move |i: usize| -> bool {
-                let now = base.elapsed().as_millis() as u64 + 1000;
-                let prev = last_fire[i].swap(now, Ordering::SeqCst);
-                prev == 0 || now.saturating_sub(prev) > 400
-            }
-        };
+        let clock = move || base.elapsed().as_millis() as u64 + 1;
         let cb_hot = cb.clone();
-        let dedupe_hot = dedupe.clone();
+        let delivered_hot = delivered.clone();
         let (tx, rx) = mpsc::channel::<(u32, Vec<usize>)>();
         let handle = std::thread::Builder::new()
             .name("hotkeys".into())
@@ -68,7 +62,8 @@ impl Hotkeys {
                 while GetMessageW(&mut msg, None, 0, 0).0 > 0 {
                     if msg.message == WM_HOTKEY {
                         let id = msg.wParam.0;
-                        if id >= 1 && dedupe_hot(id - 1) {
+                        if id >= 1 && id <= delivered_hot.len() {
+                            delivered_hot[id - 1].store(clock(), Ordering::SeqCst);
                             cb_hot(id - 1);
                         }
                     }
@@ -95,13 +90,15 @@ impl Hotkeys {
                 use windows::Win32::UI::Input::KeyboardAndMouse::GetAsyncKeyState;
                 let down = |vk: u32| unsafe { (GetAsyncKeyState(vk as i32) as u16 & 0x8000) != 0 };
                 let mut held = vec![false; watch.len()];
+                let mut matchers = vec![urec_engine::hotkey::PressMatcher::default(); watch.len()];
                 while !stop2.load(Ordering::Relaxed) {
                     for (n, (i, k)) in watch.iter().enumerate() {
                         let now = urec_engine::hotkey::combo_down(*k, down);
-                        if now && !held[n] && dedupe(*i) {
+                        let edge = now && !held[n];
+                        held[n] = now;
+                        if matchers[n].poll(clock(), edge, delivered[*i].load(Ordering::SeqCst)) {
                             cb(*i);
                         }
-                        held[n] = now;
                     }
                     std::thread::sleep(Duration::from_millis(20));
                 }
