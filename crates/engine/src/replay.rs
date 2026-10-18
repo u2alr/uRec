@@ -137,6 +137,39 @@ impl ReplayBuffer {
         out: &Path,
         wait_for_current: bool,
     ) -> Result<SavedClip, SaveError> {
+        self.save_with(ffmpeg, seconds, out, wait_for_current, &mut || {})
+    }
+
+    /// Like `save`; `done_reading` is called once the clip no longer needs the buffer (its
+    /// segments are copied, or the save failed before that). The slow join runs afterwards, so
+    /// the buffer may be cleared or restarted from then on.
+    pub fn save_with(
+        &self,
+        ffmpeg: &Path,
+        seconds: u32,
+        out: &Path,
+        wait_for_current: bool,
+        done_reading: &mut dyn FnMut(),
+    ) -> Result<SavedClip, SaveError> {
+        let mut reading = true;
+        let mut finish_reading = |reading: &mut bool| {
+            if std::mem::take(reading) {
+                done_reading();
+            }
+        };
+        let result = self.save_inner(ffmpeg, seconds, out, wait_for_current, &mut || finish_reading(&mut reading));
+        finish_reading(&mut reading);
+        result
+    }
+
+    fn save_inner(
+        &self,
+        ffmpeg: &Path,
+        seconds: u32,
+        out: &Path,
+        wait_for_current: bool,
+        copied: &mut dyn FnMut(),
+    ) -> Result<SavedClip, SaveError> {
         let before = self.segments().last().map(|s| s.end).unwrap_or(-1.0);
         if wait_for_current {
             let deadline = Instant::now() + Duration::from_millis(self.segment_seconds as u64 * 1000 + 1500);
@@ -156,6 +189,7 @@ impl ReplayBuffer {
         std::fs::create_dir_all(&stage)?;
         let result = (|| {
             let files = copy_contiguous(&self.dir, &chosen, &stage)?;
+            copied();
             let list = concat_list(&files);
             std::fs::write(stage.join("list.txt"), &list)?;
             let path = join_segments(ffmpeg, &stage.join("list.txt"), out)?;
@@ -362,6 +396,32 @@ mod tests {
         let _ = std::fs::remove_dir_all(&d);
         std::fs::create_dir_all(&d).unwrap();
         d
+    }
+
+    #[test]
+    fn done_reading_is_reported_once_and_before_the_join() {
+        // Segments exist but ffmpeg doesn't: copying works, the join fails.
+        let d = tmpdir("reading");
+        std::fs::write(d.join("seg_00000.ts"), b"x").unwrap();
+        std::fs::write(d.join("seg_00001.ts"), b"y").unwrap();
+        std::fs::write(d.join("segments.csv"), "seg_00000.ts,0.0,2.0\nseg_00001.ts,2.0,4.0\n").unwrap();
+        let b = ReplayBuffer::new(d.clone(), 10, 2);
+        let mut calls = 0;
+        let r = b.save_with(Path::new("no-such-ffmpeg"), 4, &d.join("out.mp4"), false, &mut || calls += 1);
+        assert!(r.is_err());
+        assert_eq!(calls, 1);
+        // Nothing to copy at all: still reported once.
+        let empty = tmpdir("reading-empty");
+        let mut calls = 0;
+        let r = ReplayBuffer::new(empty.clone(), 10, 2).save_with(
+            Path::new("no-such-ffmpeg"),
+            4,
+            &empty.join("out.mp4"),
+            false,
+            &mut || calls += 1,
+        );
+        assert!(r.is_err());
+        assert_eq!(calls, 1);
     }
 
     #[test]

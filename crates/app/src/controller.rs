@@ -42,6 +42,10 @@ pub enum Command {
     PushToTalk(bool),
     /// Open or close the overlay panel (its hotkey).
     TogglePanel,
+    /// A global hotkey (index into the hotkey list) and when it was pressed.
+    Hotkey(usize, Instant),
+    /// Stop listening to global hotkeys while the user picks a new one (true), and resume.
+    SuspendHotkeys(bool),
     /// A button pressed in the overlay panel.
     Panel(urec_win::panel::PanelAction),
     /// From the save worker: a queued replay save has started / finished.
@@ -284,6 +288,8 @@ struct Saver {
     tx: Sender<SaveJob>,
     /// Queued + running saves.
     pending: Arc<AtomicUsize>,
+    /// Saves that still need the buffer (queued, or running but not yet copied their segments).
+    reading: Arc<AtomicUsize>,
     next_id: u64,
 }
 
@@ -296,12 +302,18 @@ impl Saver {
         let (tx, rx) = channel::<SaveJob>();
         let pending = Arc::new(AtomicUsize::new(0));
         let p2 = pending.clone();
+        let reading = Arc::new(AtomicUsize::new(0));
+        let r2 = reading.clone();
         let _ = std::thread::Builder::new().name("replay-save".into()).spawn(move || {
             for job in rx {
                 ctl.send(Command::ReplaySaveStarted(job.id));
                 let t0 = Instant::now();
                 let buffer = ReplayBuffer::new(job.buffer_dir, job.replay_seconds, SEGMENT_SECONDS);
-                let result = buffer.save(&job.ffmpeg, job.save_seconds, &job.out, true).map_err(|e| e.to_string());
+                let result = buffer
+                    .save_with(&job.ffmpeg, job.save_seconds, &job.out, true, &mut || {
+                        r2.fetch_sub(1, Ordering::SeqCst);
+                    })
+                    .map_err(|e| e.to_string());
                 match &result {
                     Ok(c) => log(&format!(
                         "replay save #{} ok in {} ms: {} ({:.1} s, {} bytes)",
@@ -319,14 +331,27 @@ impl Saver {
                 ctl.send(Command::ReplaySaveFinished(job.id, result));
             }
         });
-        Saver { tx, pending, next_id: 1 }
+        Saver { tx, pending, reading, next_id: 1 }
     }
 
     fn pending(&self) -> usize {
         self.pending.load(Ordering::SeqCst)
     }
 
-    /// Wait until no save is queued or running (before the buffer is cleared or on exit).
+    /// Wait until no save needs the buffer any more (before it is cleared). Much shorter than
+    /// `wait_idle`: the slow join of a running save doesn't read the buffer.
+    fn wait_buffer_free(&self, timeout: Duration) -> bool {
+        let start = Instant::now();
+        while self.reading.load(Ordering::SeqCst) > 0 {
+            if start.elapsed() > timeout {
+                return false;
+            }
+            std::thread::sleep(Duration::from_millis(50));
+        }
+        true
+    }
+
+    /// Wait until no save is queued or running (on exit).
     fn wait_idle(&self, timeout: Duration) -> bool {
         let start = Instant::now();
         while self.pending() > 0 {
@@ -384,16 +409,8 @@ impl Worker {
         let tx = ctl.tx.clone();
         log("controller: creating hotkeys");
         let hotkeys = urec_win::Hotkeys::new(move |i| {
-            let cmd = match i {
-                0 => Command::ToggleRecording,
-                1 => Command::SaveReplay,
-                2 => Command::ToggleReplay,
-                3 => Command::ToggleMicMute,
-                4 => Command::ToggleOverlay,
-                _ => Command::TogglePanel,
-            };
             if let Ok(tx) = tx.lock() {
-                let _ = tx.send(cmd);
+                let _ = tx.send(Command::Hotkey(i, Instant::now()));
             }
         });
         let saver = Saver::start(ctl.clone());
@@ -615,6 +632,31 @@ impl Worker {
             Command::ToggleReplay => self.set_replay(!self.s.replay.enabled),
             Command::SaveReplay => self.save_replay(),
             Command::ToggleMicMute => self.toggle_mute(),
+            Command::Hotkey(i, at) => {
+                // A press that waited behind slow work would act at a surprising moment
+                // (e.g. start a recording long after the key was pressed): drop it.
+                let waited = at.elapsed();
+                if waited > Duration::from_secs(3) {
+                    log(&format!("hotkey {i} ignored: it waited {} ms", waited.as_millis()));
+                    return;
+                }
+                let cmd = match i {
+                    0 => Command::ToggleRecording,
+                    1 => Command::SaveReplay,
+                    2 => Command::ToggleReplay,
+                    3 => Command::ToggleMicMute,
+                    4 => Command::ToggleOverlay,
+                    _ => Command::TogglePanel,
+                };
+                self.handle(cmd);
+            }
+            Command::SuspendHotkeys(on) => {
+                if on {
+                    self.hotkeys.set(&[]);
+                } else {
+                    self.register_hotkeys();
+                }
+            }
             Command::TogglePanel => {
                 let model = self.panel_model();
                 let reduced = self.reduced_motion();
@@ -691,6 +733,7 @@ impl Worker {
             && self.live.as_ref().is_some_and(|l| l.kind == LiveKind::Replay)
         {
             // Restart the buffer with the new settings (only when not recording into it).
+            log("settings changed: restarting Instant Replay");
             self.stop_live();
             self.start_replay();
         }
@@ -1171,8 +1214,11 @@ impl Worker {
             return;
         }
         // Starting clears the buffer: let queued saves finish reading it first.
-        if !self.saver.wait_idle(Duration::from_secs(30)) {
-            log("start_replay: a save is still running after 30 s; continuing");
+        let t0 = Instant::now();
+        if !self.saver.wait_buffer_free(Duration::from_secs(15)) {
+            log("start_replay: a save still needs the buffer after 15 s; continuing");
+        } else if t0.elapsed() > Duration::from_millis(200) {
+            log(&format!("start_replay: waited {} ms for a save to copy its segments", t0.elapsed().as_millis()));
         }
         self.update(|s| s.replay = ReplayState::Starting);
         let buffer = self.replay_buffer();
@@ -1268,9 +1314,11 @@ impl Worker {
         };
         self.saver.next_id += 1;
         self.saver.pending.fetch_add(1, Ordering::SeqCst);
+        self.saver.reading.fetch_add(1, Ordering::SeqCst);
         log(&format!("replay save #{} queued ({} pending before)", job.id, pending));
         if self.saver.tx.send(job).is_err() {
             self.saver.pending.fetch_sub(1, Ordering::SeqCst);
+            self.saver.reading.fetch_sub(1, Ordering::SeqCst);
             self.notice(Level::Error, "Instant Replay couldn't be saved: the save worker stopped.", None);
             self.save_feedback(SaveFeedback::Failed("save worker stopped".into()));
             return;
@@ -1376,7 +1424,7 @@ impl Worker {
         // Instant Replay uses the same capture; pause it for the test.
         let replay_was_on = self.live.as_ref().is_some_and(|l| l.kind == LiveKind::Replay);
         if replay_was_on {
-            self.saver.wait_idle(Duration::from_secs(30));
+            self.saver.wait_buffer_free(Duration::from_secs(15));
             self.stop_live();
         }
         let dir = self.s.replay_dir();
@@ -1567,7 +1615,9 @@ impl Worker {
                 );
             let is_replay = live.kind == LiveKind::Replay;
             let lagging = stats.lagging();
-            if lagging {
+            // A save briefly competes for the CPU and disk; that isn't the capture falling behind.
+            let saving = self.saver.pending() > 0;
+            if lagging && !saving {
                 let since = *self.lag_since.get_or_insert_with(Instant::now);
                 if since.elapsed() > Duration::from_secs(10) && !self.lag_warned {
                     self.lag_warned = true;
@@ -1765,6 +1815,7 @@ impl Worker {
     }
 
     fn on_lag(&mut self) {
+        log("capture: falling behind for 10 s (encoding slower than real time)");
         let replay_only = self.recording.is_none() && self.live.as_ref().is_some_and(|l| l.kind == LiveKind::Replay);
         if self.s.general.auto_adjust && replay_only && self.s.video.fps > 30 {
             let old = self.s.video.fps;

@@ -99,8 +99,11 @@ fn main() -> eframe::Result {
     if let (Err(e), false) = (&result, created.load(Ordering::Relaxed)) {
         controller::log(&format!("window error with {}: {e}; trying {}", first.name(), first.other().name()));
         result = open_window(first.other(), &look, &ctl, &settings, &message, &start_page, &created);
-        if result.is_ok() && first == startup::Renderer::Wgpu && std::env::var_os("UREC_RENDERER").is_none() {
-            startup::remember_opengl();
+        if result.is_ok() && std::env::var_os("UREC_RENDERER").is_none() {
+            match first {
+                startup::Renderer::Wgpu => startup::remember_opengl(),
+                startup::Renderer::Glow => startup::forget_opengl(),
+            }
         }
     }
     if let Err(e) = &result {

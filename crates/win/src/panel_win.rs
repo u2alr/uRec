@@ -578,7 +578,10 @@ impl Panel {
             s.model = model;
             s.position = position.to_string();
             s.reduced_motion = reduced_motion;
-            s.visible
+            // Flip now, so a quick second press closes instead of asking to open twice.
+            let was = s.visible;
+            s.visible = !was;
+            was
         } else {
             false
         };

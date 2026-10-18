@@ -90,6 +90,8 @@ pub struct App {
     devices_at: Option<Instant>,
     /// Which hotkey field is waiting for a key press.
     pub listening: Option<usize>,
+    /// Global hotkeys are paused while a new shortcut is being picked.
+    hotkeys_suspended: bool,
     pub custom_replay: String,
     told_about_tray: bool,
     applied_theme: Option<(bool, u32)>,
@@ -148,6 +150,7 @@ impl App {
             speakers: Vec::new(),
             devices_at: None,
             listening: None,
+            hotkeys_suspended: false,
             custom_replay,
             told_about_tray: false,
             applied_theme: None,
@@ -495,6 +498,14 @@ impl eframe::App for App {
             self.open_page(&p);
         }
         let st = self.ctl.snapshot();
+        // While picking a new shortcut, the current ones must not fire (and must reach this window).
+        if self.page != Page::Settings {
+            self.listening = None;
+        }
+        if self.listening.is_some() != self.hotkeys_suspended {
+            self.hotkeys_suspended = self.listening.is_some();
+            self.ctl.send(Command::SuspendHotkeys(self.hotkeys_suspended));
+        }
         self.handle_close(&ctx, &st);
         if let Some(msg) = self.startup_message.take() {
             self.push_notice(Level::Warning, msg);

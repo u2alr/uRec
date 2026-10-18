@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.4.8
+
+Fixes for the "Starting…" loop after saving a replay, and smaller improvements.
+
+- **Saving a replay no longer makes Instant Replay restart itself.** The save briefly competes with the capture for the processor and disk, and uRec took that dip for "falling behind": it restarted Instant Replay (and could lower the frame rate to 30). Dips while a save runs are now ignored.
+- **Instant Replay restarts no longer wait for a whole save.** A restart only waits until the save has copied its pieces of the buffer (usually a second or two), not until the clip is finished. Before, uRec could sit on "Starting…" for up to 30 seconds, ignoring hotkeys.
+- **Hotkey presses don't pile up.** A press that had to wait more than 3 seconds is dropped instead of running late, so repeated presses during a stall no longer start and stop recordings afterwards.
+- **Choosing a new shortcut** in Settings › Hotkeys no longer triggers the current one (pressing Alt+F9 to keep it used to start a recording).
+- **Overlay panel:** pressing its shortcut twice quickly closes it again instead of being ignored.
+- **Start-up:** if OpenGL was saved as the fallback but stops working while the default works again, uRec goes back to the default.
+- More detail in the log about why Instant Replay restarts.
+
 ## 0.4.7
 
 - **Overlay panel.** Press Alt+F8 while playing to open a small panel on the screen you're playing on: save a replay, turn Instant Replay on or off, start or stop recording (with the elapsed time), mute the microphone, and change the replay length. Esc or Alt+F8 closes it and puts you back in your game. It shows only real state, never appears in your videos (Windows 10 2004 and later), and draws nothing while closed. Exclusive-fullscreen games may minimise while it is open; borderless and windowed games don't. Shortcut in Settings › Hotkeys, position in Settings › Appearance.

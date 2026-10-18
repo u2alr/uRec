@@ -107,6 +107,11 @@ pub fn remember_opengl() {
     let _ = std::fs::write(pref_file(), "glow");
 }
 
+/// OpenGL was saved as the choice but failed with an error, and the default worked: forget it.
+pub fn forget_opengl() {
+    let _ = std::fs::remove_file(pref_file());
+}
+
 /// Tell the user the window couldn't be opened (never in CI, where nobody could click it away).
 pub fn show_failure(error: &str) {
     controller_log_failure(error);
