@@ -1,4 +1,4 @@
-commit b6d5bb55926126132e8659c7f6632434cc33617a run 39111617510
+commit dff5f415d3d106b70d475fdde190834a1fb7d176 run 39113966531
 ## rustc: rustc 1.99.0 (b940084d7 2026-09-28)
 ## fmt
 ## clippy
@@ -7,25 +7,25 @@ commit b6d5bb55926126132e8659c7f6632434cc33617a run 39111617510
    Compiling urec v0.4.8 (D:\a\uRec\uRec\crates\app)
     Checking urec-win v0.4.8 (D:\a\uRec\uRec\crates\win)
     Checking urec-cli v0.4.8 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 23.82s
+    Finished `release` profile [optimized] target(s) in 24.81s
 ## test
    Compiling urec-engine v0.4.8 (D:\a\uRec\uRec\crates\engine)
    Compiling urec v0.4.8 (D:\a\uRec\uRec\crates\app)
    Compiling urec-win v0.4.8 (D:\a\uRec\uRec\crates\win)
    Compiling urec-cli v0.4.8 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 41.57s
+    Finished `release` profile [optimized] target(s) in 36.24s
      Running unittests src\main.rs (target\release\deps\uRec-a70aec94c78c05a8.exe)
 
 running 19 tests
 test editor::tests::preview_sizes ... ok
-test library::tests::durations ... ok
 test library::tests::parses_ffmpeg_info ... ok
+test library::tests::durations ... ok
 test library::tests::retention_picks_only_old_unstarred_clips ... ok
 test library::tests::typed_extension_is_not_doubled ... ok
 test library::tests::diagnoses_unreadable_files ... ok
-test library::tests::scans_nested_and_skips_partials ... ok
-test settings::tests::partial_and_out_of_range_values ... ok
 test settings::tests::accepts_a_byte_order_mark ... ok
+test library::tests::scans_nested_and_skips_partials ... ok
+test settings::tests::corrupt_file_is_quarantined ... ok
 test settings::tests::video_conversion_roundtrip ... ok
 test startup::tests::a_start_that_never_drew_switches_renderer ... ok
 test startup::tests::default_is_wgpu_and_a_saved_choice_sticks ... ok
@@ -33,11 +33,11 @@ test update::tests::release_json ... ok
 test update::tests::signature_rules ... ok
 test update::tests::sums ... ok
 test update::tests::versions ... ok
-test settings::tests::corrupt_file_is_quarantined ... ok
+test settings::tests::partial_and_out_of_range_values ... ok
 test settings::tests::migrates_v1_to_v2_without_nagging_existing_users ... ok
 test settings::tests::roundtrip_and_defaults ... ok
 
-test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.83s
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
 
      Running unittests src\main.rs (target\release\deps\urec_cli-3f349e0ef2407713.exe)
 
@@ -47,7 +47,7 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
 
      Running unittests src\lib.rs (target\release\deps\urec_engine-489d851825553c2b.exe)
 
-running 48 tests
+running 50 tests
 test edit::tests::cut_this_this_and_this ... ok
 test edit::tests::dropping_a_piece_lands_where_the_marker_was ... ok
 test edit::tests::crop_rectangles ... ok
@@ -65,24 +65,26 @@ test health::tests::a_healthy_capture_is_never_reported ... ok
 test health::tests::a_recovery_resets_the_count ... ok
 test health::tests::a_stalled_capture_is_reported_after_two_windows ... ok
 test hotkey::combo_tests::needs_exactly_the_modifiers ... ok
+test hotkey::matcher_tests::a_blocked_press_is_reported_once_after_the_wait ... ok
+test hotkey::matcher_tests::a_delivered_press_is_not_reported_again ... ok
 test hotkey::tests::finds_conflicts ... ok
 test hotkey::tests::roundtrip ... ok
-test mp4check::tests::fragmented_layout ... ok
-test mp4check::tests::rejects_truncated_unfinished_and_garbage ... ok
-test mp4check::tests::valid_file_and_duration ... ok
 test naming::tests::sanitizes ... ok
 test naming::tests::stamps ... ok
-test naming::tests::unique_names ... ok
-test pipeline::tests::audio_and_replay_output ... ok
+test mp4check::tests::valid_file_and_duration ... ok
+test mp4check::tests::fragmented_layout ... ok
 test pipeline::tests::gpu_scaling_stays_on_gpu ... ok
+test pipeline::tests::audio_and_replay_output ... ok
 test pipeline::tests::region_crops ... ok
 test pipeline::tests::system_path_downloads_once ... ok
 test pipeline::tests::zero_copy_native_has_no_filters ... ok
+test naming::tests::unique_names ... ok
 test process::tests::parses_progress_blocks ... ok
+test mp4check::tests::rejects_truncated_unfinished_and_garbage ... ok
 test replay::tests::cleanup_touches_only_temp_files ... ok
 test replay::tests::copy_drops_recycled_head_but_not_holes ... ok
-test probe::tests::every_candidate_is_reported_in_order ... ok
 test replay::tests::parses_and_selects ... ok
+test probe::tests::every_candidate_is_reported_in_order ... ok
 test replay::tests::ring_math ... ok
 test replay::tests::temp_names_are_unique ... ok
 test verify::tests::collects_decoder_errors ... ok
@@ -97,23 +99,24 @@ test sha256::tests::known_vectors ... ok
 test replay::tests::concurrent_placement_never_overwrites ... ok
 test replay::tests::done_reading_is_reported_once_and_before_the_join ... ok
 
-test result: ok. 48 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+test result: ok. 50 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.27s
 
      Running unittests src\lib.rs (target\release\deps\urec_win-f4c416256cda2b33.exe)
 
 running 21 tests
-test notify::tests::rejects_malformed_links ... ok
 test http::tests::urls ... ok
+test notify::tests::rejects_malformed_links ... ok
 test notify::tests::uri_round_trip ... ok
+test notify::tests::xml_is_escaped_and_has_actions ... ok
 test overlay::tests::dot_is_round_and_symmetric ... ok
 test panel::tests::buttons_follow_the_real_state ... ok
-test notify::tests::xml_is_escaped_and_has_actions ... ok
 test panel::tests::hit_testing_and_keyboard_focus ... ok
 test panel::tests::long_text_is_shortened ... ok
-test pill::tests::closed_pill_is_the_dot_and_open_pill_has_message ... ok
+test notify::tests::only_videos_inside_the_recordings_folder ... ok
 test pill::tests::failure_holds_longer ... ok
-test pill::tests::check_and_cross_differ_in_shape ... ok
 test pill::tests::hold_scale_changes_how_long_a_message_stays ... ok
+test pill::tests::check_and_cross_differ_in_shape ... ok
+test pill::tests::closed_pill_is_the_dot_and_open_pill_has_message ... ok
 test pill::tests::newer_failure_replaces_success_and_older_success_never_hides_failure ... ok
 test pill::tests::reduced_motion_jumps_between_states ... ok
 test pill::tests::repeated_successes_extend_instead_of_duplicating ... ok
@@ -122,15 +125,14 @@ test pill::tests::saving_breathes_then_stops ... ok
 test pill::tests::success_timeline ... ok
 test tests::app_names ... ok
 test panel::tests::every_button_is_inside_the_card_and_none_overlap ... ok
-test notify::tests::only_videos_inside_the_recordings_folder ... ok
 
-test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+test result: ok. 21 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
 
    Doc-tests urec_engine
 
 running 0 tests
 
-test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
 
    Doc-tests urec_win
 
@@ -143,25 +145,25 @@ test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; fini
    Compiling urec-win v0.4.8 (D:\a\uRec\uRec\crates\win)
    Compiling urec v0.4.8 (D:\a\uRec\uRec\crates\app)
    Compiling urec-cli v0.4.8 (D:\a\uRec\uRec\crates\cli)
-    Finished `release` profile [optimized] target(s) in 1m 42s
+    Finished `release` profile [optimized] target(s) in 1m 38s
 Screen: 1024x768
 === Probe
   ffmpeg=ffmpeg version 9.0.2-essentials_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers
-  encoder=h264_nvenc   ok=false ms=63    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=h264_amf     ok=false ms=68    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=h264_qsv     ok=false ms=152   arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=h264_mf      ok=false ms=231   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
-  encoder=libx264      ok=true ms=84    arg_error=false reason=
-  encoder=h264_mf      ok=true ms=201   arg_error=false reason=
-  encoder=hevc_nvenc   ok=false ms=66    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=hevc_amf     ok=false ms=67    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=hevc_qsv     ok=false ms=151   arg_error=false reason=No Intel Quick Sync hardware or driver found.
-  encoder=hevc_mf      ok=false ms=85    arg_error=false reason=Windows has no hardware encoder for H.265 (HEVC) on this PC.
-  encoder=libx265      ok=true ms=172   arg_error=false reason=
-  encoder=hevc_mf      ok=false ms=186   arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
-  encoder=av1_nvenc    ok=false ms=68    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
-  encoder=av1_amf      ok=false ms=63    arg_error=false reason=No AMD AMF hardware or driver found.
-  encoder=av1_qsv      ok=false ms=125   arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=h264_nvenc   ok=false ms=65    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
+  encoder=h264_amf     ok=false ms=65    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=h264_qsv     ok=false ms=129   arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=h264_mf      ok=false ms=233   arg_error=false reason=Windows has no hardware encoder for H.264 (AVC) on this PC.
+  encoder=libx264      ok=true ms=89    arg_error=false reason=
+  encoder=h264_mf      ok=true ms=148   arg_error=false reason=
+  encoder=hevc_nvenc   ok=false ms=64    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
+  encoder=hevc_amf     ok=false ms=66    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=hevc_qsv     ok=false ms=154   arg_error=false reason=No Intel Quick Sync hardware or driver found.
+  encoder=hevc_mf      ok=false ms=84    arg_error=false reason=Windows has no hardware encoder for H.265 (HEVC) on this PC.
+  encoder=libx265      ok=true ms=178   arg_error=false reason=
+  encoder=hevc_mf      ok=false ms=132   arg_error=false reason=Windows has no built-in encoder for H.265 (HEVC) on this PC.
+  encoder=av1_nvenc    ok=false ms=66    arg_error=false reason=No NVIDIA NVENC hardware or driver found.
+  encoder=av1_amf      ok=false ms=66    arg_error=false reason=No AMD AMF hardware or driver found.
+  encoder=av1_qsv      ok=false ms=128   arg_error=false reason=No Intel Quick Sync hardware or driver found.
   encoder=av1_mf       ok=false ms=84    arg_error=false reason=Windows has no hardware encoder for AV1 on this PC.
   best_h264=CPU (x264/x265) (H.264 (AVC))
   best_hevc=CPU (x264/x265) (H.265 (HEVC))
@@ -173,18 +175,18 @@ T01b PASS Constant-quality argument sets (x264/x265 CRF, NVENC CQ, AMF CQP, QSV 
 === Invalid settings are rejected
 T09 PASS Oversized H.264 resolution is refused with a clear message :: error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
 === Instant replay
-T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1903ms ring_files=9/9 
-T19 PASS 4 simultaneous replay saves: 4 separate complete clips, none overwritten, no leftovers :: clips=4 [Desktop Replay (2).mp4, Desktop Replay (3).mp4, Desktop Replay (4).mp4, Desktop Replay.mp4] bad=[] temp=0 stages_left=0 total=1904ms
-T20 PASS 150 s Instant Replay: memory stays flat, ring stays bounded, save still works :: ffmpeg private MB 20s=168 50s=165 80s=168 110s=165.2 140s=168.2 | host 2/1.9/1.9/1.9/1.9 | ring max 19/19 | clip 20.55s
+T10 PASS Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded) :: clip=10.28s audio=1 save=1832ms ring_files=9/9 
+T19 PASS 4 simultaneous replay saves: 4 separate complete clips, none overwritten, no leftovers :: clips=4 [Desktop Replay (2).mp4, Desktop Replay (3).mp4, Desktop Replay (4).mp4, Desktop Replay.mp4] bad=[] temp=0 stages_left=0 total=1927ms
+T20 PASS 150 s Instant Replay: memory stays flat, ring stays bounded, save still works :: ffmpeg private MB 20s=168.4 50s=168.3 80s=168.6 110s=168.6 140s=171.6 | host 2/1.9/1.9/2/2 | ring max 19/19 | clip 20.55s
 T21 PASS Signed updates: valid signature accepted; changed file, changed signature and other key refused :: good=true tampered_file=false flipped_sig=false other_key=false
-T22 PASS Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported :: VBR 2.12 MB, constant quality 0.66 MB (ratio 0.31); SSIM between them 0.996569
+T22 PASS Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported :: VBR 2.12 MB, constant quality 0.66 MB (ratio 0.31); SSIM between them 0.996497
 === Clip editor (same engine as the app's editor)
-T23 PASS Editor: cut three pieces out of a 20 s clip -> exactly 13 s, sound kept, decodes cleanly :: duration=13s audio=1 1280x720 export=3559ms
-T24 PASS Editor: join two different clips (one silent) with a 9:16 crop -> 18 s, 404x720, decodes cleanly :: duration=18s 404x720 audio=1 export=1970ms
-T25 PASS Editor: lossless export keeps both tracks, decodes cleanly, at most one keyframe interval per piece longer :: duration=17.4s (exact would be 15) audio=2 export=394ms
+T23 PASS Editor: cut three pieces out of a 20 s clip -> exactly 13 s, sound kept, decodes cleanly :: duration=13s audio=1 1280x720 export=2554ms
+T24 PASS Editor: join two different clips (one silent) with a 9:16 crop -> 18 s, 404x720, decodes cleanly :: duration=18s 404x720 audio=1 export=1525ms
+T25 PASS Editor: lossless export keeps both tracks, decodes cleanly, at most one keyframe interval per piece longer :: duration=17.4s (exact would be 15) audio=2 export=295ms
 T26 PASS Editor: exporting to an existing name never overwrites it; muted export has no sound :: second file: ed-cut (2).mp4, audio=0; first still 13s
 === Repeated start/stop
-T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.13s, 3.13s, 3.13s, 3.13s, 3.13s leftover=0
+T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.1s, 3.13s, 3.13s, 3.13s, 3.13s leftover=0
 === Devices
   windows_build=Some(26100) wgc=true
   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
@@ -195,16 +197,16 @@ T11 PASS 5 start/stop cycles, no leftover ffmpeg processes :: durations 3.13s, 3
 T12 PASS Monitor enumeration finds the primary screen at its real size :: monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 } primary=true dxgi=Some(0)/Some(0) dda=true
   audio outputs=1 inputs=1
 === Audio
-T13 PASS Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone :: state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.4 dB dur=7.37s
+T13 PASS Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone :: state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" } peak=0.244 tracks=1 mean=-15.5 dB dur=7.33s
 T14 PASS Separate tracks: one per working source (mic present: False) :: tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
 T15 PASS Microphone: recorded only if it really initialized; recording works either way :: mic=Failed { reason: "Access is denied." } tracks=0
 === Audio/video sync
-  flash window up after 1.4 s
-  video flash onsets: 1.933333, 3.9, 5.933333, 7.9, 9.933333, 11.933333
-  audio beep onsets:  1.920104, 3.894375, 5.891896, 7.890375, 9.895771, 11.896958
-T17 PASS Audio/video sync: flash + beep every 2 s, audio offset within 100 ms :: pairs=6 offsets_ms=[-13, -6, -41, -10, -38, -36] median=-13 ms (positive = audio later)
+  flash window up after 1.8 s
+  video flash onsets: 1.9, 3.9, 5.9, 7.866667, 9.9, 11.866667
+  audio beep onsets:  1.889604, 3.87, 5.854312, 7.860375, 9.859312, 11.857833
+T17 PASS Audio/video sync: flash + beep every 2 s, audio offset within 100 ms :: pairs=6 offsets_ms=[-10, -30, -46, -6, -41, -9] median=-10 ms (positive = audio later)
 === Window capture
-T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=129 output=D:\a\_temp\urec-it\T16.mp4
+T16 PASS Window capture (Notepad) records just that window :: 754x512 via gdi stop_ms=126 output=D:\a\_temp\urec-it\T16.mp4
 === Show in folder / Open folder
 T18 PASS Show in folder (path with spaces) and Open folder open the right Explorer folder :: explorer windows: D:\a\_temp\urec-it\Folder With Spaces | D:\a\_temp\urec-it\ring
 T27 PASS Copy puts the video files on the clipboard (paste into a chat or folder) :: clipboard: D:\a\_temp\urec-it\copy me 1.mp4 | D:\a\_temp\urec-it\copy me 2.mp4
@@ -214,46 +216,46 @@ Id   Test                                                                       
 --   ----                                                                                                          ------ ------
 T01  Encoder probe: every generated argument set is accepted by FFmpeg                                             PASS   best h264: 
 T01b Constant-quality argument sets (x264/x265 CRF, NVENC CQ, AMF CQP, QSV ICQ, MF quality) are accepted by FFmpeg PASS   argument errors: 0 | encoder=libx264, encoder=h264_mf, encoder=libx265
-T02  GDI capture, x264, 720p30                                                                                     PASS   libx264 via gdi/System -> 960x720@30 6.23s 1.53MB audio=0 | 152 drop=0 dup=0 speed=0.88 startup=1212ms stop=182ms
-T03  GDI capture, Media Foundation (CPU), native 30fps, audio                                                      PASS   h264_mf via gdi/System -> 1024x768@30 6.04s 0.9MB audio=1 | 153 drop=0 dup=0 speed=1.03 startup=657ms stop=204ms
-T04  GDI capture, x264, native 60fps                                                                               PASS   libx264 via gdi/System -> 1024x768@60 5.68s 1.7MB audio=0 | 290 drop=3 dup=104 speed=0.93 startup=657ms stop=170ms
-T05  Automatic capture fallback (WGC -> DDA -> GDI)                                                                PASS   libx264 via gdi/System -> 1024x768@30 5.17s 1.21MB audio=0 | 121 drop=1 dup=2 speed=0.85 startup=1368ms stop=128ms
-T06  MKV container                                                                                                 PASS   libx264 via gdi/System -> 1024x768@30 5.17s 1.2MB audio=0 | 120 drop=0 dup=0 speed=0.85 startup=1161ms stop=168ms
-T07  HEVC via x265, 720p30                                                                                         PASS   libx265 via gdi/System -> 960x720@30 5.17s 0.86MB audio=0 | 116 drop=0 dup=0 speed=0.82 startup=1165ms stop=237ms
-T08  Custom 800x600 output (letterboxed)                                                                           PASS   libx264 via gdi/System -> 800x600@24 5.17s 0.89MB audio=0 | 93 drop=0 dup=0 speed=0.82 startup=1211ms stop=126ms
+T02  GDI capture, x264, 720p30                                                                                     PASS   libx264 via gdi/System -> 960x720@30 6.23s 1.53MB audio=0 | 152 drop=0 dup=0 speed=0.88 startup=1160ms stop=231ms
+T03  GDI capture, Media Foundation (CPU), native 30fps, audio                                                      PASS   h264_mf via gdi/System -> 1024x768@30 6.04s 0.9MB audio=1 | 152 drop=0 dup=2 speed=1.03 startup=655ms stop=178ms
+T04  GDI capture, x264, native 60fps                                                                               PASS   libx264 via gdi/System -> 1024x768@60 5.68s 1.71MB audio=0 | 289 drop=4 dup=81 speed=0.93 startup=606ms stop=203ms
+T05  Automatic capture fallback (WGC -> DDA -> GDI)                                                                PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.22MB audio=0 | 121 drop=0 dup=0 speed=0.85 startup=1367ms stop=154ms
+T06  MKV container                                                                                                 PASS   libx264 via gdi/System -> 1024x768@30 5.2s 1.22MB audio=0 | 121 drop=0 dup=0 speed=0.85 startup=1209ms stop=133ms
+T07  HEVC via x265, 720p30                                                                                         PASS   libx265 via gdi/System -> 960x720@30 5.2s 0.81MB audio=0 | 116 drop=1 dup=5 speed=0.82 startup=1211ms stop=238ms
+T08  Custom 800x600 output (letterboxed)                                                                           PASS   libx264 via gdi/System -> 800x600@24 5.21s 0.9MB audio=0 | 93 drop=0 dup=0 speed=0.82 startup=1211ms stop=151ms
 T09  Oversized H.264 resolution is refused with a clear message                                                    PASS   error: 5000×5000 is larger than H.264 (AVC) supports (4096 pixels per side). Choose a smaller size or another codec.
-T10  Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded)                             PASS   clip=10.28s audio=1 save=1903ms ring_files=9/9 
+T10  Instant replay saves the last 8 s from a 10 s ring (18 s run, ring stays bounded)                             PASS   clip=10.28s audio=1 save=1832ms ring_files=9/9 
 T19  4 simultaneous replay saves: 4 separate complete clips, none overwritten, no leftovers                        PASS   clips=4 [Desktop Replay (2).mp4, Desktop Replay (3).mp4, Desktop Replay (4).mp4, Desktop Replay.mp4] bad=[] temp=0
-                                                                                                                          stages_left=0 total=1904ms
-T20  150 s Instant Replay: memory stays flat, ring stays bounded, save still works                                 PASS   ffmpeg private MB 20s=168 50s=165 80s=168 110s=165.2 140s=168.2 | host 2/1.9/1.9/1.9/1.9 | ring max 19/19 | clip 20.55s
+                                                                                                                          stages_left=0 total=1927ms
+T20  150 s Instant Replay: memory stays flat, ring stays bounded, save still works                                 PASS   ffmpeg private MB 20s=168.4 50s=168.3 80s=168.6 110s=168.6 140s=171.6 | host 2/1.9/1.9/2/2 | ring max 19/19 | clip 20.55s
 T21  Signed updates: valid signature accepted; changed file, changed signature and other key refused               PASS   good=true tampered_file=false flipped_sig=false other_key=false
-T22  Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported     PASS   VBR 2.12 MB, constant quality 0.66 MB (ratio 0.31); SSIM between them 0.996569
-T23  Editor: cut three pieces out of a 20 s clip -> exactly 13 s, sound kept, decodes cleanly                      PASS   duration=13s audio=1 1280x720 export=3559ms
-T24  Editor: join two different clips (one silent) with a 9:16 crop -> 18 s, 404x720, decodes cleanly              PASS   duration=18s 404x720 audio=1 export=1970ms
-T25  Editor: lossless export keeps both tracks, decodes cleanly, at most one keyframe interval per piece longer    PASS   duration=17.4s (exact would be 15) audio=2 export=394ms
+T22  Constant quality (level 7) vs VBR 6 Mbps, same desktop: both decode cleanly; size and similarity reported     PASS   VBR 2.12 MB, constant quality 0.66 MB (ratio 0.31); SSIM between them 0.996497
+T23  Editor: cut three pieces out of a 20 s clip -> exactly 13 s, sound kept, decodes cleanly                      PASS   duration=13s audio=1 1280x720 export=2554ms
+T24  Editor: join two different clips (one silent) with a 9:16 crop -> 18 s, 404x720, decodes cleanly              PASS   duration=18s 404x720 audio=1 export=1525ms
+T25  Editor: lossless export keeps both tracks, decodes cleanly, at most one keyframe interval per piece longer    PASS   duration=17.4s (exact would be 15) audio=2 export=295ms
 T26  Editor: exporting to an existing name never overwrites it; muted export has no sound                          PASS   second file: ed-cut (2).mp4, audio=0; first still 13s
-T11  5 start/stop cycles, no leftover ffmpeg processes                                                             PASS   durations 3.13s, 3.13s, 3.13s, 3.13s, 3.13s leftover=0
+T11  5 start/stop cycles, no leftover ffmpeg processes                                                             PASS   durations 3.1s, 3.13s, 3.13s, 3.13s, 3.13s leftover=0
 T12  Monitor enumeration finds the primary screen at its real size                                                 PASS   monitor 0: Display 1 (main), 1024 × 768, 64 Hz device=\\.\DISPLAY1 bounds=Rect { x: 0, y: 0, width: 1024, height: 768 }
                                                                                                                           primary=true dxgi=Some(0)/Some(0) dda=true
 T13  Game/desktop sound (WASAPI loopback) captures a playing 1 kHz tone                                            PASS   state=Active { device: "Speakers (VB-Audio Virtual Cable)" } end=Active { device: "Speakers (VB-Audio Virtual Cable)" }
-                                                                                                                          peak=0.244 tracks=1 mean=-15.4 dB dur=7.37s
+                                                                                                                          peak=0.244 tracks=1 mean=-15.5 dB dur=7.33s
 T14  Separate tracks: one per working source (mic present: False)                                                  PASS   tracks=1 expected=1 mic=Failed { reason: "Access is denied." }
 T15  Microphone: recorded only if it really initialized; recording works either way                                PASS   mic=Failed { reason: "Access is denied." } tracks=0
-T17  Audio/video sync: flash + beep every 2 s, audio offset within 100 ms                                          PASS   pairs=6 offsets_ms=[-13, -6, -41, -10, -38, -36] median=-13 ms (positive = audio later)
-T16  Window capture (Notepad) records just that window                                                             PASS   754x512 via gdi stop_ms=129 output=D:\a\_temp\urec-it\T16.mp4
+T17  Audio/video sync: flash + beep every 2 s, audio offset within 100 ms                                          PASS   pairs=6 offsets_ms=[-10, -30, -46, -6, -41, -9] median=-10 ms (positive = audio later)
+T16  Window capture (Notepad) records just that window                                                             PASS   754x512 via gdi stop_ms=126 output=D:\a\_temp\urec-it\T16.mp4
 T18  Show in folder (path with spaces) and Open folder open the right Explorer folder                              PASS   explorer windows: D:\a\_temp\urec-it\Folder With Spaces | D:\a\_temp\urec-it\ring
 T27  Copy puts the video files on the clipboard (paste into a chat or folder)                                      PASS   clipboard: D:\a\_temp\urec-it\copy me 1.mp4 | D:\a\_temp\urec-it\copy me 2.mp4
 
 
 passed=28 failed=0
 sample recording: True
-hotkey recording: files before=1 after=2 newest=Desktop 2026-10-18 08.56.47.mp4 size=684132
+hotkey recording: files before=1 after=2 newest=Desktop 2026-10-18 09.15.07.mp4 size=681202
 setup test log: setup test: Capture and encoder start = Some(true) (CPU (x264/x265), H.264 (AVC) via GDI (compatibility), 960×720 at 30 FPS)
 setup test log: setup test: Game and desktop sound = Some(true) (Captured from Speakers (VB-Audio Virtual Cable).)
 setup test log: setup test: Microphone = None (Turned off in Settings › Audio.)
-setup test log: setup test: Recording ran for 5 seconds = Some(true) (153 frames encoded, 3 frames dropped)
-setup test log: setup test: File saved and finalized = Some(true) (428 KB written, crash-safe MP4)
-setup test log: setup test: Video plays back = Some(true) (177 frames of h264 960×720 decoded without errors (5.9 s))
+setup test log: setup test: Recording ran for 5 seconds = Some(true) (183 frames encoded, 2 frames dropped)
+setup test log: setup test: File saved and finalized = Some(true) (535 KB written, crash-safe MP4)
+setup test log: setup test: Video plays back = Some(true) (221 frames of h264 960×720 decoded without errors (7.4 s))
 setup test log: setup test: Audio tracks in the file = Some(true) (1 audio track(s) in the file, 1 expected)
 light home alive=True
 light library alive=True
@@ -272,37 +274,39 @@ dark settings:video alive=True
 dark settings:audio alive=True
 library clicks: thumbnail=PASS play=PASS reveal=PASS edit=PASS
 editor alive while playing=True
-editor preview sound: mean -24.4 dB on the output device (silence is about -91 dB)
-  log: 2026-10-18 09:00:28 editor: preview sound fed 3.5 s, played 2.9 s
-  log: 2026-10-18 09:00:39 editor: preview sound fed 8.0 s, played 7.4 s
+editor preview sound: mean -24.2 dB on the output device (silence is about -91 dB)
+  log: 2026-10-18 09:18:47 editor: preview sound fed 3.5 s, played 2.9 s
+  log: 2026-10-18 09:18:58 editor: preview sound fed 8.0 s, played 7.4 s
 long window title: 90 chars
 overlay panel: focused=True before='Panel focus test' after='Panel focus test' clicked=True replayOn=True
 panel results: thumbnail=PASS play=PASS reveal=PASS edit=PASS panel-open=PASS panel-click=PASS panel-focus-back=PASS
 renderer guard: switched=True saved=True
-P01 PASS Success pill: expands, shows the green check message, holds ~2 s, collapses (total ~2.4 s) :: visible=2281ms (spec 2360) expand=80ms full=2139ms collapse=62ms width=171px green_px=18 capture=45fps
+P01 PASS Success pill: expands, shows the green check message, holds ~2 s, collapses (total ~2.4 s) :: visible=2278ms (spec 2360) expand=95ms full=2120ms collapse=63ms width=171px green_px=18 capture=46fps
 P02 PASS Back to the plain dot afterwards (nothing left on screen) :: residual width=0px
-P03 PASS Failure pill: red cross + 'Instant Replay Failed', held ~2.5 s :: visible=2815ms (spec 2860) red_px=13 green_px=0
-P04 PASS Saving: dot pulses, no 'Saved' before the result; pill only after it :: frames_wide_while_saving=0 pulse_frames=49/49 pill_start=2501ms (result at 2400)
-P05 PASS Burst: a failure replaces a showing success, is shown in full, then the later success follows :: red shown 2392ms from 1044ms; green after it from 3847ms
-P06 PASS Reduced motion: message appears and disappears without in-between frames :: visible=1962ms partial_frames=0
-P07 PASS Overlay uses no CPU at rest (timer stops after the animation) :: after animation: 0ms CPU in 5 s; while animating (pulse): 16ms CPU in 3 s
+P03 PASS Failure pill: red cross + 'Instant Replay Failed', held ~2.5 s :: visible=2788ms (spec 2860) red_px=13 green_px=0
+P04 PASS Saving: dot pulses, no 'Saved' before the result; pill only after it :: frames_wide_while_saving=0 pulse_frames=50/50 pill_start=2455ms (result at 2400)
+P05 PASS Burst: a failure replaces a showing success, is shown in full, then the later success follows :: red shown 2422ms from 1046ms; green after it from 3832ms
+P06 PASS Reduced motion: message appears and disappears without in-between frames :: visible=1993ms partial_frames=0
+P07 PASS Overlay uses no CPU at rest (timer stops after the animation) :: after animation: 0ms CPU in 5 s; while animating (pulse): 31ms CPU in 3 s
 P08 PASS Top-left corner: pill grows away from the screen edge :: width=171px
 toast: registered=true | shown=true error= | toast_history=1
 P09 PASS Windows notification is accepted by Windows (Action Center history) :: shown=True history=1
-P10 PASS Real save (Alt+F10): clip written, then the success pill (only after saving) :: clips 0 -> 1 (Desktop 2026-10-18 09.02.37 Replay.mp4, 1 MB); pill from 681ms for 1990ms
-P11 FAIL 4 rapid presses: at most 2 saves queued, rest folded in, every clip complete, nothing overwritten :: new clips=1 folded=0 total ok saves=2
+P10 PASS Real save (Alt+F10): clip written, then the success pill (only after saving) :: clips 0 -> 1 (Desktop 2026-10-18 09.20.54 Replay.mp4, 1.1 MB); pill from 2789ms for 2017ms
+P11 PASS 4 rapid presses: at most 2 saves queued, rest folded in, every clip complete, nothing overwritten :: new clips=2 folded=2 total ok saves=3
 P12 PASS Overlay off: nothing drawn on screen for the save :: corner change: none
 P13 PASS Overlay off: a Windows notification is shown instead :: uRec notifications in Action Center: 1 -> 2
-log: 2026-10-18 09:02:37 replay save #1 queued (0 pending before)
-log: 2026-10-18 09:02:37 replay save #1 started
-log: 2026-10-18 09:02:38 replay save #1 ok in 429 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-18 09.02.37 Replay.mp4 (12.0 s, 1031875 bytes)
-log: 2026-10-18 09:02:38 Success: Instant Replay saved (12 s).
-log: 2026-10-18 09:02:46 replay save #2 queued (0 pending before)
-log: 2026-10-18 09:02:46 replay save #2 started
-log: 2026-10-18 09:02:48 replay save #2 ok in 1208 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-18 09.02.46 Replay.mp4 (16.0 s, 1111863 bytes)
-log: 2026-10-18 09:02:48 Success: Instant Replay saved (16 s).
-log: 2026-10-18 09:03:17 replay save #1 queued (0 pending before)
-log: 2026-10-18 09:03:17 replay save #1 started
-log: 2026-10-18 09:03:19 replay save #1 ok in 2129 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-18 09.03.17 Replay.mp4 (12.0 s, 1107606 bytes)
-log: 2026-10-18 09:03:19 Success: Instant Replay saved (12 s).
-indicator passed=12 failed=1
+log: 2026-10-18 09:21:03 replay save #2 queued (0 pending before)
+log: 2026-10-18 09:21:03 replay save #2 started
+log: 2026-10-18 09:21:03 replay save #3 queued (1 pending before)
+log: 2026-10-18 09:21:03 replay save: press folded into the save already waiting
+log: 2026-10-18 09:21:03 replay save: press folded into the save already waiting
+log: 2026-10-18 09:21:04 replay save #2 ok in 1274 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-18 09.21.03 Replay.mp4 (16.0 s, 1102027 bytes)
+log: 2026-10-18 09:21:04 Success: Instant Replay saved (16 s).
+log: 2026-10-18 09:21:04 replay save #3 started
+log: 2026-10-18 09:21:06 replay save #3 ok in 1842 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-18 09.21.03 Replay (2).mp4 (16.0 s, 1161780 bytes)
+log: 2026-10-18 09:21:06 Success: Instant Replay saved (16 s).
+log: 2026-10-18 09:21:35 replay save #1 queued (0 pending before)
+log: 2026-10-18 09:21:35 replay save #1 started
+log: 2026-10-18 09:21:35 replay save #1 ok in 591 ms: C:\Users\runneradmin\Videos\uRec\Desktop\Desktop 2026-10-18 09.21.35 Replay.mp4 (12.0 s, 1195641 bytes)
+log: 2026-10-18 09:21:35 Success: Instant Replay saved (12 s).
+indicator passed=13 failed=0
